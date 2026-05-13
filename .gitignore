@@ -1,0 +1,11 @@
+# Folder dependencies
+node_modules/
+dist/
+build/
+
+# Environment variables (PENTING!)
+.env
+
+# OS Metadata
+.DS_Store
+Thumbs.db

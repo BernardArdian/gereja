@@ -34,4 +34,4 @@ const SingleSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("single", SingleSchema);
+module.exports = mongoose.model("umat_single", SingleSchema);

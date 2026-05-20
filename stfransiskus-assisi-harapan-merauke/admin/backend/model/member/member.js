@@ -1,30 +1,89 @@
 const mongoose = require("mongoose");
+const anakSchema = require("./anak");
+const sakramenSchema = require("./sakramen");
+const singleSchema = require("./single");
+const almarhumSchema = require("./almarhum");
+const StasiSchema = require("./stasi");
 
-const memberSchema = new mongoose.Schema(
+// Fungsi pembantu untuk mengatur urutan
+function reorderFields(doc, ret) {
+  if (ret.keluarga) {
+    const { namaSuami, namaIstri, anak, ...rest } = ret.keluarga;
+    //susun ulang manual: Suami -> Istri -> Anak
+    ret.keluarga = {
+      namaSuami,
+      namaIstri,
+      anak,
+      ...rest,
+    };
+  }
+  return ret;
+}
+
+const keluargaSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true },
-    //inputDate: {type:Date, default: Date.now},
-    nama: { type: String, required: true },
-    stasi: { type: String, required: true },
-    birth_place: { type: String, required: true },
-    birth_date: { type: Date, required: true },
-    riwayat: { type: String, required: true, enum: ["hidup", "meninggal"] },
-    gender: { type: String, required: true, enum: ["laki-laki", "perempuan"] },
-    baptise_place: { type: String },
-    baptise_date: { type: Date },
-    status: {
+    namaSuami: { type: String },
+    statusSuami: {
       type: String,
-      enum: ["menikah", "belummenikah", "janda", "duda"],
+      enum: ["hidup", "meninggal"],
+      default: "hidup",
     },
-    partner_name: { type: String },
-    married_date: { type: Date },
+    statusSakramentSuami: {
+      baptis: [sakramenSchema],
+      komuni: [sakramenSchema],
+      krisma: [sakramenSchema],
+    },
+    namaIstri: { type: String },
+    statusIstri: {
+      type: String,
+      enum: ["hidup", "meninggal"],
+      default: "hidup",
+    },
+    statusSakramentIstri: {
+      baptis: [sakramenSchema],
+      komuni: [sakramenSchema],
+      krisma: [sakramenSchema],
+    },
+    riwayatPasangan: { type: [almarhumSchema], default: undefined },
+    anak: { type: [anakSchema], default: undefined },
   },
-  { timestamps: true }
+  { _id: false, minimize: true, toObject: { transform: reorderFields } },
+);
+
+const umatSchema = new mongoose.Schema(
+  {
+    statusNikah: {
+      type: String,
+      enum: ["belum menikah", "sudah menikah", "duda", "janda"],
+      required: true,
+    },
+    noKk: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    stasiKeluarga: { type: StasiSchema },
+    single: { type: singleSchema, default: undefined },
+    keluarga: { type: keluargaSchema, default: undefined },
+  },
+  {
+    timestamps: true,
+    minimize: true,
+    toJSON: {
+      transform: (doc, ret) => {
+        // Menghapus field null/kosong saat data dikirim ke client
+        if (!ret.single) delete ret.single;
+        if (!ret.keluarga) delete ret.keluarga;
+        if (ret.keluarga?.anak?.length === 0) delete ret.keluarga.anak;
+        return ret;
+      },
+    },
+  },
 );
 
 // Middleware: Pre-save
-memberSchema.pre("save", function (next) {
-  console.log("[PRE-SAVE] Validating and preparing member before save...");
+umatSchema.pre("save", function (next) {
+  console.log("[PRE-SAVE] Validating and preparing umat before save...");
   this.nama = this.nama.trim();
   this.stasi = this.stasi.trim();
   this.birth_place = this.birth_place.trim();
@@ -32,36 +91,40 @@ memberSchema.pre("save", function (next) {
   if (this.status === "menikah" && (!this.partner_name || !this.married_date)) {
     return next(
       new Error(
-        "Pasangan dan tanggal pernikahan harus diisi jika status menikah"
-      )
+        "Pasangan dan tanggal pernikahan harus diisi jika status menikah",
+      ),
     );
   }
   next();
 });
 
 // Middleware: Pre-find (for .find, .findOne, etc)
-memberSchema.pre(/^find/, function (next) {
-  console.log("[PRE-FIND] Querying member data...");
+umatSchema.pre(/^find/, function (next) {
+  console.log("[PRE-FIND] Querying umat data...");
   next();
 });
 
 // Middleware: Pre-update
-memberSchema.pre("findOneAndUpdate", function (next) {
-  console.log("[PRE-UPDATE] Updating member...");
+umatSchema.pre("findOneAndUpdate", function (next) {
+  console.log("[PRE-UPDATE] Updating umat...");
   next();
 });
 
 // Middleware: Pre-remove
-memberSchema.pre("remove", function (next) {
-  console.log("[PRE-REMOVE] Member will be removed: ", this._id);
+umatSchema.pre("remove", function (next) {
+  console.log("[PRE-REMOVE] Umat will be removed: ", this._id);
   next();
 });
 
-memberSchema.pre("save", function (next) {
+umatSchema.pre("save", function (next) {
   if (this.status === "menikah" && (!this.partner_name || !this.married_date)) {
-    return next(new Error("Pasangan dan tanggal pernikahan harus diisi jika status menikah"));
+    return next(
+      new Error(
+        "Pasangan dan tanggal pernikahan harus diisi jika status menikah",
+      ),
+    );
   }
   next();
 });
 
-module.exports = mongoose.model("Member", memberSchema);
+module.exports = mongoose.model("Umat", umatSchema);

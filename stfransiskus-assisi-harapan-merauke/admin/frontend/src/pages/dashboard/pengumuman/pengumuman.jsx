@@ -81,6 +81,32 @@ export default function Pengumuman() {
     },
   });
 
+  const resetForm = () => {
+    setFormData({
+      stasi: "",
+      waktu: "",
+      tanggal: "",
+      description: "",
+      pernikahanData: {
+        namaPria: "",
+        namaWanita: "",
+        tanggalPernikahan: "",
+        tempat: "",
+      },
+      dataPranikah: {
+        namaPria: "",
+        namaWanita: "",
+        namaAyahPria: "",
+        namaAyahWanita: "",
+        namaIbuPria: "",
+        namaIbuWanita: "",
+      },
+    });
+    setSelectedStatus("");
+    setPreviewPria(null);
+    setPreviewWanita(null);
+  };
+
   // --- 2. LOGIC FILTER & SEARCH ---
   // Berkat React Compiler, variabel ini otomatis termemoyisasi
   const filteredData = announcements.filter((item) => {
@@ -143,32 +169,6 @@ export default function Pengumuman() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      stasi: "",
-      waktu: "",
-      tanggal: "",
-      description: "",
-      pernikahanData: {
-        namaPria: "",
-        namaWanita: "",
-        tanggalPernikahan: "",
-        tempat: "",
-      },
-      dataPranikah: {
-        namaPria: "",
-        namaWanita: "",
-        namaAyahPria: "",
-        namaAyahWanita: "",
-        namaIbuPria: "",
-        namaIbuWanita: "",
-      },
-    });
-    setSelectedStatus("");
-    setPreviewPria(null);
-    setPreviewWanita(null);
   };
 
   const handleDelete = (id) => {
@@ -237,11 +237,11 @@ export default function Pengumuman() {
                   setEditMode(false);
                   setIsModalOpen(true);
                 }}
-                className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/50 text-white
-                 rounded-3xl text-sm font-black shadow-lg shadow-indigo-200 transition-all active:scale-95"
+                className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 text-white
+                 rounded-3xl text-sm font-black transition-all active:scale-95"
               >
                 <Plus size={18} />
-                INPUT PENGUMUMAN
+                Input Pengumuman
               </button>
             </div>
           </div>
@@ -251,13 +251,12 @@ export default function Pengumuman() {
       {/* GRID DATA */}
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1">
         {currentItems.length > 0 ? (
-          /* items-start bikin pengumuman teks nggak maksa tinggi kayak pernikahan */
-          <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-gray-100 divide-x border border-gray-100 rounded overflow-hidden">
+          <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-gray-100 divide-x gap-1 rounded overflow-hidden">
             {currentItems.map((item) => (
               <form
                 key={item.id}
                 onClick={() => handleShowDetail(item)}
-                className="bg-gray-100/50 hover:bg-slate-200/50 transition-colors cursor-pointer flex flex-col p-8 group"
+                className="bg-blue-300/40 hover:bg-slate-500/50 transition-colors cursor-pointer border border-gray-100 rounded flex flex-col p-8 group"
               >
                 {/* KONTEN */}
                 <section className="p-6">
@@ -275,9 +274,9 @@ export default function Pengumuman() {
                     {/* TOMBOL AKSI (EDIT & DELETE) - Gue balikin di sini */}
                     <section className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                       <button
-                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-indigo-600"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Biar gak trigger modal detail
+                        className="p-2 cursor-pointer bg-slate-200 rounded text-yellow-700 hover:bg-amber-500 hover:text-white transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
                           setFormData(item);
                           setSelectedStatus(item.status);
                           setEditMode(true);
@@ -287,9 +286,9 @@ export default function Pengumuman() {
                         <Edit3 size={16} />
                       </button>
                       <button
-                        className="p-2 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Biar gak trigger modal detail
+                        className="p-2 cursor-pointer bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
                           handleDelete(item.id);
                         }}
                       >

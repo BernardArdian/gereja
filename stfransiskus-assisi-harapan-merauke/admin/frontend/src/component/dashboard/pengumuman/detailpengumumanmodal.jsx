@@ -42,7 +42,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
           >
             <style>{`.scrollbar-hide::-webkit-scrollbar { display: none; }`}</style>
 
-            {/* 1. HEADER (Hanya muncul jika Pernikahan) */}
+            {/* HEADER (Hanya muncul jika Pernikahan) */}
             {isPernikahan && (
               <div className="relative h-64 w-full shrink-0 bg-gradient-to-br from-indigo-950 via-indigo-900 to-blue-900 overflow-hidden">
                 <div className="flex h-full w-full items-center justify-around px-8 relative">
@@ -86,7 +86,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
               </div>
             )}
 
-            {/* 2. AREA KONTEN */}
+            {/* AREA KONTEN */}
             <div
               className={`p-8 space-y-8 bg-white ${!isPernikahan ? "pt-14" : ""}`}
             >
@@ -150,18 +150,12 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
             </div>
           </div>
 
-          {/* 3. FOOTER FIXED */}
-          <div className="p-6 bg-white border-t border-slate-100 flex justify-between items-center shrink-0">
+          {/* FOOTER FIXED */}
+          <footer className="p-6 bg-white border-t border-slate-100 flex justify-between items-center shrink-0">
             <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest italic">
               Admin Gereja Panel
             </span>
-            <button
-              onClick={onClose}
-              className="px-10 py-3 bg-[#1e293b] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 shadow-lg shadow-slate-200"
-            >
-              Kembali
-            </button>
-          </div>
+          </footer>
         </div>
       </div>
     </>

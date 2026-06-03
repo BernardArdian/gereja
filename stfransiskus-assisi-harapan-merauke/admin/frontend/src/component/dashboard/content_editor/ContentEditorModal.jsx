@@ -7,7 +7,7 @@ export default function ContentEditorModal({
   onClose,
   onConfirm,
   title = "Edit Konten",
-  subtitle = "Perbarui informasi detail di bawah ini",
+  //subtitle = "Perbarui informasi detail di bawah ini",
   icon,
   labelTitle = "Judul",
   labelContent = "Konten Narasi",
@@ -81,12 +81,11 @@ export default function ContentEditorModal({
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-              <p className="text-xs text-gray-500">{subtitle}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={20} />
           </button>
@@ -144,7 +143,7 @@ export default function ContentEditorModal({
             />
           </div>
 
-          {/* INPUT DINAMIS - TIMELINE / DAFTAR MISI */}
+          {/* TIMELINE / DAFTAR MISI */}
           {(mode === "history" || mode === "visimisi") && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -156,9 +155,9 @@ export default function ContentEditorModal({
                 <button
                   type="button"
                   onClick={addItem}
-                  className="px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 rounded-lg flex items-center gap-1 hover:bg-indigo-700 transition-colors"
+                  className="px-3 py-1.5 cursor-pointer text-xs font-bold text-white bg-blue-500 rounded-lg flex items-center gap-1 hover:bg-blue-500/20 hover:text-blue-500 transition-colors"
                 >
-                  <Plus size={14} /> Tambah Item
+                  <Plus size={14} /> Tambah time line
                 </button>
               </div>
               <div className="space-y-3">
@@ -199,7 +198,7 @@ export default function ContentEditorModal({
                     <button
                       type="button"
                       onClick={(e) => removeItem(e, idx)}
-                      className="text-red-500 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                      className="text-red-500 p-2 cursor-pointer hover:bg-red-50 rounded-lg transition-colors"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -216,20 +215,20 @@ export default function ContentEditorModal({
         </div>
 
         {/* FOOTER */}
-        <div className="px-6 py-4 border-t bg-white flex justify-end gap-3 shrink-0">
+        <footer className="px-6 py-4 border-t bg-white flex justify-end gap-3 shrink-0">
           <button
             onClick={onClose}
-            className="px-5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors"
           >
             Batal
           </button>
           <button
             onClick={() => onConfirm({ judul, konten, category, items })}
-            className="flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl transition-all active:scale-95"
+            className="flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto px-6 bg-amber-600 hover:bg-amber-500/20 hover:text-amber-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
           >
             <Save size={16} /> Simpan
           </button>
-        </div>
+        </footer>
       </div>
     </section>,
     document.body,

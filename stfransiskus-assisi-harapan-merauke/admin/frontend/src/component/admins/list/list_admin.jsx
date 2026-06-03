@@ -1,11 +1,11 @@
 import {
-  Pencil,
   Trash2,
   ShieldCheck,
   User,
   Lock,
   Eye,
   EyeOff,
+  Edit2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -32,7 +32,7 @@ export default function Admin_List() {
   return (
     <section className="space-y-4">
       {/* Header */}
-      <div className="hidden md:grid grid-cols-4 gap-4 px-6 py-3 border-b border-gray-100">
+      <header className="hidden md:grid grid-cols-4 gap-4 px-6 py-3 border-b border-gray-100">
         <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest">
           Admin Name
         </span>
@@ -45,14 +45,14 @@ export default function Admin_List() {
         <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest text-right">
           Actions
         </span>
-      </div>
+      </header>
 
       {/* List Admin */}
-      <div className="space-y-2">
+      <main className="space-y-2">
         {admins.map((admin) => (
           <div
             key={admin.id}
-            className="cursor-pointer grid grid-cols-1 md:grid-cols-4 gap-4 items-center px-6 py-4 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:bg-gray-50/40 transition-all"
+            className="cursor-pointer grid grid-cols-1 md:grid-cols-4 gap-4 items-center px-6 py-4 bg-slate-300 border border-gray-100 rounded-2xl hover:border-gray-200 hover:bg-gray-50/40 transition-all"
           >
             {/* Nama */}
             <div className="flex items-center gap-3">
@@ -72,50 +72,49 @@ export default function Admin_List() {
             </div>
 
             {/* Password */}
-            <div className="flex items-center gap-2 text-gray-400">
+            <section className="flex items-center gap-2 text-gray-400">
               <Lock size={13} />
-              <span className="text-sm tracking-widest font-mono text-gray-500 flex-1">
-                {visibleIds.includes(admin.id) ? admin.pass : "••••••••"}
-              </span>
+              <span
+                className="text-sm tracking-widest font-mono text-gray-500 flex-1"
+                children={
+                  visibleIds.includes(admin.id) ? admin.pass : "••••••••"
+                }
+              ></span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   togglePassword(admin.id);
                 }}
-                className="cursor-pointer p-1 text-gray-300 hover:text-gray-500 transition-colors"
-              >
-                {visibleIds.includes(admin.id) ? (
-                  <EyeOff size={14} />
-                ) : (
-                  <Eye size={14} />
-                )}
-              </button>
-            </div>
+                className="cursor-pointer p-5 text-gray-300 hover:text-gray-500 transition-colors"
+                children={
+                  visibleIds.includes(admin.id) ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )
+                }
+              />
+            </section>
 
             {/* Aksi */}
-            <div className="flex items-center justify-end gap-1">
-              <button
-                className="cursor-pointer p-2 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl transition-colors"
-                title="Edit Admin"
-              >
-                <Pencil size={15} />
+            <section className="flex items-center justify-end gap-1">
+              <button className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white">
+                <Edit2 size={18} />
               </button>
-              <button
-                className="cursor-pointer p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                title="Hapus Admin"
-              >
-                <Trash2 size={15} />
+
+              <button className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white">
+                <Trash2 size={18} />
               </button>
-            </div>
+            </section>
           </div>
         ))}
-      </div>
+      </main>
 
       {/* Footer */}
-      <div className="pt-4 border-t border-gray-50 flex justify-between items-center text-[11px] text-gray-400">
+      <footer className="pt-4 border-t border-gray-50 flex justify-between items-center text-[11px] text-gray-400">
         <p>* Password disembunyikan untuk keamanan.</p>
         <p>Total: {admins.length} Admin</p>
-      </div>
+      </footer>
     </section>
   );
 }

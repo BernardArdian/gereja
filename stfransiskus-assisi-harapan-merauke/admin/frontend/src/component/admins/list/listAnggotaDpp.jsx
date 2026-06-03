@@ -1,6 +1,6 @@
 import DppTable from "../table/dppTable";
 
-export default function ListAnggotaDpp() {
+export default function ListAnggotaDpp(handlers) {
   return (
     <section className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl overflow-hidden mb-3">
       <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -28,7 +28,11 @@ export default function ListAnggotaDpp() {
             </tr>
           </thead>
           <tbody>
-            <DppTable nama="arwind" jabatan="Anggota" periode="2022 - 2025" />
+            <DppTable
+              data={handlers.nama}
+              jabatan="Anggota"
+              periode="2022 - 2025"
+            />
             <DppTable nama="mawar" jabatan="Anggota" periode="2022 - 2025" />
             <DppTable nama="irwan" jabatan="Anggota" periode="2022 - 2025" />
             <DppTable nama="linda" jabatan="Anggota" periode="2022 - 2025" />

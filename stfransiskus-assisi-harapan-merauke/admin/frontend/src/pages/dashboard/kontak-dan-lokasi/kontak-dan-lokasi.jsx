@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Phone, MapPin, Globe, Map as MapIcon } from "lucide-react";
+import { Phone, MapPin, Globe, Map as MapIcon, Save } from "lucide-react";
 
 export default function KontakDanLokasi() {
   const [mapUrl, setMapUrl] = useState("");
@@ -93,8 +93,14 @@ export default function KontakDanLokasi() {
 
         {/* Tombol Simpan */}
         <section className="pt-4 border-t border-gray-100 flex justify-end">
-          <button className="bg-blue-500 hover:bg-blue-500/50 text-white px-8 py-2.5 rounded-lg font-bold transition-all active:scale-95">
-            Simpan Kontak & Lokasi
+          <button
+            className="flex items-center gap-2 justify-center bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 cursor-pointer text-white px-8 py-2.5 rounded-lg font-bold transition-all active:scale-95"
+            onClick={(i) => {
+              i.stopPropagation();
+            }}
+          >
+            <Save size={20} />
+            Simpan
           </button>
         </section>
       </main>

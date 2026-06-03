@@ -1,6 +1,6 @@
 const validatedatamember = require("../../helper/validatedatamember");
 
-const Member = require("../../model/member/member");
+const Umat = require("../../model/member/umat");
 
 class memberservice {
   static async createMember(data) {
@@ -9,17 +9,19 @@ class memberservice {
 
       const sanitizedId = data.id?.trim() || `MEM-${Date.now()}`;
       const nama = data.nama.trim();
-      const existingMember = await Member.findOne({ nama });
+      const existingMember = await Umat.findOne({ nama });
 
       if (existingMember) {
         throw Object.assign(new Error("data sudah ada"), { statusCode: 409 });
       }
 
       const cleanedData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value != null && value !== '')
+        Object.entries(data).filter(
+          ([_, value]) => value != null && value !== "",
+        ),
       );
 
-      return new Member({
+      return new Umat({
         ...cleanedData,
         id: sanitizedId,
         nama,
@@ -38,8 +40,8 @@ class memberservice {
 
   static async getAllMember() {
     try {
-      const allMembers = await Member.find({});
-      return allMembers;
+      const semuaUmat = await Umat.find({});
+      return semuaUmat;
     } catch (error) {
       throw Object.assign(new Error("Gagal mengambil data member"), {
         statusCode: 500,
@@ -48,13 +50,13 @@ class memberservice {
   }
 
   static async getAllMemberById(id) {
-    const memberById = this.member.findIndex((e) => e.id === parseInt(id));
+    const umatById = this.umat.findIndex((e) => e.id === parseInt(id));
 
-    if (!memberById) {
+    if (!umatById) {
       throw new Error("data umat yang di cari tidak di temukan");
     }
 
-    return memberById;
+    return umatById;
   }
 
   static async updateMember(id, updateData) {
@@ -65,11 +67,11 @@ class memberservice {
     }
 
     const cleanedData = Object.fromEntries(
-      Object.entries(updateData).filter(([_, val]) => val !== "")
+      Object.entries(updateData).filter(([_, val]) => val !== ""),
     );
 
     try {
-      const updatedMember = await Member.findByIdAndUpdate(id, cleanedData, {
+      const updatedMember = await Umat.findByIdAndUpdate(id, cleanedData, {
         new: true,
         runValidators: true,
       });
@@ -82,23 +84,25 @@ class memberservice {
 
       return updatedMember;
     } catch (error) {
-      throw Object.assign(new Error("Gagal memperbarui data member: " + error.message), {
-        statusCode: error.statusCode || 500,
-      });
+      throw Object.assign(
+        new Error("Gagal memperbarui data member: " + error.message),
+        {
+          statusCode: error.statusCode || 500,
+        },
+      );
     }
   }
 
-
   static async deleteMember(id) {
     try {
-      const member = await Member.findByIdAndDelete(id);
+      const umat = await Umat.findByIdAndDelete(id);
 
-      if (!member) {
-        throw Object.assign(new Error("Member tidak ditemukan"), {
+      if (!umat) {
+        throw Object.assign(new Error("umat tidak ditemukan"), {
           statusCode: 404,
         });
       }
-      return member;
+      return umat;
     } catch (error) {
       throw Object.assign(new Error("Gagal menghapus data member"), {
         statusCode: 500,

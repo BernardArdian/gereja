@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Book,
-  BookOpen,
-  Package,
-  Users,
-  Inbox,
-  LogOut,
-  PanelLeftClose,
+  LayoutDashboardIcon,
+  NewspaperIcon,
+  UsersIcon,
+  BookOpenTextIcon,
+  LogOutIcon,
+  PanelLeftCloseIcon,
+  UserSquare2Icon,
+  FolderEditIcon,
 } from "lucide-react";
 
 import LogoutModal from "../alert/logout_modal";
@@ -32,17 +32,27 @@ export default function Layout({ children, onLogout }) {
   }, [location.pathname]);
 
   const menuItems = [
-    { id: "Dashboard", icon: LayoutDashboard, text: "Dashboard", path: "/" },
-    { id: "Katekese", icon: Book, text: "Katekese", path: "/katekese" },
-    { id: "Berita", icon: Inbox, text: "Berita", path: "/berita" },
-    { id: "Umat", icon: Users, text: "Umat", path: "/umat" },
+    {
+      id: "Dashboard",
+      icon: LayoutDashboardIcon,
+      text: "Dashboard",
+      path: "/",
+    },
+    { id: "Umat", icon: UsersIcon, text: "Umat", path: "/umat" },
+    {
+      id: "Katekese",
+      icon: BookOpenTextIcon,
+      text: "Katekese",
+      path: "/katekese",
+    },
+    { id: "Berita", icon: NewspaperIcon, text: "Berita", path: "/berita" },
     {
       id: "Administratif",
-      icon: BookOpen,
+      icon: FolderEditIcon,
       text: "Administratif",
       path: "/administratif",
     },
-    { id: "Admin", icon: Package, text: "Admin", path: "/admin" },
+    { id: "Admin", icon: UserSquare2Icon, text: "Admin", path: "/admin" },
   ];
 
   // Variabel untuk sinkronisasi lebar agar tidak berantakan
@@ -98,7 +108,7 @@ export default function Layout({ children, onLogout }) {
                   onClick={() => setIsSidebarOpen(false)}
                   className="p-1.5 rounded-lg text-amber-900 hover:bg-white/10 transition-colors cursor-pointer"
                 >
-                  <PanelLeftClose size={20} />
+                  <PanelLeftCloseIcon size={20} />
                 </button>
               </div>
             )}
@@ -113,8 +123,8 @@ export default function Layout({ children, onLogout }) {
                 className={`group relative flex items-center h-12 transition-all duration-200 w-full
                   ${
                     location.pathname === item.path
-                      ? "bg-white/30 text-amber-950 border-r-4 border-amber-900 font-bold shadow-sm"
-                      : "text-white hover:bg-white/10 hover:text-white"
+                      ? "bg-slate-500/30 text-amber-950 border-r-4 border-amber-900/60 font-bold shadow-sm"
+                      : "text-white hover:bg-slate-300/40 hover:text-white"
                   }`}
               >
                 {/* ICON CONTAINER - Pakai w-20 biar sejajar sama logo di atas */}
@@ -139,13 +149,13 @@ export default function Layout({ children, onLogout }) {
           </nav>
 
           {/* Logout Section */}
-          <div className="border-t border-amber-300/50 py-3 shrink-0">
+          <footer className="border-t border-amber-300/50 py-3 shrink-0">
             <button
               onClick={() => setIsLogoutModalOpen(true)}
-              className="cursor-pointer group relative flex items-center h-12 w-full transition-all duration-300"
+              className="cursor-pointer group relative flex items-center h-9 w-full transition-all duration-300"
             >
               <div className="w-20 h-full flex items-center justify-center shrink-0 z-20 text-rose-900 group-hover:text-red-700">
-                <LogOut size={22} strokeWidth={2.5} />
+                <LogOutIcon size={22} strokeWidth={2.5} />
               </div>
 
               <div
@@ -158,7 +168,7 @@ export default function Layout({ children, onLogout }) {
                 </span>
               </div>
             </button>
-          </div>
+          </footer>
         </aside>
 
         {/* Konten Utama - Padding kiri dinamis mengikuti lebar sidebar */}

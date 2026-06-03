@@ -17,7 +17,6 @@ export default function Dashboard() {
     "visi dan misi",
     "pedoman pastoral",
     "pengumuman",
-    "kalender",
     "alamat, kontak, dan lokasi",
   ];
 
@@ -33,8 +32,6 @@ export default function Dashboard() {
         return <Pengumuman />;
       case "pedoman pastoral":
         return <Pedoman />;
-      case "kalender":
-        return <CalendarPage />;
       case "alamat, kontak, dan lokasi":
         return <KontakDanLokasi />;
       default:
@@ -62,7 +59,7 @@ export default function Dashboard() {
           </header>
 
           {/* TABS HEADER */}
-          <section className="w-full max-w-full mb-10 overflow-hidden bg-slate-500/40 rounded-2xl backdrop-blur-sm p-2">
+          <section className="w-full max-w-full mb-10 overflow-hidden bg-slate-500/40 rounded backdrop-blur-sm p-2">
             <nav className="flex items-center gap-2 overflow-x-auto no-scrollbar select-none relative">
               {navTitle.map((t) => (
                 <button
@@ -71,7 +68,7 @@ export default function Dashboard() {
                   className={`
           cursor-pointer relative px-6 py-3 text-[13px] font-serif uppercase tracking-widest rounded-xl transition-colors duration-300 
           whitespace-nowrap flex-shrink-0 z-10
-          ${activeTab === t ? "text-gray-100" : "text-gray-900 hover:text-gray-100"}
+          ${activeTab === t ? "text-white" : "text-gray-900 hover:bg-blue-500/20 hover:text-white"}
         `}
                 >
                   {/* TEKS MENU */}

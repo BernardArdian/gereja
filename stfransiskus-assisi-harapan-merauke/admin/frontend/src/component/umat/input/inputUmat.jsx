@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { umatServiceApi } from "../../../api/umatApi/umatServiceApi";
+import { Save } from "lucide-react";
 
-// ─── TRANSFORM: formData UI → payload backend ────────────────────────────────
-
+// TRANSFORM: formData UI => payload backend
 const STATUS_NIKAH_MAP = {
   "belum menikah": "belum menikah",
   menikah: "sudah menikah",
@@ -44,7 +44,7 @@ const transformToPayload = (formData) => {
   const statusNikah =
     STATUS_NIKAH_MAP[formData.statusNikah] ?? formData.statusNikah;
 
-  // LAJANG → simpan ke koleksi Lajang via field "personal"
+  // LAJANG => simpan ke koleksi Lajang via field "personal"
   if (formData.statusNikah === "belum menikah") {
     return {
       statusNikah,
@@ -54,7 +54,7 @@ const transformToPayload = (formData) => {
     };
   }
 
-  // MENIKAH / DUDA / JANDA → simpan ke koleksi Umat via field "keluarga"
+  // MENIKAH / DUDA / JANDA => simpan ke koleksi Umat via field "keluarga"
   const statusSuami =
     formData.statusNikah === "janda"
       ? "meninggal"
@@ -90,8 +90,7 @@ const transformToPayload = (formData) => {
   };
 };
 
-// ─── SUB-KOMPONEN ─────────────────────────────────────────────────────────────
-
+// sub-komponen
 const SakramenDetail = ({ personData, sacramentKey, onUpdate }) => {
   const inputClass =
     "w-full border border-gray-100 rounded-xl p-3 text-sm outline-none transition-all focus:border-indigo-300 focus:bg-white bg-gray-50 placeholder:text-gray-300";
@@ -257,12 +256,12 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ─── SIMPAN / UPDATE ke backend ─────────────────────────────────────────────
+  //simpan / update
   const handleSimpan = async () => {
     setLoading(true);
     setError("");
 
-    const payload = transformToPayload(formData); // ← transform formData ke struktur backend
+    const payload = transformToPayload(formData); // <= transform formData ke struktur backend
 
     const [data, err] = isEdit
       ? await umatServiceApi.updateDataUmat(editId, payload) // PATCH /umat/:id
@@ -278,7 +277,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
     onSuccess?.(data); // misal: navigate ke halaman list
   };
 
-  // ─── STATUS NIKAH ────────────────────────────────────────────────────────────
+  //status nikah
   const handleStatusNikahChange = (newStatus) => {
     setFormData((prev) => {
       let updatedSuami = { ...prev.suami };
@@ -313,10 +312,9 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
     janda: "bg-violet-50 text-violet-500 border-violet-200",
   };
 
-  // ─── RENDER ──────────────────────────────────────────────────────────────────
   return (
-    <section className="max-w-4xl mx-auto p-4 md:p-6 bg-slate-400/20 border border-gray-100 rounded space-y-8 my-10 w-full">
-      {/* HEADER */}
+    <main className="max-w-4xl mx-auto p-4 md:p-6 bg-slate-400/20 border border-gray-100 rounded space-y-8 my-10 w-full">
+      {/* header */}
       <header className="text-center space-y-4">
         <h1 className="text-lg font-semibold text-gray-800 tracking-tight">
           Data Umat
@@ -340,7 +338,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
       <hr className="border-gray-100" />
 
       {!isSudahNikah ? (
-        /* ── LAJANG ── */
+        /* lajang */
         <section className="space-y-6 animate-in fade-in duration-500">
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50 p-4 md:p-5 rounded-2xl border border-gray-100">
             {[
@@ -372,7 +370,10 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
                       return;
                     }
                     if (key === "stasiKeluarga") {
-                      const cleanValue = val.replace(/[0-9]/g, ""); // Menghapus semua angka
+                      const cleanValue = val.replace(
+                        /[{[:;"'<>,.?/|}~!@#$%^*()_+=-]/g,
+                        "",
+                      ); // Menghapus karakter special
                       setFormData({ ...formData, [key]: cleanValue });
                       return;
                     }
@@ -462,7 +463,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
           />
         </section>
       ) : (
-        /* ── MENIKAH / DUDA / JANDA ── */
+        /* menikah / duda / janda */
         <section className="space-y-10 animate-in slide-in-from-top-4 duration-500">
           <section className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50 p-4 md:p-5 rounded-2xl border border-gray-100">
             {[
@@ -507,7 +508,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             ))}
           </section>
 
-          {/* SUAMI */}
+          {/* suami */}
           <section className="space-y-5">
             <SectionHeader label="Data Suami" color="blue" />
             <div className="space-y-3">
@@ -583,7 +584,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             />
           </section>
 
-          {/* ISTRI */}
+          {/* istri */}
           <section className="space-y-5">
             <SectionHeader label="Data Istri" color="pink" />
             <div className="space-y-3">
@@ -659,7 +660,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             />
           </section>
 
-          {/* ANAK */}
+          {/* anak */}
           <section className="space-y-5">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-green-100 pb-2">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-green-500">
@@ -788,19 +789,22 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
         </section>
       )}
 
-      {/* ERROR MESSAGE */}
+      {/* errr message */}
       {error && (
         <p className="text-center text-xs text-red-500 font-medium">{error}</p>
       )}
 
-      {/* TOMBOL — onClick memanggil handleSimpan yang sudah terkoneksi ke API */}
-      <button
-        onClick={handleSimpan}
-        disabled={loading}
-        className="cursor-pointer w-full bg-blue-500 hover:bg-blue-500/50 disabled:opacity-50 text-white py-4 rounded-2xl font-semibold text-sm transition-all uppercase tracking-widest"
-      >
-        {loading ? "Menyimpan..." : isEdit ? "Update Data" : "Simpan Data"}
-      </button>
-    </section>
+      <footer className="flex w-full items-center justify-end">
+        <button
+          onClick={handleSimpan}
+          disabled={loading}
+          className="flex items-center gap-1 justify-center cursor-pointer w-[16dvw] bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 disabled:opacity-50 text-white py-4 rounded-xl font-semibold text-sm transition-all tracking-widest active:scale-95"
+        >
+          <Save size={25} />
+
+          {loading ? "Menyimpan..." : isEdit ? "Update Data" : "Simpan"}
+        </button>
+      </footer>
+    </main>
   );
 }

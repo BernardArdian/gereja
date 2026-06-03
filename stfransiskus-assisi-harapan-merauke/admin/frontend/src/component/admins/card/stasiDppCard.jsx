@@ -9,12 +9,20 @@ export default function StasiDanDppCard({
   onClick,
 }) {
   return (
-    <div
+    <section
       onClick={onClick}
-      className="cursor-pointer bg-white p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all group"
+      className={`p-5 rounded-2xl transition-all group
+        
+        ${
+          title === "Anggota Dpp"
+            ? "bg-blue-500/50 border-blue-100"
+            : title === "Total Stasi"
+              ? "bg-yellow-500/50 border-amber-100"
+              : "bg-white"
+        }`}
     >
       {/* Baris Atas: Icon di Kiri, Tombol/Trend di Kanan */}
-      <div className="flex justify-between items-center mb-5">
+      <header className="flex justify-between items-center mb-5">
         {/* ICON (Kiri) */}
         <div
           className={`w-10 h-10 flex items-center justify-center rounded-xl ${color} text-white`}
@@ -23,7 +31,7 @@ export default function StasiDanDppCard({
         </div>
 
         {/* BAGIAN KANAN (Trend atau Tombol Input) */}
-        <div>
+        <section>
           {/*Cek jika judulnya persis "Total Stasi" */}
           {title === "Total Stasi" && (
             <button
@@ -51,18 +59,18 @@ export default function StasiDanDppCard({
               <PlusCircle size={13} /> Input member DPP
             </button>
           )}
-        </div>
-      </div>
+        </section>
+      </header>
 
       {/* Baris Bawah: Judul & Angka */}
-      <div>
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">
+      <footer>
+        <span className="text-xs font-semibold text-gray-800 uppercase tracking-widest">
           {title}
-        </p>
+        </span>
         <h2 className="text-3xl font-bold text-gray-800 mt-1 tracking-tight">
           {value}
         </h2>
-      </div>
-    </div>
+      </footer>
+    </section>
   );
 }

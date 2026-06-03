@@ -1,6 +1,7 @@
-import { X, User, Calendar, Briefcase, PlusCircle } from "lucide-react";
+import { X, User, Calendar, Briefcase, Save } from "lucide-react";
 
-export default function InputDpp({ onClose }) {
+export default function InputDpp({ isOpen, onClose }) {
+  if (!isOpen) return null;
   return (
     <section className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <section className="w-full max-w-xl bg-white rounded-2xl overflow-hidden animate-in fade-in zoom-in duration-200 h-fit">
@@ -14,7 +15,7 @@ export default function InputDpp({ onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="cursor-pointer p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-all"
+            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={18} />
           </button>
@@ -33,7 +34,9 @@ export default function InputDpp({ onClose }) {
                 <input
                   type="text"
                   placeholder="Nama"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-50 transition-all text-sm font-medium"
+                  pattern="[A-Za-z\s]*"
+                  className="w-full pl-10 pr-4 py-2.5
+                   bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-50 transition-all text-sm font-medium"
                 />
               </div>
             </form>
@@ -49,7 +52,9 @@ export default function InputDpp({ onClose }) {
                   //   setSakramenFilter(e.target.value);
                   // }}
                 >
-                  <option>Divisi</option>
+                  <option value="" hidden>
+                    Divisi
+                  </option>
                   <option value="Dpph-Inti">Dpph Inti</option>
                   <option value="Pleno">Pleno</option>
                 </select>
@@ -89,10 +94,10 @@ export default function InputDpp({ onClose }) {
             </form>
           </section>
 
-          <div className="pt-2">
-            <button className="cursor-pointer w-full flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-amber-100 transition-all active:scale-[0.98]">
-              <PlusCircle size={16} />
-              Simpan Data
+          <div className="w-full flex items-center justify-end pt-2">
+            <button className="cursor-pointer w-[15dvw] flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600/20  hover:text-green-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98]">
+              <Save size={16} />
+              Simpan
             </button>
           </div>
         </form>

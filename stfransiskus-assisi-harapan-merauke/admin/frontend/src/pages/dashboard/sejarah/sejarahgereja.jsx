@@ -51,7 +51,7 @@ export default function SejarahGereja() {
         </div>
         <button
           type="button"
-          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/50 text-white text-sm font-black 
+          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white text-sm font-black 
           rounded-3xl transition-all active:scale-95"
           onClick={() => setIsModalOpen(true)}
         >
@@ -59,6 +59,7 @@ export default function SejarahGereja() {
           Input Sejarah
         </button>
       </header>
+
       <main className="max-w-7xl mx-auto p-8">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* SISI KIRI: Artikel Naratif */}
@@ -73,30 +74,32 @@ export default function SejarahGereja() {
                 </h3>
               </div>
 
-              <div className="prose prose-indigo max-w-none">
-                <p className="text-xl font-bold text-gray-700 leading-relaxed mb-6 italic border-l-4 border-indigo-500 pl-6">
-                  {data.ringkasan}
-                </p>
-                <div className="text-gray-600 leading-[1.8] font-medium space-y-4 whitespace-pre-line">
-                  {data.artikel}
-                </div>
-              </div>
+              <section className="prose prose-indigo max-w-none">
+                <p
+                  className="text-xl font-bold text-gray-700 leading-relaxed mb-6 italic border-l-4 border-indigo-500 pl-6"
+                  children={data.ringkasan}
+                />
+                <span
+                  className="text-gray-600 leading-[1.8] font-medium space-y-4 whitespace-pre-line"
+                  children={data.artikel}
+                />
+              </section>
 
               {/* Placeholder Foto Sejarah */}
-              <div className="mt-12 grid grid-cols-2 gap-4">
-                <div className="aspect-video bg-gray-100 rounded-3xl flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+              <section className="mt-12 grid grid-cols-2 gap-2">
+                <div className="aspect-video bg-gray-100 rounded flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
                   <ImageIcon size={32} className="mb-2" />
-                  <span className="text-[10px] font-black uppercase">
+                  <h4 className="text-[10px] font-black uppercase">
                     Foto Masa Lalu
-                  </span>
+                  </h4>
                 </div>
-                <div className="aspect-video bg-gray-100 rounded-3xl flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+                <div className="aspect-video bg-gray-100 rounded flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
                   <ImageIcon size={32} className="mb-2" />
-                  <span className="text-[10px] font-black uppercase">
+                  <h4 className="text-[10px] font-black uppercase">
                     Foto Saat Ini
-                  </span>
+                  </h4>
                 </div>
-              </div>
+              </section>
             </section>
           </section>
 
@@ -115,19 +118,22 @@ export default function SejarahGereja() {
                 <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-indigo-700/50"></div>
 
                 {data.milestones.map((item, index) => (
-                  <div key={index} className="relative pl-10 group">
+                  <section key={index} className="relative pl-10 group">
                     {/* Dot */}
-                    <div className="absolute left-0 top-1.5 h-6 w-6 rounded-full bg-slate-300 border-4 border-indigo-400 group-hover:border-white transition-all z-10"></div>
+                    <div className="absolute left-0 top-1.5 h-6 w-6 rounded-full bg-slate-300 border-4 border-indigo-400 group-hover:border-white transition-all z-10" />
 
                     <div className="flex flex-col">
-                      <span className="text-black font-black text-sm tracking-widest mb-1 group-hover:text-white">
-                        {item.tahun}
-                      </span>
-                      <p className="text-sm font-medium text-indigo-100/80 leading-relaxed group-hover:text-white transition-colors">
-                        {item.event}
-                      </p>
+                      <span
+                        className="text-black font-black text-sm tracking-widest mb-1 group-hover:text-white"
+                        children={item.tahun}
+                      />
+
+                      <p
+                        className="text-sm font-medium text-indigo-100/80 leading-relaxed group-hover:text-white transition-colors"
+                        children={item.event}
+                      />
                     </div>
-                  </div>
+                  </section>
                 ))}
               </section>
 
@@ -147,8 +153,8 @@ export default function SejarahGereja() {
       <ContentEditorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        mode="history" // AKTIFKAN MODE HISTORY
-        title="Edit Sejarah & Timeline"
+        mode="history"
+        title="Panel Konten Sejarah & Timeline"
         labelTitle="Ringkasan Pendek"
         initialData={{
           judul: data.ringkasan,

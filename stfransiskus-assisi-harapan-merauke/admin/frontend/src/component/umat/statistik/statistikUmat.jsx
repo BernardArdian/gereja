@@ -18,42 +18,42 @@ export default function StatistikUmat({ umatList = [] }) {
     (u) => u.statusHidup === "meninggal",
   ).length;
   const uniqueKK = new Set(umatList.map((u) => u.noKk).filter(Boolean)).size;
-  const uniqueStasi = new Set(
-    umatList.map((u) => u.stasiKeluarga).filter(Boolean),
-  ).size;
+  // const uniqueStasi = new Set(
+  //   umatList.map((u) => u.stasiKeluarga).filter(Boolean),
+  // ).size;
 
   const statsReal = [
     {
       id: 1,
+      tittle: "Total Umat",
       label: "Total Umat",
       value: totalUmat.toLocaleString("id-ID"),
       icon: Users,
       color: "bg-blue-600",
-      detail: "Total Umat",
     },
     {
       id: 2,
+      tittle: "Riwayat Hidup",
       label: "Umat Hidup",
       value: hidupCount.toLocaleString("id-ID"),
       icon: Heart,
       color: "bg-rose-500",
-      detail: "Umat Aktif",
     },
     {
       id: 3,
+      tittle: "Riwayat Meninggal",
       label: "Umat Meninggal",
       value: meninggalCount.toLocaleString("id-ID"),
       icon: Cross,
       color: "bg-black",
-      detail: "Data Riwayat Wafat",
     },
     {
       id: 4,
+      tittle: "KK Terdaftar",
       label: "Keluarga (KK)",
       value: uniqueKK.toLocaleString("id-ID"),
       icon: MapPin,
       color: "bg-amber-500",
-      detail: `${uniqueStasi} KK Terdaftar`,
     },
   ];
 
@@ -114,21 +114,55 @@ export default function StatistikUmat({ umatList = [] }) {
         {statsReal.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-6 rounded-xl border border-gray-100"
+            className={`p-6 rounded-xl
+              ${
+                item.label === "Total Umat"
+                  ? "bg-blue-300/40 border border-blue-500"
+                  : item.label === "Umat Hidup"
+                    ? "bg-rose-300/40 border border-rose-500"
+                    : item.label === "Umat Meninggal"
+                      ? "bg-black/40 border border-black"
+                      : item.label === "Keluarga (KK)"
+                        ? "bg-amber-500/30 border border-amber-600"
+                        : "bg-gray-600/40 border border-gray-100 "
+              }
+              `}
           >
             <div className="flex items-start justify-between">
               <div className={`p-4 rounded-xl text-white ${item.color}`}>
                 <item.icon size={22} strokeWidth={3} />
               </div>
-              <span className="text-[16px] font-black text-gray-900 uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-md border">
-                {item.detail}
+              <span
+                className={`text-[16px] font-black text-gray-900 uppercase tracking-widest  px-3 py-1 
+                ${
+                  item.tittle === "Total Umat"
+                    ? "bg-blue-500 text-white rounded-md border border-white"
+                    : item.tittle === "Riwayat Hidup"
+                      ? "bg-rose-500 text-white rounded-md border border-white"
+                      : item.tittle === "Riwayat Meninggal"
+                        ? "bg-black text-white rounded-md border border-white"
+                        : item.tittle === "KK Terdaftar"
+                          ? "bg-amber-500 text-white rounded-md border border-white"
+                          : "bg-gray-50 rounded-md border"
+                }
+                `}
+              >
+                {item.tittle}
               </span>
             </div>
             <div className="mt-6">
-              <p className="text-[10px] text-gray-900 font-black uppercase tracking-widest">
+              <p
+                className={`text-[16px] text-gray-900 font-black uppercase tracking-widest
+                ${item.label === "Umat Meninggal" ? "text-[16px] text-white " : ""}
+                `}
+              >
                 {item.label}
               </p>
-              <h3 className="text-3xl font-black text-gray-900 mt-1 tracking-tighter">
+              <h3
+                className={`text-3xl font-black text-gray-900 mt-1 tracking-tighter
+                ${item.label === "Umat Meninggal" ? "text-white" : ""}
+                `}
+              >
                 {item.value}
               </h3>
             </div>

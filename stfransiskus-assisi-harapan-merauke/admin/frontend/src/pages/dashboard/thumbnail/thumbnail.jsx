@@ -87,27 +87,27 @@ export default function Thumbnail() {
   return (
     <section className="min-h-screen flex flex-col relative">
       {/* HEADER TABS */}
-      <header className="bg-white sticky top-0 z-30 shadow-sm rounded-2xl">
+      <header className="bg-white sticky top-0 z-30 rounded-2xl">
         <section className="flex flex-row justify-between items-center px-8">
           <section className="flex gap-8">
             <button
               onClick={() => setActiveTab("thumbnail")}
-              className={`cursor-pointer font-serif py-5 text-[10px] font-black flex items-center gap-2 border-b-2 transition-all ${activeTab === "thumbnail" ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-400"}`}
+              className={`cursor-pointer font-serif py-5 text-[10px] font-black flex items-center gap-2 border-b-2 transition-all ${activeTab === "thumbnail" ? "border-indigo-600/70 text-indigo-600" : "border-transparent text-gray-400"}`}
             >
               <Layout size={16} /> THUMBNAIL PAGE
             </button>
             <button
               onClick={() => setActiveTab("gallery")}
-              className={`cursor-pointer font-serif py-5 text-[10px] font-black flex items-center gap-2 border-b-2 transition-all ${activeTab === "gallery" ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-400"}`}
+              className={`cursor-pointer font-serif py-5 text-[10px] font-black flex items-center gap-2 border-b-2 transition-all ${activeTab === "gallery" ? "border-indigo-600/70 text-indigo-600" : "border-transparent text-gray-400"}`}
             >
-              <Grid2X2 size={16} /> GALLERY CONTENT
+              <Grid2X2 size={16} /> GALLERY PAGE
             </button>
           </section>
           <section className="py-4">
             <button
               onClick={() => setIsModalOpen(true)}
               className="cursor-pointer flex items-center gap-2 px-6 py-2.5 text-gray-100 text-[0.8em] font-black 
-              rounded-3xl bg-blue-500 hover:bg-blue-500/50 transition-all active:scale-95"
+              rounded-3xl bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 transition-all active:scale-95"
             >
               <Plus size={18} />
               Upload {activeTab.toLowerCase()}
@@ -117,7 +117,7 @@ export default function Thumbnail() {
 
         {/* --- BARIS FILTER STASI (KHUSUS GALLERY) --- */}
         {activeTab === "gallery" && (
-          <section className="px-8 py-4 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
+          <section className="px-8 py-4 border-t border-gray-500/30 flex flex-wrap items-center justify-between gap-4">
             <section className="flex items-center gap-2">
               <div className="bg-white p-2 rounded-2xl border border-gray-200 text-indigo-600">
                 <MapPin size={14} />
@@ -129,8 +129,8 @@ export default function Thumbnail() {
                     onClick={() => setStasiFilter(stasi)}
                     className={`cursor-pointer font-serif px-4 py-1.5 rounded-xl text-[10px] font-black transition-all ${
                       stasiFilter === stasi
-                        ? "bg-blue-600/60 text-white"
-                        : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-100"
+                        ? "bg-blue-500/70 text-white"
+                        : "bg-gray-100 text-gray-400 border border-gray-200 hover:border-blue-500/10 hover:bg-blue-500/20 hover:text-blue-500"
                     }`}
                   >
                     {stasi.toUpperCase()}
@@ -150,7 +150,7 @@ export default function Thumbnail() {
                 placeholder="Cari di galeri..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500/70 outline-none"
               />
             </div>
           </section>
@@ -190,7 +190,10 @@ export default function Thumbnail() {
                       <Maximize2 size={18} />
                     </button>
                     <button
-                      onClick={() => handleDelete(item.id, activeTab)}
+                      onClick={(i) => {
+                        i.stopPropagation();
+                        handleDelete(item.id, activeTab);
+                      }}
                       className="cursor-pointer p-3 bg-white rounded-2xl text-red-500"
                     >
                       <Trash2 size={18} />

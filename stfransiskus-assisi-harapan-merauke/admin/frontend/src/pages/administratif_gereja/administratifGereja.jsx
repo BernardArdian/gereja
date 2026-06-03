@@ -11,10 +11,11 @@ import {
   Filter,
   CheckCircle2,
   Trash2,
-  Pencil,
+  Edit2,
 } from "lucide-react";
 
 import Input_Administratif from "../../component/administratif/input_administratif";
+import Paginations from "../../component/paginatin";
 
 export default function AdministraifGereja() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,8 +122,11 @@ export default function AdministraifGereja() {
 
             <button
               className="flex cursor-pointer items-center text-white gap-2 px-6 py-3 text-indigo-900 
-              rounded-3xl text-xs font-black bg-blue-500 hover:bg-blue-500/50 transition-all active:scale-95 w-fit"
-              onClick={() => setIsModalOpen("input")}
+              rounded-xl text-xs font-black bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 transition-all active:scale-95 w-fit"
+              onClick={(i) => {
+                i.stopPropagation();
+                setIsModalOpen("input");
+              }}
             >
               <PlusCircle size={18} /> Tambah Dokumen
             </button>
@@ -211,18 +215,21 @@ export default function AdministraifGereja() {
                       <td className="px-6 py-4 text-right">
                         <section className="flex items-center justify-center gap-2">
                           <button
-                            className="flex flex-row gap-1 cursor-pointer p-2 text-center text-yellow-500 hover:text-amber-500 hover:bg-amber-100 rounded-xl transition-colors"
-                            title="Edit Member Dpp"
+                            className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                            onClick={(i) => {
+                              i.stopPropagation();
+                            }}
                           >
-                            <Pencil size={20} />
-                            <span className="text-[0.8em]">edit</span>
+                            <Edit2 size={18} />
                           </button>
+
                           <button
-                            className="flex flex-row gap-1 cursor-pointer text-center p-2 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                            title="Hapus Member Dpp"
+                            className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                            onClick={(i) => {
+                              i.stopPropagation();
+                            }}
                           >
-                            <Trash2 size={20} />
-                            <span className="text-[0.8em]">hapus</span>
+                            <Trash2 size={18} />
                           </button>
                         </section>
                       </td>
@@ -280,6 +287,8 @@ export default function AdministraifGereja() {
                   </button>
                 </div>
               </footer>
+
+              // <Paginations totalPages={totalPages} />
             )}
           </main>
         </section>

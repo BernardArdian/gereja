@@ -62,8 +62,8 @@ export default function Pedoman() {
     <section className="min-h-screen flex flex-col">
       {/* HEADER & CONTROLS */}
       <header className="bg-white rounded-2xl sticky top-0 z-20 ">
-        <div className="max-w-6xl mx-auto px-6 py-5">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <section className="max-w-6xl mx-auto px-6 py-5">
+          <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl font-black text-gray-800 tracking-tight">
                 Pedoman Pastoral
@@ -73,7 +73,7 @@ export default function Pedoman() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <section className="flex flex-wrap items-center gap-3">
               {/* Search */}
               <div className="relative flex-1 min-w-[200px]">
                 <Search
@@ -90,32 +90,31 @@ export default function Pedoman() {
 
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-500/50 text-white text-sm font-bold 
+                className="flex items-center cursor-pointer gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 text-white text-sm font-bold 
                 rounded-3xl transition-all active:scale-95"
               >
                 <Plus size={18} />
                 Input Pedoman
               </button>
-            </div>
-          </div>
+            </section>
+          </section>
 
           {/* Category Chips */}
-          <div className="flex items-center gap-2 mt-6 overflow-x-auto pb-2 no-scrollbar">
+          <section className="flex items-center gap-2 mt-6 overflow-x-auto pb-2 no-scrollbar">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${
+                className={`px-4 py-1.5 cursor-pointer rounded-full text-xs font-black transition-all whitespace-nowrap ${
                   selectedCategory === cat
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-100"
-                    : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                    ? "bg-indigo-600/20 text-indigo-700"
+                    : "bg-gray-100 text-gray-400 hover:bg-indigo-600/20 hover:text-indigo-600"
                 }`}
-              >
-                {cat}
-              </button>
+                children={cat}
+              />
             ))}
-          </div>
-        </div>
+          </section>
+        </section>
       </header>
 
       {/* LIST CONTENT */}
@@ -123,13 +122,11 @@ export default function Pedoman() {
         <section>
           {filteredPedoman.length > 0 ? (
             filteredPedoman.map((item) => (
-              <div
-                key={item.id}
-                className="bg-gray-200 hover:bg-slate-200/40 border border-gray-400 overflow-hidden ml-15 mr-15"
-              >
+              <>
                 {/* Accordion Header */}
-                <div
-                  className="p-5 flex items-center justify-between cursor-pointer group"
+                <section
+                  key={item.id}
+                  className="p-5 flex hover:bg-slate-200/40 bg-white/40 overflow-hidden ml-15 mr-15 items-center border border-gray-400 mb-1 justify-between cursor-pointer group rounded"
                   onClick={() =>
                     setOpenAccordion(openAccordion === item.id ? null : item.id)
                   }
@@ -171,17 +168,17 @@ export default function Pedoman() {
                       className={`text-gray-400 transition-transform duration-300 ${openAccordion === item.id ? "rotate-180" : ""}`}
                     />
                   </div>
-                </div>
+                </section>
 
                 {/* Accordion Body */}
-                <div
+                <section
                   className={`px-5 transition-all duration-300 ease-in-out ${
                     openAccordion === item.id
                       ? "max-h-[500px] pb-5 opacity-100"
                       : "max-h-0 opacity-0 overflow-hidden"
                   }`}
                 >
-                  <div className="pt-4 border-t border-gray-50 text-sm text-gray-600 leading-relaxed font-medium">
+                  <section className="pt-4 border-t border-gray-50 text-sm text-gray-600 leading-relaxed font-medium">
                     {item.content}
                     <div className="mt-6 flex justify-end gap-3 md:hidden">
                       <button className="flex items-center gap-2 px-4 py-2 border rounded-xl text-xs font-bold text-gray-600">
@@ -191,9 +188,9 @@ export default function Pedoman() {
                         <Trash2 size={14} /> Hapus
                       </button>
                     </div>
-                  </div>
-                </div>
-              </div>
+                  </section>
+                </section>
+              </>
             ))
           ) : (
             <div className="py-20 flex flex-col items-center justify-center opacity-30">
@@ -215,7 +212,7 @@ export default function Pedoman() {
           // newData berisi: { judul, konten, category }
           setIsModalOpen(false);
         }}
-        title="Input Pedoman Baru"
+        title="Panel Konten Pedoman"
         icon={BookOpen}
         showCategory={true} // AKTIFKAN FIELD KATEGORI
         categories={categories}

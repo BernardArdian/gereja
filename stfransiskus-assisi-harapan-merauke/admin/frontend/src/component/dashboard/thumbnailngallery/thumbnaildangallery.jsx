@@ -7,7 +7,8 @@ import {
   Calendar,
   Type,
   FileText,
-  MapPin, // Icon tambahan untuk Stasi
+  MapPin,
+  Save,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 
@@ -47,7 +48,7 @@ export default function ThumbnaildanGallery({
           </div>
           <button
             onClick={handleCloseInternal}
-            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors"
+            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={20} />
           </button>
@@ -196,7 +197,7 @@ export default function ThumbnaildanGallery({
                   {[1, 2].map((item) => (
                     <div
                       key={item}
-                      className="relative aspect-square rounded-xl overflow-hidden group shadow-sm border border-gray-200"
+                      className="relative cursor-pointer aspect-square rounded-xl overflow-hidden group shadow-sm border border-gray-200"
                     >
                       <img
                         src={`https://picsum.photos/300/300?random=${item}`}
@@ -204,7 +205,7 @@ export default function ThumbnaildanGallery({
                         className="w-full h-full object-cover transition-transform group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <button className="bg-white text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors shadow-lg">
+                        <button className="bg-white cursor-pointer text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors shadow-lg">
                           <X size={18} />
                         </button>
                       </div>
@@ -216,16 +217,17 @@ export default function ThumbnaildanGallery({
           )}
         </div>
 
-        <footer className="bg-white px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3 shrink-0">
+        <footer className="bg-white px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3">
           <button
             onClick={onConfirm}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors shadow-lg shadow-indigo-100"
+            className="cursor-pointer w-full flex items-center justify-center gap-1 sm:w-auto px-6 bg-blue-500/70 hover:bg-blue-500/20 hover:text-blue-500 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
           >
+            <Save size={16} />
             Simpan
           </button>
           <button
             onClick={handleCloseInternal}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-white border border-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
+            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors"
           >
             Batal
           </button>

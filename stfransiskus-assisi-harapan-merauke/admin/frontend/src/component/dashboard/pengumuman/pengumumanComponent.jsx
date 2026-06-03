@@ -7,7 +7,15 @@ import {
   Info,
   Image as ImageIcon,
   Church,
+  Edit2,
+  Save,
+  Paperclip,
 } from "lucide-react";
+
+import FormField from "../../formField";
+//import PernikahanSection from "./pernikahanSection";
+import PranikahSection from "./pranikahSection";
+import Misa from "./misa";
 
 export default function PengumumanComponent({
   isOpen,
@@ -35,7 +43,7 @@ export default function PengumumanComponent({
       <form className="fixed inset-0 z-[90] flex items-center justify-center p-4">
         <section className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+          <header className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
             <div>
               <h2 className="text-xl font-bold text-gray-800">
                 {editMode
@@ -45,12 +53,12 @@ export default function PengumumanComponent({
             </div>
             <button
               onClick={handlers.cancel}
-              className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-gray-400"
+              className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
               disabled={isSubmitting}
             >
               <X size={24} />
             </button>
-          </div>
+          </header>
 
           <form
             onSubmit={handlers.submit}
@@ -60,7 +68,7 @@ export default function PengumumanComponent({
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 label="Judul Pengumuman"
-                icon={<Clock size={16} />}
+                icon={<Edit2 size={16} />}
                 required
               >
                 <input
@@ -81,18 +89,23 @@ export default function PengumumanComponent({
                 <select
                   value={selectedStatus}
                   onChange={handlers.status}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
+                  className="cursor-pointer w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
                   disabled={isSubmitting}
-                >
-                  <option value="">-Pilih Topik Pengumuman-</option>
-                  <option value="baptis">Baptis</option>
-                  <option value="krisma">Krisma</option>
-                  <option value="komuni">Komuni</option>
-                  <option value="misa">Misa</option>
-                  <option value="pra-nikah">Pranikah</option>
-                  <option value="pernikahan">Pernikahan</option>
-                  <option value="other">Umum</option>
-                </select>
+                  children={
+                    <>
+                      <option value="" disabled hidden>
+                        -Topik Pengumuman-
+                      </option>
+                      <option value="baptis">Baptis</option>
+                      <option value="krisma">Krisma</option>
+                      <option value="komuni">Komuni</option>
+                      <option value="misa">Misa</option>
+                      <option value="pra-nikah">Pranikah</option>
+                      <option value="pernikahan">Pernikahan</option>
+                      <option value="other">Umum</option>
+                    </>
+                  }
+                />
               </FormField>
 
               {selectedStatus !== "pra-nikah" && (
@@ -160,43 +173,6 @@ export default function PengumumanComponent({
               )}
             </section>
 
-            {/* Waktu & Tanggal */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* {selectedStatus !== "pra-nikah" && (
-                <FormField
-                  label="Waktu Pelaksanaan"
-                  icon={<Clock size={16} />}
-                  required
-                >
-                  <input
-                    type="time"
-                    name="waktu"
-                    value={formData.waktu}
-                    onChange={handlers.input}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                    disabled={isSubmitting}
-                  />
-                </FormField>
-              )} */}
-
-              {/* {selectedStatus &&
-                !["pernikahan", "pra-nikah"].includes(selectedStatus) && (
-                  <FormField
-                    label="Tanggal Pelaksanaan"
-                    icon={<Calendar size={16} />}
-                  >
-                    <input
-                      type="date"
-                      name="tanggal"
-                      value={formData.tanggal}
-                      onChange={handlers.input}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                      disabled={isSubmitting}
-                    />
-                  </FormField>
-                )} */}
-            </div>
-
             {/* Section: Data Pernikahan */}
             {selectedStatus === "pernikahan" && (
               <PernikahanSection
@@ -219,11 +195,19 @@ export default function PengumumanComponent({
               />
             )}
 
-            {/* Deskripsi */}
-            <FormField label="Deskripsi Pengumuman" icon={<Info size={16} />}>
+            {selectedStatus !== "pra-nikah" ||
+              (selectedStatus !== "pernikahan" && <Misa data={""} />)}
+
+            {selectedStatus === "misa" && <Misa data={""} />}
+
+            {/* Catatan Kaki... */}
+            <FormField
+              label="Foot notes(isi jika diperlukan)"
+              icon={<Paperclip size={16} />}
+            >
               <textarea
-                name="description"
-                placeholder="Tulis deskripsi pengumuman..."
+                name="deskripsi"
+                placeholder="Catatan kaki..."
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 h-32 resize-none bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                 value={formData.description}
                 onChange={handlers.input}
@@ -232,11 +216,11 @@ export default function PengumumanComponent({
             </FormField>
 
             {/* Footer Buttons - Sticky bottom */}
-            <div className="flex gap-3 pt-4 bg-white">
+            <footer className="w-full itemx-center justify-end bg-white border-t border-gray-100 flex flex-col sm:flex-row gap-3 shrink-0">
               <button
                 type="button"
                 onClick={handlers.cancel}
-                className="flex-1 bg-gray-100 text-gray-600 rounded-2xl py-4 font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
+                className="cursor-pointer w-[15dvw] px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors disabled:opacity-50"
                 disabled={isSubmitting}
               >
                 Batal
@@ -244,12 +228,13 @@ export default function PengumumanComponent({
               <button
                 type="submit"
                 disabled={!validation() || isSubmitting}
-                className={`flex-[2] rounded-2xl py-4 font-bold shadow-lg transition-all ${
+                className={` w-[15dvw] flex items-center justify-center gap-1 rounded-xl px-6 py-2.5 font-bold transition-all ${
                   validation() && !isSubmitting
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-200"
+                    ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-500/20 hover:text-blue-500"
                     : "bg-indigo-300 text-white cursor-not-allowed"
                 }`}
               >
+                <Save size={16} />
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
@@ -261,23 +246,13 @@ export default function PengumumanComponent({
                   "Simpan"
                 )}
               </button>
-            </div>
+            </footer>
           </form>
         </section>
       </form>
     </>
   );
 }
-
-const FormField = ({ label, icon, required, children }) => (
-  <div className="w-full">
-    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2 ml-1">
-      <span className="text-indigo-500">{icon}</span>
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    {children}
-  </div>
-);
 
 const PernikahanSection = ({ data, handlers, previews, isSubmitting }) => (
   <section className="space-y-4 p-5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
@@ -329,72 +304,5 @@ const PernikahanSection = ({ data, handlers, previews, isSubmitting }) => (
         );
       })}
     </form>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* <FormField
-        label="Tanggal Pernikahan"
-        required
-        icon={<Calendar size={14} />}
-      >
-        <input
-          type="date"
-          name="tanggalPernikahan"
-          value={data.tanggalPernikahan}
-          onChange={handlers.pernikahan}
-          className="w-full border border-gray-200 rounded-xl px-4 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-        />
-      </FormField>
-      <FormField label="Tempat Pernikahan" required icon={<MapPin size={14} />}>
-        <input
-          type="text"
-          name="tempat"
-          placeholder="Nama gereja"
-          value={data.tempat}
-          onChange={handlers.pernikahan}
-          className="w-full border border-gray-200 rounded-xl px-4 py-2 bg-white outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-        />
-      </FormField> */}
-    </div>
-  </section>
-);
-
-const labelPranikah = [
-  { label: "Nama Mempelai", pria: "namaPria", wanita: "namaWanita" },
-  { label: "Nama Ayah", pria: "namaAyahPria", wanita: "namaAyahWanita" },
-  { label: "Nama Ibu", pria: "namaIbuPria", wanita: "namaIbuWanita" },
-];
-
-const PranikahSection = ({ data, onChange, isSubmitting }) => (
-  <section className="space-y-4 p-5 bg-gray-50 border border-gray-200 rounded-2xl">
-    <h4 className="font-bold text-gray-700 flex items-center gap-2 border-b border-gray-200 pb-2">
-      Data Pranikah
-    </h4>
-    {labelPranikah.map((row, idx) => (
-      <div key={idx} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <form>
-          <label className="block text-[10px] font-black text-gray-400 uppercase mb-1">
-            {row.label} Pria
-          </label>
-          <input
-            name={row.pria}
-            value={data[row.pria]}
-            onChange={onChange}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-            disabled={isSubmitting}
-          />
-        </form>
-        <form>
-          <label className="block text-[10px] font-black text-gray-400 uppercase mb-1">
-            {row.label} Wanita
-          </label>
-          <input
-            name={row.wanita}
-            value={data[row.wanita]}
-            onChange={onChange}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-            disabled={isSubmitting}
-          />
-        </form>
-      </div>
-    ))}
   </section>
 );

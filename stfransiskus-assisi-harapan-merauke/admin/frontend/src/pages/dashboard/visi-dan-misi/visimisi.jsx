@@ -35,7 +35,7 @@ export default function VisiMisi() {
         </div>
         <button
           type="button"
-          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/50 text-white text-sm font-black 
+          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 text-white text-sm font-black 
           rounded-3xl transition-all active:scale-95"
           onClick={() => setIsModalOpen(true)}
         >
@@ -106,7 +106,7 @@ export default function VisiMisi() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode="visimisi" // AKTIFKAN MODE LIST MISI
-        title="Edit Visi & Misi"
+        title="Panel Konten Visi & Misi"
         labelTitle="Visi Utama"
         initialData={{
           judul: data.visi,

@@ -1,9 +1,20 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Edit2, Trash2 } from "lucide-react";
+//import { useState } from "react";
+
+import InputStasi from "../input/input_stasi";
+import LogoutModal from "../../alert/logout_modal";
 
 export default function StasiListModal() {
+  //const [iSActiveModal, setActiveModal] = useState(false);
+
+  const handleDelte = () => {
+    window.confirm("apakah anda yakin untuk menghapus stasi ini?");
+  };
+
   const dataStasi = [
     {
-      nama: "Stasi St. Yohanes",
+      nama: "St. Yohanes",
+      namaGereja: "st.Yohanes",
       alamat: "Jl. Merdeka No. 10",
       jumlahUmat: 150,
     },
@@ -21,62 +32,91 @@ export default function StasiListModal() {
       </div>
       <div className="p-0">
         <table className="w-full text-left border-collapse">
-          <thead className="sticky top-0 bg-white">
+          <thead className="flext items-center justify-center sticky top-0 bg-white">
             <tr className="border-b border-gray-100">
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
                 Nama Stasi
               </th>
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+                Nama Gereja
+              </th>
+              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
                 Alamat
               </th>
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest text-center">
-                Umat
+                Jumblah Umat
               </th>
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest text-center">
                 Kelola
               </th>
             </tr>
           </thead>
-          <tbody>
-            {dataStasi.map((stasi, idx) => (
+          <tbody
+            children={dataStasi.map((stasi, i) => (
               <tr
-                key={idx}
+                key={i}
                 className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors"
-              >
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {stasi.nama}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  {stasi.alamat}
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <span className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1">
-                    {stasi.jumlahUmat}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-center">
-                  <section className="flex items-center justify-center gap-2">
-                    <button
-                      className="flex flex-row cursor-pointer p-2 text-center text-yellow-500 hover:text-amber-500 hover:bg-amber-100 rounded-xl transition-colors"
-                      title="Edit Stati"
-                    >
-                      <Pencil size={20} />
-                      <span className="text-[0.8em]">edit</span>
-                    </button>
-                    <button
-                      className="flex flex-row cursor-pointer text-center p-2 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                      title="Hapus Stasi"
-                    >
-                      <Trash2 size={20} />
-                      <span className="text-[0.8em]">hapus</span>
-                    </button>
-                  </section>
-                </td>
-              </tr>
+                children={
+                  <>
+                    <td
+                      className="px-6 py-4 text-sm font-medium text-gray-900"
+                      children={stasi.nama}
+                    />
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      children={stasi.namaGereja}
+                    />
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      children={stasi.alamat}
+                    />
+                    <td
+                      className="px-6 py-4 text-center"
+                      children={
+                        <span
+                          className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1"
+                          children={stasi.jumlahUmat}
+                        />
+                      }
+                    />
+                    <td
+                      className="px-6 py-4 text-center"
+                      children={
+                        <section
+                          className="flex items-center justify-center gap-2"
+                          children={
+                            <>
+                              <button
+                                className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
+                                onClick={(i) => {
+                                  i.stopPropagation();
+                                }}
+                                children={<Edit2 size={18} />}
+                              />
+
+                              <button
+                                className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all 
+                                active:scale-90"
+                                onClick={(i) => {
+                                  i.stopPropagation();
+                                  handleDelte;
+                                }}
+                                children={<Trash2 size={18} />}
+                              />
+                            </>
+                          }
+                        />
+                      }
+                    />
+                  </>
+                }
+              ></tr>
             ))}
-          </tbody>
+          />
         </table>
       </div>
+
+      {/* <InputStasi onClose={() => setActiveModal(null)} /> */}
     </section>
   );
 }

@@ -5,9 +5,16 @@ import {
   AlignLeft,
   AlignRight,
   AlignJustify,
+  Link2,
+  Info,
+  User,
+  Text,
+  Type,
+  Edit2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import FormField from "../../formField";
 
 export default function KatekeseInput({
   isOpen,
@@ -15,6 +22,7 @@ export default function KatekeseInput({
   onConfirm,
   // showCategory = false,
   // category = [],
+  //handlers,
   mode = "default",
 }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -55,12 +63,14 @@ export default function KatekeseInput({
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
           <section>
-            <h3 className="text-lg font-bold text-gray-800">Katekese</h3>
-            <p className="text-sm text-gray-500">Kelola Katekese</p>
+            <h3 className="text-lg font-bold text-gray-800">
+              {" "}
+              Panel Manajemen Konten Katekese
+            </h3>
           </section>
           <button
             onClick={handleClose}
-            className="cursor-pointer text-rose-400 hover:text-rose-600 hover:bg-rose-100 p-2 rounded-full transition-colors"
+            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={20} />
           </button>
@@ -109,112 +119,122 @@ export default function KatekeseInput({
                 </label>
 
                 <div className="space-y-1.5 m-1">
-                  <label
+                  <FormField
+                    label="Image Url"
+                    icon={<Link2 size={16} />}
+                    children={
+                      <input
+                        id="url"
+                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                        type="text"
+                        placeholder="Image Url"
+                      />
+                    }
+                  />
+                  {/* <label
                     htmlFor="author"
                     className="text-sm font-medium text-gray-700"
                   >
                     Image Url
-                  </label>
-                  <input
-                    id="url"
-                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-                    type="text"
-                    placeholder="Image Url"
-                  />
+                  </label> */}
                 </div>
               </section>
 
               {/* Right Side Inputs */}
               <section className="flex-1 space-y-4">
                 <div className="space-y-1.5">
-                  <label
-                    htmlFor="author"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Judul
-                  </label>
-                  <input
-                    id="judul"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-                    type="text"
-                    placeholder="Judul katekese"
+                  <FormField
+                    label="judul"
+                    icon={<Edit2 size={16} />}
+                    children={
+                      <input
+                        id="judul"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                        type="text"
+                        placeholder="Judul katekese"
+                      />
+                    }
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label
-                    htmlFor="author"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Topik
-                  </label>
-                  <select
-                    id="topik"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-                  >
-                    <option value="">Pilih topik Katekese...</option>
-                    <option value="orang kudus">Orang Kudus</option>
-                    <option value="renungan">Renungan</option>
-                    <option value="Devosi">Devosi</option>
-                    <option value="tradisi gereja">Tradisi Gereja</option>
-                  </select>
+                  <FormField
+                    label="Topik"
+                    icon={<Type size={15} />}
+                    children={
+                      <select
+                        id="topik"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                      >
+                        <option value="" hidden>
+                          Topik Katekese...
+                        </option>
+                        <option value="orang kudus">Orang Kudus</option>
+                        <option value="renungan">Renungan</option>
+                        <option value="Devosi">Devosi</option>
+                        <option value="tradisi gereja">Tradisi Gereja</option>
+                      </select>
+                    }
+                  />
                 </div>
                 <div className="space-y-1.5">
-                  <label
-                    htmlFor="author"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Penulis
-                  </label>
-                  <input
-                    id="author"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-                    type="text"
-                    placeholder="Nama penulis"
+                  <FormField
+                    label="Author/Penulis"
+                    icon={<User size={16} />}
+                    children={
+                      <input
+                        id="author"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                        type="text"
+                        placeholder="penulis(default admin)"
+                      />
+                    }
                   />
                 </div>
               </section>
             </section>
 
             {/* Textarea Detail */}
-            <div className="space-y-1.5">
-              <label
-                htmlFor="summary"
-                className="text-sm font-medium text-gray-700"
-              >
-                Ringkasan (summary)
-              </label>
-              <textarea
-                id="summary"
-                className="w-full px-4 h-20 py-2.5 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 transition-all"
-                type="text"
-                placeholder="Ringkasan singkat..."
+            <section className="flex-1 space-y-1.5">
+              <FormField
+                label="Ringkasan(summary)"
+                icon={<Text size={15} />}
+                children={
+                  <textarea
+                    id="summary"
+                    className="w-full px-4 h-20 py-2.5 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                    type="text"
+                    placeholder="Ringkasan singkat..."
+                  />
+                }
               />
-            </div>
+            </section>
             <section className="space-y-1.5">
-              <section className="flex w-full justify-between">
-                <label
-                  htmlFor="detail"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Detail Katekese
-                </label>
-                <section className="flex w-[10dvw] justify-around border border-gray-300 rounded">
-                  <button className="cursor-pointer">
-                    <AlignLeft size={15} />
-                  </button>
-                  <button className="cursor-pointer">
-                    <AlignJustify size={15} />
-                  </button>
-                  <button className="cursor-pointer">
-                    <AlignRight size={15} />
-                  </button>
-                </section>
-              </section>
-              <textarea
-                id="detail"
-                rows={12}
-                placeholder="Masukkan detail katekese di sini..."
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 resize-none leading-relaxed transition-all"
+              <FormField
+                label={
+                  <section className="flex w-full justify-between">
+                    Detail Katekese
+                    <section className="flex w-[15dvw] justify-around border-b border-gray-300">
+                      <button className="cursor-pointer">
+                        <AlignLeft size={20} />
+                      </button>
+                      <button className="cursor-pointer">
+                        <AlignJustify size={20} />
+                      </button>
+                      <button className="cursor-pointer">
+                        <AlignRight size={20} />
+                      </button>
+                    </section>
+                  </section>
+                }
+                icon={<Info size={15} />}
+                children={
+                  <textarea
+                    id="detail"
+                    rows={12}
+                    placeholder="Masukkan detail katekese di sini..."
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 resize-none leading-relaxed transition-all"
+                  />
+                }
               />
             </section>
           </div>
@@ -224,13 +244,13 @@ export default function KatekeseInput({
         <footer className="bg-white px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3 shrink-0">
           <button
             onClick={() => onConfirm({ image: selectedImage })}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors shadow-lg shadow-indigo-100"
+            className="cursor-pointer w-full sm:w-auto px-6 bg-amber-600 hover:bg-amber-500/20 hover:text-amber-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
           >
             Simpan
           </button>
           <button
             onClick={handleClose}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-white border border-gray-200 text-gray-700 text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
+            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors"
           >
             Batal
           </button>

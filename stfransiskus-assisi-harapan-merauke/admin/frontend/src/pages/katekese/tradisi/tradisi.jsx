@@ -8,6 +8,8 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Trash2,
+  Edit2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
@@ -110,9 +112,9 @@ export default function Tradisi() {
 
   return (
     <section className="min-h-screen pb-20">
-      <div className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
-        {/* 1. LAYER GAMBAR - Kita pakai gambar Katedral biar nyambung */}
-        <div
+      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+        {/* LAYER GAMBAR  */}
+        <section
           className="absolute inset-0 w-full h-full z-0"
           style={{
             backgroundImage: `url('https://katedraljakarta.or.id/_astro/interior.CfU15dnr_Z1CCVS0.webp')`,
@@ -122,11 +124,11 @@ export default function Tradisi() {
           }}
         />
 
-        {/* 2. LAYER OVERLAY - Biar teks "Tradisi Gereja" tidak tenggelam */}
+        {/* LAYER OVERLAY  */}
         <div className="absolute inset-0 bg-black/50 z-10" />
 
-        {/* 3. LAYER KONTEN - Harus z-20 supaya di atas gambar & overlay */}
-        <div className="relative z-20 max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {/* LAYER KONTEN  */}
+        <section className="relative z-20 max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 text-indigo-300 font-bold text-[10px] uppercase tracking-widest mb-2">
               <History size={14} /> Warisan Budaya & Iman
@@ -135,19 +137,16 @@ export default function Tradisi() {
               Tradisi Gereja
             </h1>
           </div>
-        </div>
+        </section>
 
-        {/* 4. ICON DEKORATIF - Kasih z-10 juga */}
-        <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
+        {/* ICON DEKORATIF */}
+        <section className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
           <BookOpen size={300} />
-        </div>
-      </div>
+        </section>
+      </header>
 
-      {/* STICKY SEARCH BAR 
-          -mt-8 menarik bar ke atas untuk efek melayang.
-          Sticky top-0 menjaganya tetap di atas saat scroll.
-      */}
-      <div className="sticky top-0 z-40 -mt-8 px-6 transition-all duration-300">
+      {/* STICKY SEARCH BAR */}
+      <section className="sticky top-0 z-40 -mt-8 px-6 transition-all duration-300">
         <div className="max-w-4xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative felx-1">
@@ -168,18 +167,18 @@ export default function Tradisi() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* MAIN CONTENT */}
       <main className="max-w-6xl mx-auto px-6 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {paginatedTradisi.map((item) => (
-            <div
+            <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="group cursor-pointer bg-gray-300 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col"
+              className="group cursor-pointer bg-yellow-800/60 rounded border border-gray-100 hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col"
             >
-              <div className="relative aspect-video overflow-hidden">
+              <section className="relative aspect-video overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -190,35 +189,51 @@ export default function Tradisi() {
                     {item.category}
                   </span>
                 </div>
-              </div>
+              </section>
 
-              <div className="p-7 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase mb-2">
+              <section className="p-7 flex-1 flex flex-col">
+                <div className="flex items-center gap-2 text-[0.8em] font-bold text-white uppercase mb-2">
                   <Calendar size={12} /> {item.period}
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 leading-tight mb-2 group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-800 leading-tight mb-2 group-hover:text-indigo-600/70 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed">
+                <p className="text-sm text-white line-clamp-2 mb-6 leading-relaxed">
                   {item.description}
                 </p>
 
-                <div className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
-                  <button className="text-indigo-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
-                    Detail <ArrowRight size={14} />
+                <footer className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
+                  <button className="cursor-pointer text-black text-[0.6em] font-black uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                    Baca <ArrowRight size={14} />
                   </button>
-                  <button className="text-gray-300 hover:text-gray-600 p-2">
-                    <MoreVertical size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
+                  <section className="flex items-center justify-end gap-3">
+                    <button
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                      onClick={(i) => {
+                        i.stopPropagation();
+                      }}
+                    >
+                      <Edit2 size={18} />
+                    </button>
+
+                    <button
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                      onClick={(i) => {
+                        i.stopPropagation();
+                      }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </section>
+                </footer>
+              </section>
+            </section>
           ))}
-        </div>
+        </section>
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <div className="mt-16 flex items-center justify-center gap-2">
+          <footer className="mt-16 flex items-center justify-center gap-2">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
@@ -226,7 +241,7 @@ export default function Tradisi() {
             >
               <ChevronLeft size={20} />
             </button>
-            <div className="flex gap-1.5">
+            <section className="flex gap-1.5">
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
@@ -240,7 +255,7 @@ export default function Tradisi() {
                   {i + 1}
                 </button>
               ))}
-            </div>
+            </section>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
@@ -248,7 +263,7 @@ export default function Tradisi() {
             >
               <ChevronRight size={20} />
             </button>
-          </div>
+          </footer>
         )}
       </main>
     </section>

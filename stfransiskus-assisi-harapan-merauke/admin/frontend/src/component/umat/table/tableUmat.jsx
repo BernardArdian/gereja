@@ -11,7 +11,9 @@ import {
 import AlertDialogModal from "../../../util/alertDialog.jsx";
 
 export default function TableUmat({ umatList, onEdit, onDelete }) {
-  const [stasiFilter, setStasiFilter] = useState("Semua");
+  const [stasiFilter, setStasiFilter] = useState("");
+  const [statusNikahFilter, setStatusNikahFilter] = useState("");
+  const [sakramenFilter, setSakramenFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeEditStatus, setActiveEditStatus] = useState(null);
@@ -38,7 +40,7 @@ export default function TableUmat({ umatList, onEdit, onDelete }) {
   };
 
   return (
-    <section className="w-full space-y-6 antialiased">
+    <main className="w-full space-y-6 antialiased">
       {/* SEARCH BAR - Modern Floating Style */}
       <header className="max-w-5xl mx-auto px-4 md:px-0">
         <form className="flex flex-col md:flex-row gap-3 items-center">
@@ -58,15 +60,41 @@ export default function TableUmat({ umatList, onEdit, onDelete }) {
           <section className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
             <select
               className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
-              value={stasiFilter}
-              onChange={(e) => setStasiFilter(e.target.value)}
+              value={statusNikahFilter}
+              onChange={(i) => setStatusNikahFilter(i.target.value)}
             >
-              <option value="Semua">Semua Stasi</option>
+              <option value="" disabled hidden>
+                - Status Pernikahan
+              </option>
+              <option value="lajang">belum menikah</option>
+              <option value="menikah">sudah menikah</option>
+              <option value="janda">janda</option>
+              <option value="duda">duda</option>
+            </select>
+          </section>
+          <section className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+            <select
+              className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
+              value={stasiFilter}
+              onChange={(i) => setStasiFilter(i.target.value)}
+            >
+              <option value="" hidden>
+                - Stasi
+              </option>
               <option value="Harapan">Stasi Harapan</option>
               <option value="Kurik">Stasi Kurik</option>
             </select>
-            <select className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none">
-              <option value="Semua">Semua Sakramen</option>
+
+            <select
+              className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
+              value={sakramenFilter}
+              onChange={(i) => {
+                setSakramenFilter(i.target.value);
+              }}
+            >
+              <option value="" disabled hidden>
+                - Sakramen
+              </option>
               <option value="Baptis">Baptis</option>
               <option value="Komuni Pertama">Komuni Pertama</option>
               <option value="Krisma">Krisma</option>
@@ -273,6 +301,6 @@ export default function TableUmat({ umatList, onEdit, onDelete }) {
         confirmText="Ya, Hapus"
         type="danger"
       />
-    </section>
+    </main>
   );
 }

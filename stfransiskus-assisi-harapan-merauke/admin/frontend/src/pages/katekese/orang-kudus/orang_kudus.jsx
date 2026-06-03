@@ -7,6 +7,9 @@ import {
   Star,
   ShieldCheck,
   ArrowRight,
+  CircleUser,
+  Trash2,
+  Edit2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
@@ -105,7 +108,7 @@ export default function OrangKudus() {
   return (
     <section className="min-h-screen pb-20">
       {/* HERO */}
-      <div className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -127,10 +130,13 @@ export default function OrangKudus() {
             </h1>
           </div>
         </div>
-      </div>
+        <div className="absolute top-0 right-0 opacity-20 text-amber-500 transform translate-x-10 -translate-y-5 pointer-events-none z-10">
+          <CircleUser size={300} />
+        </div>
+      </header>
 
       {/* SEARCH */}
-      <div className="sticky top-0 z-40 -mt-7 px-6">
+      <section className="sticky top-0 z-40 -mt-7 px-6">
         <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -143,6 +149,7 @@ export default function OrangKudus() {
                 placeholder="Cari nama tokoh..."
                 value={searchQuery}
                 onChange={(e) => {
+                  e.stopPropagation();
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
@@ -151,7 +158,7 @@ export default function OrangKudus() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* LIST */}
       <main className="border border-gray-400 rounded overflow-hidden ml-15 mr-15 mt-10">
@@ -199,12 +206,25 @@ export default function OrangKudus() {
               <button className="hidden md:flex items-center gap-1.5 px-4 py-2 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 rounded-lg transition-all">
                 Detail <ArrowRight size={14} />
               </button>
-              <button
-                onClick={(e) => e.stopPropagation()}
-                className="p-2 text-gray-300 hover:text-gray-600"
-              >
-                <MoreVertical size={18} />
-              </button>
+              <section className="flex items-center justify-end gap-3">
+                <button
+                  className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                  onClick={(i) => {
+                    i.stopPropagation();
+                  }}
+                >
+                  <Edit2 size={18} />
+                </button>
+
+                <button
+                  className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                  onClick={(i) => {
+                    i.stopPropagation();
+                  }}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </section>
             </div>
           </div>
         ))}

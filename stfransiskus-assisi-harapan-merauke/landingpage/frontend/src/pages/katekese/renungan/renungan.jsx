@@ -5,7 +5,9 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
-  ExternalLink,
+  ArrowRight,
+  BookOpen,
+  PlayCircle,
 } from "lucide-react";
 
 export default function Renungan() {
@@ -95,7 +97,7 @@ export default function Renungan() {
   return (
     <section className="min-h-screen pb-12">
       {/* HERO */}
-      <header className="relative w-full h-48 overflow-hidden rounded mb-8">
+      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
           className="absolute inset-0 z-0"
           style={{
@@ -108,68 +110,86 @@ export default function Renungan() {
         <section className="h-full flex flex-row justify-between">
           <section className="relative z-20 h-full flex flex-col justify-end p-8">
             <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-white/50 mb-1">
-              Santapan Rohani Harian
+              Santapan Rohani
             </p>
             <h1 className="font-serif text-3xl text-white">Renungan</h1>
           </section>
 
           {/* SEARCH */}
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <form className="relative border rounded border-gray-100">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={14}
-              />
-              <input
-                type="text"
-                placeholder="Cari judul atau ayat Alkitab..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
-              />
-            </form>
+          <section className="flex flex-row  items-center">
+            <section className="relative z-20 h-full flex flex-col items-center justify-end p-8">
+              <div className="flex w-10 h-10 justify-center text-white items-center bg-rose-500 relative border rounded-3xl border-red-600">
+                <button
+                  className="cursor-pointer"
+                  onClick={""}
+                  children={<PlayCircle size={30} />}
+                />
+              </div>
+            </section>
+            <section className="relative z-20 h-full flex flex-col justify-end p-8">
+              <section className="relative border rounded border-gray-100">
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={14}
+                />
+                <input
+                  type="text"
+                  placeholder="Cari judul atau ayat Alkitab..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+                />
+              </section>
+            </section>
           </section>
         </section>
       </header>
 
       {/* LIST */}
-      <section className="px-15">
-        <main className="divide-y divide-gray-100 border border-gray-100 rounded overflow-hidden">
+      <main className="px-15">
+        <section className="divide-y divide-gray-100 rounded">
           {paginatedData.length === 0 && (
-            <p className="text-center text-gray-300 text-xs uppercase tracking-widest py-12">
-              Tidak ada hasil ditemukan.
-            </p>
+            <section className="flex w-full items-center justify-center">
+              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
+                Katekese belum di inputkan atau judul yang anda cari tidak ada.
+              </span>
+            </section>
           )}
           {paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="flex gap-6 p-6 md:p-8 bg-gray-100/50 hover:bg-slate-200/60 transition-colors cursor-pointer group"
+              className="flex gap-6 p-6 md:p-8 bg-gray-100/50 hover:bg-slate-200/60 mb-1 rounded border border-gray-100 transition-colors cursor-pointer group relative overflow-hidden"
             >
+              <section className="absolute top-0 right-0">
+                <span className="px-6 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-bl-2xl">
+                  {item.category}
+                </span>
+              </section>
               {/* DATE BLOCK */}
-              <div className="flex flex-col items-center justify-center text-center flex-shrink-0 w-14">
-                <span className="text-[10px] text-gray-900 uppercase tracking-widest">
+              <section className="flex flex-col items-center justify-center p-4 bg-gray-50/30 rounded-2xl min-w-[100px] h-fit">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
                   {item.date.split(" ")[1]}
                 </span>
-                <span className="font-serif text-2xl text-gray-900 leading-none my-1">
+                <span className="text-3xl font-black text-indigo-900 leading-none my-1">
                   {item.date.split(" ")[0]}
                 </span>
-                <span className="text-[10px] text-gray-900 uppercase tracking-widest">
+                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
                   {item.date.split(" ")[2]}
                 </span>
-              </div>
+              </section>
 
               <div className="w-px bg-gray-100 flex-shrink-0" />
 
               {/* CONTENT */}
-              <div className="flex-1 flex flex-col justify-between">
+              <section className="flex-1 flex flex-col justify-between">
                 <div>
-                  <p className="text-[10px] text-gray-900 uppercase tracking-widest mb-2">
-                    {item.verse}
-                  </p>
+                  <span className="flex items-center gap-2 text-[10px] text-gray-900 font-semibold uppercase tracking-widest mb-2">
+                    <BookOpen size={16} /> {item.verse}
+                  </span>
                   <h3 className="font-serif text-lg text-gray-900 mb-2 group-hover:text-gray-500 transition-colors">
                     {item.title}
                   </h3>
@@ -178,18 +198,18 @@ export default function Renungan() {
                   </p>
                 </div>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                  <span className="text-xs text-gray-900 font-light">
+                  <span className="text-xs text-gray-900 font-semibold">
                     {item.author}
                   </span>
                   <span className="text-[10px] text-gray-600 uppercase tracking-widest group-hover:text-gray-500 transition-colors flex items-center gap-1">
-                    Baca selengkapnya <ExternalLink size={10} />
+                    Baca selengkapnya <ArrowRight size={10} />
                   </span>
                 </div>
-              </div>
+              </section>
             </section>
           ))}
-        </main>
-      </section>
+        </section>
+      </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (

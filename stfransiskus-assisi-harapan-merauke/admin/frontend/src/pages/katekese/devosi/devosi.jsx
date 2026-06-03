@@ -9,6 +9,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
+  Trash2,
+  Edit2,
+  Circle,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
@@ -123,9 +126,9 @@ export default function Devosi() {
   }
 
   return (
-    <div className="min-h-screen pb-20">
+    <section className="min-h-screen pb-20">
       {/* COMPACT HERO SECTION */}
-      <div className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -147,10 +150,10 @@ export default function Devosi() {
             </h1>
           </div>
         </div>
-        <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
+        <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-rose-500 pointer-events-none z-10">
           <Heart size={300} />
         </div>
-      </div>
+      </header>
 
       {/* STICKY SEARCH BAR */}
       <div className="sticky top-0 z-40 -mt-8 px-6">
@@ -175,63 +178,79 @@ export default function Devosi() {
 
       {/* MAIN CONTENT GRID */}
       <main className="max-w-6xl mx-auto px-6 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {paginatedData.map((item) => (
-            <div
+            <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="group cursor-pointer bg-gray-300 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
+              className="group cursor-pointer bg-slate-500 rounded border border-gray-100 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
             >
-              <div className="relative h-48 overflow-hidden">
+              <section className="relative h-48 overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
-                <div className="absolute top-4 left-4">
+                <section className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-[9px] font-black text-white rounded-lg tracking-widest uppercase">
                     {item.category}
                   </span>
-                </div>
-              </div>
+                </section>
+              </section>
 
-              <div className="p-7 flex-1 flex flex-col">
+              <section className="p-7 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold text-gray-800 leading-tight mb-4 group-hover:text-indigo-600 transition-colors">
                   {item.title}
                 </h3>
 
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-3 text-sm text-gray-500 font-medium">
+                <section className="space-y-3 mb-6">
+                  <div className="flex items-center gap-3 text-sm text-gray-900 font-medium">
                     <div className="p-2 bg-gray-50 rounded-xl text-indigo-600">
                       <Clock size={14} />
                     </div>
                     {item.schedule}
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-500 font-medium">
+                  <div className="flex items-center gap-3 text-sm text-gray-900 font-medium">
                     <div className="p-2 bg-gray-50 rounded-xl text-indigo-600">
                       <Users size={14} />
                     </div>
                     {item.members}
                   </div>
-                </div>
+                </section>
 
-                <div className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
+                <footer className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
                   <button className="flex items-center gap-2 text-indigo-600 text-[10px] font-black uppercase tracking-[0.15em] hover:gap-3 transition-all">
                     Detail Panduan <ArrowRight size={14} />
                   </button>
-                  <button className="p-2 text-gray-300 hover:text-gray-600">
-                    <MoreVertical size={18} />
-                  </button>
-                </div>
-              </div>
-            </div>
+                  <section className="flex items-center justify-end gap-3">
+                    <button
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                      onClick={(i) => {
+                        i.stopPropagation();
+                      }}
+                    >
+                      <Edit2 size={18} />
+                    </button>
+
+                    <button
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                      onClick={(i) => {
+                        i.stopPropagation();
+                      }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </section>
+                </footer>
+              </section>
+            </section>
           ))}
-        </div>
+        </section>
 
         {/* PAGINATION CONTROLS */}
         {totalPages > 1 && (
-          <div className="mt-16 flex items-center justify-center gap-3">
+          <section className="mt-16 flex items-center justify-center gap-3">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
@@ -240,7 +259,7 @@ export default function Devosi() {
               <ChevronLeft size={20} />
             </button>
 
-            <div className="flex gap-2">
+            <section className="flex gap-2">
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
@@ -254,18 +273,17 @@ export default function Devosi() {
                   {i + 1}
                 </button>
               ))}
-            </div>
+            </section>
 
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className={`p-3 rounded-2xl border bg-white transition-all ${currentPage === totalPages ? "opacity-20 cursor-not-allowed" : "hover:bg-indigo-600 hover:text-white shadow-sm"}`}
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+              children={<ChevronRight size={20} />}
+            />
+          </section>
         )}
       </main>
-    </div>
+    </section>
   );
 }

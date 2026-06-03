@@ -135,10 +135,10 @@ export default function Berita() {
       <header className="py-4 border-b border-amber-500 mb-4">
         <section className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <form>
-            <h2 className="font-serif text-2xl text-gray-900">
-              Berita Paroki St. Fransiskus Assisi
+            <h2 className="font-serif text-1xl text-gray-900">
+              Berita Paroki St.Fransiskus Assisi
             </h2>
-            <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-gray-800 mb-1">
+            <p className="text-[12px] font-smibold tracking-[0.18em] uppercase text-gray-800 mb-1">
               Arsip Berita Paroki
             </p>
           </form>
@@ -166,7 +166,7 @@ export default function Berita() {
             paginatedData.map((item) => (
               <form
                 key={item.id}
-                className="flex flex-col md:flex-row gap-6 py-8 border border-gray-100  group cursor-pointer bg-gray-100/50 hover:bg-slate-200/60 "
+                className="flex flex-col md:flex-row gap-6 py-8 border border-gray-100  group cursor-pointer bg-gray-100/50 hover:bg-slate-200/60 rounded mb-1"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedNews(item);

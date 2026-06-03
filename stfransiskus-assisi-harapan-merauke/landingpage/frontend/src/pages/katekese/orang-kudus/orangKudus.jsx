@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 
 export default function OrangKudus() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,7 +81,7 @@ export default function OrangKudus() {
   return (
     <section className="min-h-screen pb-12">
       {/* HERO */}
-      <section className="relative w-full h-48 overflow-hidden rounded mb-8">
+      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
           className="absolute inset-0 z-0"
           style={{
@@ -101,7 +101,7 @@ export default function OrangKudus() {
 
           {/* SEARCH */}
           <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <form className="relative border rounded border-gray-100">
+            <div className="relative border rounded border-gray-100">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
                 size={14}
@@ -116,26 +116,28 @@ export default function OrangKudus() {
                 }}
                 className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
               />
-            </form>
+            </div>
           </section>
         </section>
-      </section>
+      </header>
 
       {/* LIST */}
-      <section className="px-15">
-        <main className="divide-y divide-gray-100 border border-gray-100 rounded overflow-hidden">
+      <main className="px-15">
+        <section className="divide-y divide-gray-100 overflow-hidden">
           {paginatedData.length === 0 && (
-            <p className="text-center text-gray-300 text-xs uppercase tracking-widest py-12">
-              Tidak ada hasil ditemukan.
-            </p>
+            <section className="flex w-full items-center justify-center">
+              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
+                Katekese belum di inputkan atau judul yang anda cari tidak ada.
+              </span>
+            </section>
           )}
           {paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/50 hover:bg-slate-200/60 flex items-center gap-6 p-6 transition-colors cursor-pointer group"
+              className="bg-gray-100/50 hover:bg-slate-200/60 flex border border-gray-100 rounded items-center gap-6 p-6 transition-colors cursor-pointer group mb-1"
             >
-              <form className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
+              <form className="size-30 w-25 items-center rounded overflow-hidden flex-shrink-0">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -160,13 +162,13 @@ export default function OrangKudus() {
                 </p>
               </section>
 
-              <div className="text-gray-300 group-hover:text-gray-500 transition-colors text-sm flex-shrink-0">
+              {/* <div className="text-gray-300 group-hover:text-gray-500 transition-colors text-sm flex-shrink-0">
                 →
-              </div>
+              </div> */}
             </section>
           ))}
-        </main>
-      </section>
+        </section>
+      </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (

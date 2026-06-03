@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion as Motion } from "framer-motion";
-import { Plus, PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import KatekeseInput from "../../component/katekese/input/inputForm";
 import Devosi from "./devosi/devosi";
@@ -13,6 +13,7 @@ export default function Katekese() {
   const [activeTab, setActiveTab] = useState("orang kudus");
 
   const navTittle = ["orang kudus", "renungan", "devosi", "tradisi gereja"];
+
   const renderContent = () => {
     switch (activeTab) {
       case "orang kudus":
@@ -46,15 +47,16 @@ export default function Katekese() {
             </form>
 
             <button
-              className="flex cursor-pointer items-center text-white gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-500/50 text-indigo-900 rounded-3xl text-xs font-black transition-all active:scale-95 w-fit"
+              className="flex cursor-pointer items-center text-white gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-500/20 text-indigo-900 
+               hover:text-blue-600 rounded-xl text-xs font-black transition-all active:scale-95 w-fit"
               onClick={() => setIsModalOpen(true)}
             >
-              <PlusCircle size={18} /> Tambah Katekese
+              <Plus size={18} /> Tambah Katekese
             </button>
           </header>
 
           {/* TABS HEADER */}
-          <section className="w-full max-w-full mb-10 overflow-hidden bg-slate-500/40 rounded-2xl backdrop-blur-sm p-2">
+          <section className="w-full max-w-full mb-10 overflow-hidden bg-slate-500/40 rounded backdrop-blur-sm p-2">
             <nav className="flex justify-center items-center gap-2 overflow-x-auto no-scrollbar select-none relative">
               {navTittle.map((t) => (
                 <button
@@ -63,7 +65,7 @@ export default function Katekese() {
                   className={`
           cursor-pointer relative px-6 py-3 text-[13px] font-serif uppercase tracking-widest rounded-xl transition-colors duration-300 
           whitespace-nowrap flex-shrink-0 z-10
-          ${activeTab === t ? "text-gray-100" : "text-gray-800 hover:text-gray-100"}
+          ${activeTab === t ? "text-white" : "text-black hover:text-white  hover:bg-blue-500/20"}
         `}
                 >
                   {/* TEKS MENU */}

@@ -89,10 +89,10 @@ export default function AdministratifGereja() {
       <section className="max-w-5xl mx-auto">
         {/* HEADER */}
         <header className="py-4 border-b border-amber-500 mb-4">
-          <h2 className="font-serif text-2xl text-gray-900">
-            Administratif Paroki St. Fransiskus Assisi
+          <h2 className="font-serif text-1xl text-gray-900">
+            Administratif Paroki St.Fransiskus Assisi
           </h2>
-          <p className="text-[12px] font-medium tracking-[0.18em] uppercase text-gray-800 mb-2">
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-2">
             Arsip Administratif Paroki
           </p>
         </header>

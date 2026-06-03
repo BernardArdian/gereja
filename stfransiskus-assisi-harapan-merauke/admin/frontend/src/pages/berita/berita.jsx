@@ -14,6 +14,7 @@ import {
 
 import Detail from "../../component/detail";
 import InputBerita from "../../component/berita/input_berita";
+import DetailBerita from "../../component/berita/detailBerita";
 
 export default function Berita() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,6 +154,28 @@ export default function Berita() {
     },
   ]);
 
+  const [formData, setFormData] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    date: "",
+    author: "",
+    image: "",
+    tags: "",
+  });
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      excerpt: "",
+      content: "",
+      date: "",
+      author: "",
+      image: "",
+      tags: "",
+    });
+  };
+
   // --- LOGIC SEARCH & PAGINATION ---
   const filteredNews = useMemo(() => {
     return newsList.filter((item) =>
@@ -170,6 +193,11 @@ export default function Berita() {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // --- JIKA BERITA DIKLIK, TAMPILKAN DETAIL ---
@@ -194,12 +222,9 @@ export default function Berita() {
   // --- Konten utama ---
   return (
     <section className="min-h-screen pr-0.5 pl-0.5">
-      <header className="bg-gray-300 border-b px-8 py-2 top-0 z-30">
+      <header className="bg-gray-300 h-16 border-b border-white p-2 top-0 z-30">
         <section className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <section className="flex items-center gap-4">
-            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
-              <Newspaper size={24} />
-            </div>
             <div>
               <h2 className="text-xl font-serif text-gray-900 tracking-tight">
                 Berita Paroki St.Fransiskus Assisi.
@@ -224,23 +249,27 @@ export default function Berita() {
                 className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               />
             </div>
+
             <button
               onClick={() => setIsModalOpen(true)}
-              className="p-2.5 cursor-pointer bg-blue-500 hover:bg-blue-500/50 text-white rounded-2xl active:scale-95 transition-all"
+              className="p-2.5 cursor-pointer flex gap-1 items-center justify-center bg-blue-500 hover:bg-blue-500/20 text-white rounded-xl 
+              hover:text-blue-500 font-black text-xs
+              active:scale-95 transition-all"
             >
               <Plus size={20} />
+              <span>Input Berita</span>
             </button>
           </section>
         </section>
       </header>
 
-      <main className="max-w-5xl bg-gray-500/30 shadow-sm mx-auto px-6 py-10">
+      <main className="max-w-5xl bg-gray-500/30 shadow-sm mx-auto px-15 py-6">
         <section className="space-y-0.5">
           {paginatedNews.length > 0 ? (
             paginatedNews.map((item) => (
               <section
                 key={item.id}
-                className="flex flex-col md:flex-row gap-6 py-8 border border-gray-100  group cursor-pointer bg-gray-100/50 hover:bg-slate-200/60 "
+                className="flex flex-col md:flex-row gap-6 py-5 border border-gray-100  group  h-45 cursor-pointer bg-gray-100/50 hover:bg-slate-200/60 "
                 onClick={() => setSelectedNews(item)}
               >
                 <section className="md:w-56 h-40 md:h-auto relative overflow-hidden flex-shrink-0 cursor-pointer">
@@ -256,7 +285,7 @@ export default function Berita() {
                     className="cursor-pointer"
                     onClick={() => setSelectedNews(item)}
                   >
-                    <section className="flex items-center gap-3 text-[10px] font-black text-gray-400 uppercase mb-2">
+                    <section className="flex items-center gap-3 text-[10px] font-black text-gray-900 uppercase mb-2">
                       <span className="flex items-center gap-1">
                         <Calendar size={12} /> {item.date}
                       </span>
@@ -272,21 +301,33 @@ export default function Berita() {
                   <section className="flex items-center justify-between mt-4">
                     <button
                       onClick={() => setSelectedNews(item)}
-                      className="text-indigo-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1 hover:underline"
+                      className="cursor-pointer text-indigo-600 text-[15px] tracking-widest flex items-center gap-1 hover:underline"
                     >
-                      Detail <ExternalLink size={12} />
+                      Baca <ExternalLink size={12} />
                     </button>
-                    <section className="flex gap-2">
-                      <section className="flex items-center justify-center gap-2 ">
-                        <button className="flex flex-row gap-1 text-center cursor-pointer p-2 text-center text-yellow-500 hover:text-amber-500 hover:bg-amber-100 rounded-xl transition-colors">
-                          <Edit2 size={20} />
-                          <span>edit</span>
-                        </button>
-                        <button className="flex flex-row gap-1 text-center cursor-pointer text-center p-2 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
-                          <Trash2 size={20} />
-                          <span>hapus</span>
-                        </button>
-                      </section>
+                    <section
+                      className="flex items-center justify-center gap-2 w-[12dvw]"
+                      onClick={(i) => {
+                        i.stopPropagation();
+                      }}
+                    >
+                      <button
+                        className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
+                        }}
+                      >
+                        <Edit2 size={18} />
+                      </button>
+
+                      <button
+                        className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
+                        }}
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </section>
                   </section>
                 </section>
@@ -303,39 +344,82 @@ export default function Berita() {
         </section>
 
         {/* --- PAGINATION --- */}
+        {/* PAGINATION */}
         {totalPages > 1 && (
-          <section className="mt-12 flex items-center justify-center gap-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className={`cursor-pointer p-2 rounded-xl border transition-all ${currentPage === 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-indigo-600 hover:text-white"}`}
-            >
-              <ChevronLeft size={20} />
-            </button>
+          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs text-gray-600 font-medium">
+              Menampilkan{" "}
+              <span className="text-gray-700 font-bold">
+                {paginatedNews.length}
+              </span>{" "}
+              dari{" "}
+              <span className="text-gray-700 font-bold">
+                {filteredNews.length}
+              </span>{" "}
+              berita
+            </p>
             <div className="flex items-center gap-2">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-10 h-10 rounded-xl text-xs font-black transition-all ${currentPage === i + 1 ? "bg-[#B38728] text-white shadow-lg" : "bg-white text-gray-400 border"}`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div className="flex gap-1">
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
+                      currentPage === i + 1
+                        ? "bg-blue-500/30 text-black"
+                        : "bg-white text-gray-400 border border-gray-50"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
             </div>
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className={`cursor-pointer p-2 rounded-xl border transition-all ${currentPage === totalPages ? "opacity-30 cursor-not-allowed" : "hover:bg-indigo-600 hover:text-white"}`}
-            >
-              <ChevronRight size={20} />
-            </button>
-          </section>
+          </footer>
         )}
       </main>
-      <InputBerita isOpen={isModalOpen} onClose={setIsModalOpen(false)} />
+      <InputBerita
+        isOpen={isModalOpen}
+        editMode={""}
+        formData={formData}
+        isSubmitting={""}
+        handlers={{
+          cancel: () => {
+            setIsModalOpen(null);
+            resetForm;
+          },
+          input: handleInputChange,
+          //submit: handleSubmit
+        }}
+      />
+
+      {/* <DetailBerita
+        isOpen={isModalOpen}
+        formData={formData}
+        handlers={{
+          cancel: () => {
+            setIsModalOpen(null);
+            resetForm;
+          },
+          input: handleInputChange,
+        }}
+      /> */}
     </section>
   );
 }

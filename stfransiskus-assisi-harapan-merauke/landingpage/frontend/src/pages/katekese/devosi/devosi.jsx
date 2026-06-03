@@ -1,5 +1,12 @@
 import { useState, useMemo } from "react";
-import { Search, Clock, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  Clock,
+  Users,
+  ChevronLeft,
+  ChevronRight,
+  PlayCircle,
+} from "lucide-react";
 
 export default function Devosi() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,7 +97,7 @@ export default function Devosi() {
   return (
     <section className="min-h-screen pb-12">
       {/* HERO */}
-      <header className="relative w-full h-48 overflow-hidden rounded mb-8">
+      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
           className="absolute inset-0 z-0"
           style={{
@@ -109,35 +116,52 @@ export default function Devosi() {
           </section>
 
           {/* SEARCH */}
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <form className="relative border rounded border-gray-100">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={14}
-              />
-              <input
-                type="text"
-                placeholder="Cari jadwal atau nama devosi..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
-              />
-            </form>
+          <section className="flex flex-row  items-center">
+            <section className="relative z-20 h-full flex flex-col items-center justify-end p-8">
+              <div className="flex w-10 h-10 justify-center text-white items-center bg-rose-500 relative border rounded-3xl border-red-600">
+                <button
+                  className="cursor-pointer"
+                  children={<PlayCircle size={30} />}
+                />
+              </div>
+            </section>
+            <section className="flex relative z-20 h-full flex flex-col justify-end p-8">
+              <section className="relative border rounded border-gray-100">
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={14}
+                />
+                <input
+                  type="text"
+                  placeholder="Cari jadwal atau nama devosi..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+                />
+              </section>
+            </section>
           </section>
         </section>
       </header>
 
       {/* GRID */}
       <section className="px-15">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 border border-gray-100 rounded overflow-hidden">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden">
+          {paginatedData.length === 0 && (
+            <section className="flex w-full items-center justify-center">
+              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
+                Katekese belum di inputkan atau judul yang anda cari tidak ada.
+              </span>
+            </section>
+          )}
           {paginatedData.map((item) => (
             <form
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/60 hover:bg-slate-200/50 transition-colors cursor-pointer flex flex-col group overflow-hidden"
+              className="bg-gray-100/60 hover:bg-slate-200/50 transition-colors cursor-pointer border border-gray-100 rounded flex flex-col group overflow-hidden"
             >
               <div className="relative h-40 overflow-hidden">
                 <img

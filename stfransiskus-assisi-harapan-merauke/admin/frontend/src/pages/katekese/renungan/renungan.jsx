@@ -7,6 +7,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
+  Trash2,
+  Edit2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
@@ -116,9 +118,9 @@ export default function Renungan() {
   }
 
   return (
-    <div className="min-h-screen pb-20">
+    <section className="min-h-screen pb-20">
       {/* HERO */}
-      <div className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <section className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -144,10 +146,10 @@ export default function Renungan() {
         <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
           <Quote size={300} />
         </div>
-      </div>
+      </section>
 
       {/* SEARCH */}
-      <div className="sticky top-0 z-40 -mt-8 px-6">
+      <section className="sticky top-0 z-40 -mt-8 px-6">
         <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -168,7 +170,7 @@ export default function Renungan() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* LIST */}
       <main className="border border-gray-400 rounded overflow-hidden ml-15 mr-15 mt-10">
@@ -179,18 +181,18 @@ export default function Renungan() {
         )}
 
         {paginatedData.map((item) => (
-          <div
+          <section
             key={item.id}
             onClick={() => setSelectedItem(item)}
-            className="group cursor-pointer bg-white border border-gray-100 p-6 md:p-8 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 relative overflow-hidden"
+            className="group cursor-pointer bg-white border border-gray-100 p-6 md:p-8 hover:border-indigo-100 transition-all duration-300 relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0">
+            <section className="absolute top-0 right-0">
               <span className="px-6 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-bl-2xl">
                 {item.category}
               </span>
-            </div>
+            </section>
 
-            <div className="flex flex-col md:flex-row gap-6">
+            <section className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-2xl min-w-[100px] h-fit">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
                   {item.date.split(" ")[1]}
@@ -203,10 +205,12 @@ export default function Renungan() {
                 </span>
               </div>
 
+              <div className="w-px bg-gray-100 flex-shrink-0" />
+
               <div className="flex-1">
-                <div className="flex items-center gap-2 text-indigo-500 font-bold text-[10px] uppercase mb-2">
-                  <Calendar size={12} /> {item.verse}
-                </div>
+                <span className="flex items-center gap-2 text-indigo-500 font-semibold text-[10px] uppercase mb-2">
+                  <BookOpen size={12} /> {item.verse}
+                </span>
                 <h3 className="text-xl md:text-2xl font-black text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors">
                   {item.title}
                 </h3>
@@ -216,20 +220,40 @@ export default function Renungan() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-[10px] font-bold">
-                      {item.author.charAt(3)}
-                    </div>
-                    <span className="text-xs font-bold text-gray-600">
+                    <span className="text-xs font-semibold text-gray-600">
                       {item.author}
                     </span>
                   </div>
-                  <button className="flex items-center gap-1 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:gap-3 transition-all">
-                    Baca Selengkapnya <ArrowRight size={14} />
-                  </button>
+                  <div className="flex w-[23dvw] items-center justify-end gap-5">
+                    <button className="flex items-center cursor-pointer gap-1 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:gap-3 transition-all">
+                      Baca Selengkapnya <ArrowRight size={14} />
+                    </button>
+                    <section className="flex items-center justify-end gap-3">
+                      <button
+                        className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white
+                      transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
+                        }}
+                      >
+                        <Edit2 size={18} />
+                      </button>
+
+                      <button
+                        className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white
+                      transition-all active:scale-75"
+                        onClick={(i) => {
+                          i.stopPropagation();
+                        }}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </section>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
+          </section>
         ))}
       </main>
 
@@ -266,6 +290,6 @@ export default function Renungan() {
           </button>
         </div>
       )}
-    </div>
+    </section>
   );
 }

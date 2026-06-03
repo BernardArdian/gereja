@@ -6,7 +6,7 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  X,
+  XSquare,
 } from "lucide-react";
 
 import DetailBerita from "../../component/detail/detailBerita";
@@ -84,14 +84,15 @@ export default function Home() {
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
             }`}
-          >
-            <img
-              src={img}
-              alt={`slide-${index}`}
-              className="w-full h-full object-cover cursor-pointer"
-              onClick={() => openModal(img)}
-            />
-          </div>
+            children={
+              <img
+                src={img}
+                alt={`slide-${index}`}
+                className="w-full h-full object-cover cursor-pointer"
+                onClick={() => openModal(img)}
+              />
+            }
+          />
         ))}
 
         {/* Nav buttons */}
@@ -101,22 +102,21 @@ export default function Home() {
             handlePrev();
           }}
           className="cursor-pointer absolute bg-gray-300 rounded-full left-6 md:left-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:border-white/50 text-black"
-        >
-          <ChevronLeft size={18} />
-        </button>
+          children={<ChevronLeft size={18} />}
+        />
         <button
           onClick={(e) => {
             e.stopPropagation();
             handleNext();
           }}
           className="cursor-pointer absolute right-6 bg-gray-300 rounded-full md:right-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:border-white/50 text-black"
-        >
-          <ChevronRight size={18} />
-        </button>
+          children={<ChevronRight size={18} />}
+        />
 
         {/* Slide dots */}
-        <div className="absolute bottom-8 ru right-10 z-20 flex gap-2 items-center">
-          {images.map((_, i) => (
+        <div
+          className="absolute bottom-8 ru right-10 z-20 flex gap-2 items-center"
+          children={images.map((_, i) => (
             <div
               key={i}
               className={`h-1 rounded-full transition-all border border-gray-400 duration-500 ${
@@ -124,7 +124,7 @@ export default function Home() {
               }`}
             />
           ))}
-        </div>
+        />
       </header>
 
       {/* MAIN */}
@@ -230,8 +230,9 @@ export default function Home() {
             </button>
           </section>
 
-          <form className="divide-y divide-gray-300">
-            {[
+          <for
+            className="divide-y divide-gray-300"
+            children={[
               {
                 n: "01",
                 title: "Berita Utama",
@@ -255,23 +256,33 @@ export default function Home() {
                   selectedNews(card);
                 }}
               >
-                <p className="text-[10px] text-gray-300 mt-1 w-6 flex-shrink-0">
-                  {card.n}
-                </p>
-                <div className="flex-1">
-                  <h3 className="font-serif text-base text-gray-900 leading-snug mb-2 group-hover:text-gray-600 transition-colors">
-                    {card.title}
-                  </h3>
-                  <p className="text-xs text-gray-900 group-hover:text-gray-600 leading-relaxed font-light">
-                    {card.body}
-                  </p>
-                </div>
-                <div className="text-gray-300 group-hover:text-gray-500 transition-colors mt-1">
-                  <ArrowRight size={24} />
-                </div>
+                <p
+                  className="text-[10px] text-gray-300 mt-1 w-6 flex-shrink-0"
+                  children={card.n}
+                />
+
+                <div
+                  className="flex-1"
+                  children={
+                    <>
+                      <h3
+                        className="font-serif text-base text-gray-900 leading-snug mb-2 group-hover:text-gray-600 transition-colors"
+                        children={card.title}
+                      />
+                      <p
+                        className="text-xs text-gray-900 group-hover:text-gray-600 leading-relaxed font-light"
+                        children={card.body}
+                      />
+                    </>
+                  }
+                />
+                <div
+                  className="text-gray-300 group-hover:text-gray-500 transition-colors mt-1"
+                  children={<ArrowRight size={24} />}
+                />
               </section>
             ))}
-          </form>
+          />
         </section>
       </main>
 
@@ -280,16 +291,20 @@ export default function Home() {
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
           onClick={() => setIsOpen(false)}
-        >
-          <button className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors">
-            <X size={24} />
-          </button>
-          <img
-            src={selectedImg}
-            className="max-w-full max-h-[90dvh] object-contain"
-            alt="Detail"
-          />
-        </div>
+          children={
+            <>
+              <button
+                className="absolute cursor-pointer top-8 right-8 text-white/50 hover:text-red-500 transition-colors"
+                children={<XSquare size={35} />}
+              />
+              <img
+                src={selectedImg}
+                className="max-w-full max-h-[90dvh] object-contain"
+                alt="Detail"
+              />
+            </>
+          }
+        />
       )}
     </section>
   );

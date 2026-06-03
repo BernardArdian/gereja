@@ -12,7 +12,7 @@ export default function Umat() {
   const [umatList, setUmatList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ─── FETCH DATA DARI DATABASE ────────────────────────────────────
+  //fetch data dari backend
   useEffect(() => {
     const fetchUmatData = async () => {
       setLoading(true);
@@ -39,7 +39,7 @@ export default function Umat() {
   }, []);
 
   const handleSave = (payload) => {
-    // Refresh data dari database setelah simpan
+    // Refresh data setelah simpan
     const fetchUmatData = async () => {
       const [response, err] = await umatServiceApi.displayDataUmat();
       if (!err && response) {
@@ -92,10 +92,10 @@ export default function Umat() {
         <header className="mb-5">
           <div className="flex items-center gap-4">
             <div>
-              <h2 className="text-xl font-black font-serif text-gray-900 tracking-tight">
+              <h2 className="text-xl font-serif text-gray-900 tracking-tight">
                 Data Umat Paroki St.Fransiskus Assisi.
               </h2>
-              <p className="text-[10px] font-serif text-gray-800 uppercase tracking-widest">
+              <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
                 Arsip Data & Statistik Umat
               </p>
             </div>
@@ -112,7 +112,7 @@ export default function Umat() {
                 className={`
           cursor-pointer relative px-6 py-3 text-[13px] font-serif font-black uppercase tracking-widest rounded-xl transition-colors duration-300 
           whitespace-nowrap flex-shrink-0 z-10
-          ${activeTab === tab ? "text-gray-100" : "text-gray-800 hover:text-gray-100"}
+          ${activeTab === tab ? "text-white" : "text-gray-800 hover:bg-blue-500/20 hover:text-white"}
         `}
               >
                 {/* TEKS MENU */}

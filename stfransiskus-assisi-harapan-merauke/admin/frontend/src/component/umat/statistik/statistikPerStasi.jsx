@@ -79,8 +79,8 @@ export default function StatistikPerStasi({ stasiDistribusi }) {
             ) : (
               <tr>
                 <td
-                  colSpan="8"
-                  className="w-full p-10 text-center text-xs text-gray-400 italic uppercase font-black"
+                  colSpan="11"
+                  className="bg-rose-100 w-full p-10 text-center text-xs text-gray-400 italic uppercase font-black"
                 >
                   Data Kosong
                 </td>

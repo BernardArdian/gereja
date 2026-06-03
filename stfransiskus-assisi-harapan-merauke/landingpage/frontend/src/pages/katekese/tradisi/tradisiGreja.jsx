@@ -82,7 +82,7 @@ export default function TradisiGereja() {
   return (
     <section className="min-h-screen pb-12">
       {/* HERO */}
-      <header className="relative w-full h-48 overflow-hidden rounded mb-8">
+      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -123,13 +123,20 @@ export default function TradisiGereja() {
       </header>
 
       {/* GRID */}
-      <section className="px-15">
-        <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 border border-gray-100 rounded overflow-hidden">
+      <main className="px-15">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden">
+          {paginatedData.length === 0 && (
+            <section className="flex w-full items-center justify-center">
+              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
+                Katekese belum di inputkan atau judul yang anda cari tidak ada.
+              </span>
+            </section>
+          )}
           {paginatedData.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/50 hover:bg-slate-200/60 transition-colors cursor-pointer flex flex-col group overflow-hidden"
+              className="bg-gray-100/50 hover:bg-slate-200/60 transition-colors border border-gray-100 rounded cursor-pointer flex flex-col group overflow-hidden"
             >
               <div className="relative aspect-video overflow-hidden">
                 <img
@@ -157,8 +164,8 @@ export default function TradisiGereja() {
               </div>
             </div>
           ))}
-        </main>
-      </section>
+        </section>
+      </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (

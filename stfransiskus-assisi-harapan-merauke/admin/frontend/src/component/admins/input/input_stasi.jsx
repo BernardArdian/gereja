@@ -98,7 +98,7 @@ export default function InputStasi({
                 </div>
                 <input
                   ref={totalumatRef}
-                  name="totalumat"
+                  name="jumlahumat"
                   type="number"
                   placeholder="0"
                   pattern="1234567890"
@@ -107,7 +107,7 @@ export default function InputStasi({
                     blockSpecialCharsNumber(i);
                     handleEnter(i, totalumatRef);
                   }}
-                  value={formdata.totalumat}
+                  value={formdata.jumlahUmat}
                   onChange={handlers.input}
                   disabled={isSubmitting}
                 />
@@ -131,7 +131,7 @@ export default function InputStasi({
                     blockSpecialChars(i);
                     handleEnter(i, gerejaRef);
                   }}
-                  value={formdata.gereja}
+                  value={formdata.namaGereja}
                   onChange={handlers.input}
                   disabled={isSubmitting}
                 />
@@ -153,7 +153,7 @@ export default function InputStasi({
                   ref={desaRef}
                   name="desa"
                   type="text"
-                  placeholder="Desa ..."
+                  placeholder="Desa"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 transition-all text-sm font-medium"
                   onKeyDown={(i) => {
                     blockSpecialChars(i);
@@ -178,7 +178,7 @@ export default function InputStasi({
                   ref={alamatRef}
                   name="alamat"
                   type="text"
-                  placeholder="Jl. Raya..."
+                  placeholder="Alamat"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 transition-all text-sm font-medium"
                   onKeyDown={(i) => {
                     blockSpecialChars(i);
@@ -193,15 +193,24 @@ export default function InputStasi({
           </section>
 
           {/* Submit Button - Lebih compact */}
-          <div className="w-full flex items-center justify-end">
+          <footer className="w-full flex items-center justify-end gap-4">
             <button
-              className="cursor-pointer w-[15dvw] flex items-center justify-center gap-2 py-3 bg-amber-500 hover:bg-amber-500/20 hover:text-amber-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              className="cursor-pointer w-[10dvw] flex items-center justify-center gap-2 py-3 bg-red-500 hover:bg-red-500/20 hover:text-red-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              type="button"
+              disabled={!validations() || isSubmitting}
+              onClick={handlers.reset}
+            >
+              Batal
+            </button>
+            <button
+              className="cursor-pointer w-[11dvw] flex items-center justify-center gap-2 py-3 bg-amber-500 hover:bg-amber-500/20 hover:text-amber-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              type="button"
               disabled={!validations() || isSubmitting}
             >
               <Save size={16} />
               Simpan
             </button>
-          </div>
+          </footer>
         </form>
       </section>
     </section>

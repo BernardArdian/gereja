@@ -8,7 +8,7 @@ class anouncementServices {
     const sanitizedId = data.id?.trim() || `MEM-${Date.now()}`;
 
     const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== "")
+      Object.entries(data).filter(([_, value]) => value !== ""),
     );
 
     const anouncements = new anouncement({
@@ -28,16 +28,18 @@ class anouncementServices {
 
     return anouncements;
   }
+
   static async updateAnouncemnet() {}
+
   static async deleteAnouncement(id) {
     const anouncements = await anouncement.findByIdAndDelete(id);
-    
+
     if (!anouncements) {
-        throw Object.assign(new Error("pengumuman tidak ditemukan"), {
-          statusCode: 404,
-        });
-      }
-      return member;
+      throw Object.assign(new Error("pengumuman tidak ditemukan"), {
+        statusCode: 404,
+      });
+    }
+    return member;
   }
 }
 

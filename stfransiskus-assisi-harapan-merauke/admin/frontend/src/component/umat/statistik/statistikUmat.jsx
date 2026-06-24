@@ -5,6 +5,7 @@ import {
   Cross,
   PieChart,
   TrendingUp,
+  Printer,
 } from "lucide-react";
 
 import StatistikPerStasi from "./statistikPerStasi";
@@ -96,22 +97,24 @@ export default function StatistikUmat({ umatList = [] }) {
       {/* HEADER */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <form>
-          <h1 className="text-2xl font-serif text-indigo-950 uppercase tracking-tighter">
-            Statistik Umat Paroki St.Fransiskus Assisi harapan Makmur - Merauke,
-            Papua Selatan {""} {new Date().getFullYear()}
-          </h1>
+          <h1
+            className="text-2xl font-serif text-indigo-950 uppercase tracking-tighter"
+            children={`Statistik Umat Paroki St.Fransiskus Assisi harapan Makmur - Merauke,
+            Papua Selatan ${new Date().getFullYear()}`}
+          />
           <p className="text-sm font-serif text-gray-900 font-medium">
             Laporan statistik berdasarkan data yang diinput
           </p>
         </form>
-        <button className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-black text-white rounded text-xs font-poppins uppercase tracking-widest hover:bg-indigo-900 transition-all">
-          <TrendingUp size={16} /> Cetak Statistik
+        <button className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-black text-white rounded text-xs font-bold uppercase tracking-widest hover:bg-black/30 hover:text-black transition-all active:scale-95">
+          <Printer size={25} /> Cetak
         </button>
       </header>
 
       {/* STATS GRID */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsReal.map((item) => (
+      <section
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        children={statsReal.map((item) => (
           <div
             key={item.id}
             className={`p-6 rounded-xl
@@ -146,44 +149,49 @@ export default function StatistikUmat({ umatList = [] }) {
                           : "bg-gray-50 rounded-md border"
                 }
                 `}
-              >
-                {item.tittle}
-              </span>
+                children={item.tittle}
+              />
             </div>
             <div className="mt-6">
               <p
                 className={`text-[16px] text-gray-900 font-black uppercase tracking-widest
                 ${item.label === "Umat Meninggal" ? "text-[16px] text-white " : ""}
                 `}
-              >
-                {item.label}
-              </p>
+                children={item.label}
+              />
               <h3
                 className={`text-3xl font-black text-gray-900 mt-1 tracking-tighter
                 ${item.label === "Umat Meninggal" ? "text-white" : ""}
                 `}
-              >
-                {item.value}
-              </h3>
+                children={item.value}
+              />
             </div>
           </div>
         ))}
-      </section>
+      />
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* DETAIL SAKRAMEN */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
+        <section className="lg:col-span-2 bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
           <h3 className="font-black text-gray-900 uppercase tracking-tighter mb-8 flex items-center gap-3">
-            <PieChart size={20} className="text-indigo-600" /> Detail Sakramen &
-            Inisiasi
+            <PieChart size={20} className="text-indigo-600" /> Statistik
+            Sakramen & Inisiasi
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <p className="text-[11px] font-black text-indigo-600 uppercase mb-4 tracking-widest">
-                Sudah Melakukan Sakramen
-              </p>
-              <div className="space-y-4">
-                {[
+              <section className="flex justify-between items-center mb-4">
+                <p className="text-[11px] font-black text-green-600 uppercase">
+                  sudah Melakukan Sakramen
+                </p>
+
+                <span
+                  className="text-[16px] font-black text-gray-900 tracking-widest"
+                  children={`total umat - ${totalUmat}`}
+                />
+              </section>
+              <section
+                className="space-y-4"
+                children={[
                   {
                     label: "Sudah Baptis",
                     count: umatList.filter((u) => u.baptis?.status === "sudah")
@@ -207,8 +215,12 @@ export default function StatistikUmat({ umatList = [] }) {
                 ].map((data, i) => (
                   <div key={i}>
                     <div className="flex justify-between text-[16px] font-black uppercase mb-1">
-                      <span className="text-gray-500">{data.label}</span>
-                      <span className="text-gray-900">{data.count} Jiwa</span>
+                      <span className="text-gray-900" children={data.label} />
+
+                      <span
+                        className="text-gray-900"
+                        children={`${data.count} Jiwa`}
+                      />
                     </div>
                     <div className="w-full bg-white h-2 rounded-full border border-gray-100 overflow-hidden">
                       <div
@@ -220,14 +232,22 @@ export default function StatistikUmat({ umatList = [] }) {
                     </div>
                   </div>
                 ))}
-              </div>
+              />
             </div>
             <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <p className="text-[11px] font-black text-rose-600 uppercase mb-4 tracking-widest">
-                Belum Melakukan Sakramen
-              </p>
-              <div className="space-y-4">
-                {[
+              <secion className="flex justify-between items-center mb-4">
+                <p className="text-[11px] font-black text-rose-600 uppercase  ">
+                  Belum Melakukan Sakramen
+                </p>
+
+                <span
+                  className="text-[16px] font-black text-gray-900 tracking-widest"
+                  children={`total umat - ${totalUmat}`}
+                />
+              </secion>
+              <section
+                className="space-y-4"
+                children={[
                   {
                     label: "Belum Baptis",
                     count:
@@ -259,7 +279,7 @@ export default function StatistikUmat({ umatList = [] }) {
                 ].map((data, i) => (
                   <div key={i}>
                     <div className="flex justify-between text-[16px] font-black uppercase mb-1">
-                      <span className="text-gray-500">{data.label}</span>
+                      <span className="text-gray-500" children={data.label} />
                       <span className="text-gray-900">{data.count} Jiwa</span>
                     </div>
                     <div className="w-full bg-white h-2 rounded-full border border-gray-100 overflow-hidden">
@@ -272,10 +292,10 @@ export default function StatistikUmat({ umatList = [] }) {
                     </div>
                   </div>
                 ))}
-              </div>
+              />
             </div>
-          </div>
-        </div>
+          </section>
+        </section>
 
         {/* STATISTIK PER STASI */}
         <StatistikPerStasi stasiDistribusi={stasiDistribusi} />

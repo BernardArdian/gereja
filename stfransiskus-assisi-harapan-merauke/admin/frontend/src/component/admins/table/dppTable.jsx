@@ -1,8 +1,10 @@
 import { Edit2, Trash2 } from "lucide-react";
 
-export default function DppTable(data) {
+export default function DppTable({ data, handlers }) {
   const handleDelete = () => {
-    window.confirm("hapus");
+    if (window.confirm(`Hapus ${data.nama} dari daftar?`)) {
+      handlers.delete(data);
+    }
   };
 
   return (
@@ -19,19 +21,20 @@ export default function DppTable(data) {
       <td className="px-6 py-4">
         <section className="flex items-center justify-center gap-2">
           <button
-            className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+            className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
             onClick={(i) => {
               i.stopPropagation();
+              handlers.edit(data);
             }}
           >
             <Edit2 size={18} />
           </button>
 
           <button
-            className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+            className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
             onClick={(i) => {
               i.stopPropagation();
-              handleDelete;
+              handleDelete();
             }}
           >
             <Trash2 size={18} />

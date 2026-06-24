@@ -230,7 +230,7 @@ export default function Berita() {
                 Berita Paroki St.Fransiskus Assisi.
               </h2>
               <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                Arsip Berita & Artikel
+                Berita & Artikel
               </p>
             </div>
           </section>

@@ -1,6 +1,13 @@
-import { User, Lock, ShieldCheck, UserPlus, Info } from "lucide-react";
+import { User, Save, Lock, ShieldCheck, UserPlus, Info } from "lucide-react";
 
-export default function Input_Admin() {
+export default function Input_Admin({
+  formData,
+  isSubmitting,
+  validations,
+  handlers,
+  onClose,
+}) {
+  //const roles = ["super admin", "admin"];
   return (
     <section className="animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Header Info Singkat */}
@@ -34,6 +41,9 @@ export default function Input_Admin() {
                 type="text"
                 placeholder="Ex: Alexander Maria"
                 className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
+                value={formData.nama}
+                onChange={handlers.input}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -47,11 +57,12 @@ export default function Input_Admin() {
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
                 <ShieldCheck size={18} />
               </div>
-              <select className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium appearance-none">
-                <option value="">Select Role</option>
+              <select className="w-full pl-11 cursor-pointer pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium appearance-none">
+                <option value="" disabled>
+                  -- Select Role --
+                </option>
                 <option value="super_admin">Super Admin</option>
-                <option value="sekretaris">Sekretaris</option>
-                <option value="bendahara">Bendahara</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
           </div>
@@ -70,15 +81,30 @@ export default function Input_Admin() {
               type="password"
               placeholder="••••••••"
               className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
+              value={formData.password}
+              onChange={handlers.input}
+              disabled={isSubmitting}
             />
           </div>
         </section>
 
         {/* Tombol Simpan */}
-        <footer className="flex w-full items-center justify-end pt-4">
-          <button className="w-[25dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98]">
-            <UserPlus size={18} />
-            Tambah Admin
+        <footer className="flex w-full items-center justify-end gap-4 pt-4">
+          <button
+            className="w-[10dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-rose-500 hover:bg-rose-500/20 hover:text-rose-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98]"
+            type="button"
+            disabled={!validations() || isSubmitting}
+            onClick={handlers.reset}
+          >
+            batal
+          </button>
+          <button
+            className="w-[12dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98]"
+            type="button"
+            disabled={!validations() || isSubmitting}
+          >
+            <Save size={18} />
+            Simpan
           </button>
         </footer>
       </main>

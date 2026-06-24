@@ -1,21 +1,22 @@
-const mongoose = require('mongoose')
-const { v4: uuidv4 } = require('uuid')
+const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
-const adminSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema(
+  {
     id: {
-        type: String,
-        default: uuidv4, // Otomatis buat UUID
-        unique: true,
+      type: String,
+      default: uuidv4, // otomatis dibuat UUID
+      unique: true,
     },
     adminname: { type: String, required: true },
     password: { type: String, required: true },
     role: {
-        type: String,
-        enum: ['admin', 'superadmin'],
-        required: true,
+      type: String,
+      enum: ["admin", "superadmin"],
+      required: true,
     },
-},
-    { timestamps: true }
+  },
+  { collection: "admin", timestamps: true, strict: true },
 );
 
-module.exports = mongoose.model('Admin', adminSchema);
+module.exports = mongoose.model("Admin", adminSchema);

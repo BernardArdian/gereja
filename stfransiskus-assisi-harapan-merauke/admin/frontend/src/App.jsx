@@ -59,6 +59,7 @@ function App() {
       children={
         <Routes>
           {/* <Route path="*" element={token ? <Navigate to="/" replace /> : <Login />} /> */}
+
           <Route path="/*" element={<Dashboard />} />
           <Route path="/umat" element={<Umat />} />
           <Route path="/berita" element={<Berita />} />

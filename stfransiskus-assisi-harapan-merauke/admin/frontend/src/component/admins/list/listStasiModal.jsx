@@ -1,38 +1,35 @@
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Printer } from "lucide-react";
 //import { useState } from "react";
 
 import InputStasi from "../input/input_stasi";
 import LogoutModal from "../../alert/logout_modal";
 
-export default function StasiListModal() {
+export default function StasiListModal({ data, handlers }) {
   //const [iSActiveModal, setActiveModal] = useState(false);
 
   const handleDelte = () => {
     window.confirm("apakah anda yakin untuk menghapus stasi ini?");
   };
 
-  const dataStasi = [
-    {
-      nama: "St. Yohanes",
-      namaGereja: "st.Yohanes",
-      alamat: "Jl. Merdeka No. 10",
-      jumlahUmat: 150,
-    },
-    { nama: "Stasi St. Maria", alamat: "Jl. Mawar No. 5", jumlahUmat: 85 },
-    { nama: "Stasi St. Petrus", alamat: "Jl. Melati No. 22", jumlahUmat: 120 },
-  ];
+  //const total = 355;
+
+  const total = data.reduce((sum, stasi) => sum + Number(stasi.jumlahUmat), 0);
 
   return (
-    <section className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl overflow-hidden mb-3">
-      <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+    <section className="lg:col-span-2 bg-yellow-500/50 border border-gray-100 rounded-xl overflow-hidden mb-3">
+      <header className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
         <h3 className="text-sm font-serif text-gray-900">
-          Stasi Paroki ST.Fransiskus Assisi Harapan Makmur — Merauke Papua
-          Selatan
+          Stasi Paroki ST.Fransiskus Assisi Harapan Makmur
         </h3>
-      </div>
-      <div className="p-0">
+
+        <h2 className="text-sm font-serif text-gary-900">
+          total umat: {total}
+        </h2>
+      </header>
+
+      <section className="p-0">
         <table className="w-full text-left border-collapse">
-          <thead className="flext items-center justify-center sticky top-0 bg-white">
+          <thead className="flext items-center justify-center sticky top-0">
             <tr className="border-b border-gray-100">
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
                 Nama Stasi
@@ -43,6 +40,9 @@ export default function StasiListModal() {
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
                 Alamat
               </th>
+              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+                Desa
+              </th>
               <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest text-center">
                 Jumblah Umat
               </th>
@@ -52,7 +52,7 @@ export default function StasiListModal() {
             </tr>
           </thead>
           <tbody
-            children={dataStasi.map((stasi, i) => (
+            children={data.map((stasi, i) => (
               <tr
                 key={i}
                 className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors"
@@ -60,7 +60,7 @@ export default function StasiListModal() {
                   <>
                     <td
                       className="px-6 py-4 text-sm font-medium text-gray-900"
-                      children={stasi.nama}
+                      children={stasi.stasi}
                     />
                     <td
                       className="px-6 py-4 text-sm text-gray-900"
@@ -69,6 +69,10 @@ export default function StasiListModal() {
                     <td
                       className="px-6 py-4 text-sm text-gray-900"
                       children={stasi.alamat}
+                    />
+                    <td
+                      className="px-6 py-4 text-sm text-gray-900"
+                      children={stasi.desa}
                     />
                     <td
                       className="px-6 py-4 text-center"
@@ -87,8 +91,10 @@ export default function StasiListModal() {
                           children={
                             <>
                               <button
-                                className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
+                                className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90 tarcking-widest"
+                                type="button"
                                 onClick={(i) => {
+                                  handlers.edit(stasi);
                                   i.stopPropagation();
                                 }}
                                 children={<Edit2 size={18} />}
@@ -96,10 +102,10 @@ export default function StasiListModal() {
 
                               <button
                                 className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all 
-                                active:scale-90"
+                                active:scale-90 tarcking-widest"
                                 onClick={(i) => {
                                   i.stopPropagation();
-                                  handleDelte;
+                                  handleDelte(stasi);
                                 }}
                                 children={<Trash2 size={18} />}
                               />
@@ -114,7 +120,7 @@ export default function StasiListModal() {
             ))}
           />
         </table>
-      </div>
+      </section>
 
       {/* <InputStasi onClose={() => setActiveModal(null)} /> */}
     </section>

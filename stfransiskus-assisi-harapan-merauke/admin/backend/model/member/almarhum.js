@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const AlmarhumSchema = new mongoose.Schema(
   {
     nama: { type: String, required: true },
-    peran: { type: String, enum: ["suami", "istri", "individu", "anak"] }, // Enum lengkap!
+    peran: { type: String, enum: ["suami", "istri", "single", "anak"] },
     idUmatAsal: { type: mongoose.Schema.Types.ObjectId, ref: "Umat" },
     tglMeninggal: { type: String },
     lokasiMakam: { type: String },
@@ -15,6 +15,7 @@ const AlmarhumSchema = new mongoose.Schema(
     collection: "almarhum",
     minimize: true,
     timestamps: true,
+    strict: true,
   },
 );
 

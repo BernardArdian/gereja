@@ -22,7 +22,7 @@ function reorderFields(doc, ret) {
 
 const keluargaSchema = new mongoose.Schema(
   {
-    namaSuami: { type: String },
+    namaSuami: { type: String, require: true },
     statusSuami: {
       type: String,
       enum: ["hidup", "meninggal"],
@@ -33,7 +33,7 @@ const keluargaSchema = new mongoose.Schema(
       komuni: [sakramenSchema],
       krisma: [sakramenSchema],
     },
-    namaIstri: { type: String },
+    namaIstri: { type: String, require: true },
     statusIstri: {
       type: String,
       enum: ["hidup", "meninggal"],
@@ -47,7 +47,12 @@ const keluargaSchema = new mongoose.Schema(
     riwayatPasangan: { type: [almarhumSchema], default: undefined },
     anak: { type: [anakSchema], default: undefined },
   },
-  { _id: false, minimize: true, toObject: { transform: reorderFields } },
+  {
+    _id: false,
+    minimize: true,
+    toObject: { transform: reorderFields },
+    strict: true,
+  },
 );
 
 const umatSchema = new mongoose.Schema(
@@ -62,7 +67,7 @@ const umatSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
-    stasiKeluarga: { type: StasiSchema },
+    stasiKeluarga: { type: StasiSchema, require: true },
     single: { type: singleSchema, default: undefined },
     keluarga: { type: keluargaSchema, default: undefined },
   },
@@ -78,6 +83,7 @@ const umatSchema = new mongoose.Schema(
         return ret;
       },
     },
+    strict: true,
   },
 );
 

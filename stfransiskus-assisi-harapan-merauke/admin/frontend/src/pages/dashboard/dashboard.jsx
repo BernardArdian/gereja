@@ -9,30 +9,30 @@ import CalendarPage from "./kalender/kalender";
 import { motion as Motion } from "framer-motion";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("thumbnail dan gallery");
+  const [activeTab, setActiveTab] = useState("thumbnail & gallery");
 
   const navTitle = [
-    "thumbnail dan gallery",
+    "thumbnail & gallery",
     "sejarah gereja",
-    "visi dan misi",
+    "visi & misi",
     "pedoman pastoral",
     "pengumuman",
-    "alamat, kontak, dan lokasi",
+    "alamat, kontak & lokasi",
   ];
 
   const renderContent = () => {
     switch (activeTab) {
-      case "thumbnail dan gallery":
+      case "thumbnail & gallery":
         return <Thumbnail />;
       case "sejarah gereja":
         return <SejarahGereja />;
-      case "visi dan misi":
+      case "visi & misi":
         return <VisiMisi />;
       case "pengumuman":
         return <Pengumuman />;
       case "pedoman pastoral":
         return <Pedoman />;
-      case "alamat, kontak, dan lokasi":
+      case "alamat, kontak & lokasi":
         return <KontakDanLokasi />;
       default:
         return null;
@@ -51,8 +51,8 @@ export default function Dashboard() {
                   Dashboard Paroki St.Fransiskus Assisi.
                 </h2>
                 <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                  Arsip Thmbnail, Gallery, Sejarah, Visi Misi, Pedoman Pasotral,
-                  Pengumuman, Alamat dan kontak
+                  Thumbnail, Gallery, Sejarah, Visi Misi, Pedoman Pasotral,
+                  Pengumuman, Alamat & kontak
                 </p>
               </div>
             </section>

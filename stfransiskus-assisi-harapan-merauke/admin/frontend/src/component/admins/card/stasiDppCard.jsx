@@ -1,4 +1,4 @@
-import { PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function StasiDanDppCard({
   title,
@@ -12,7 +12,6 @@ export default function StasiDanDppCard({
     <section
       onClick={onClick}
       className={`p-5 rounded-2xl transition-all group
-        
         ${
           title === "Anggota Dpp"
             ? "bg-blue-500/50 border-blue-100"
@@ -26,9 +25,8 @@ export default function StasiDanDppCard({
         {/* ICON (Kiri) */}
         <div
           className={`w-10 h-10 flex items-center justify-center rounded-xl ${color} text-white`}
-        >
-          {icon}
-        </div>
+          children={icon}
+        />
 
         {/* BAGIAN KANAN (Trend atau Tombol Input) */}
         <section>
@@ -42,7 +40,7 @@ export default function StasiDanDppCard({
               }}
               className="flex flex-row items-center gap-1.5 cursor-pointer bg-amber-50 text-amber-600 border border-amber-200 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-all"
             >
-              <PlusCircle size={13} /> Input Stasi
+              <Plus size={13} /> Tambah Stasi
             </button>
           )}
 
@@ -56,20 +54,22 @@ export default function StasiDanDppCard({
               }}
               className="flex flex-row items-center gap-1.5 cursor-pointer bg-green-50 text-green-600 border border-green-200 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all"
             >
-              <PlusCircle size={13} /> Input member DPP
+              <Plus size={13} /> Tambah DPP
             </button>
           )}
         </section>
       </header>
 
-      {/* Baris Bawah: Judul & Angka */}
+      {/* Judul & Angka */}
       <footer>
-        <span className="text-xs font-semibold text-gray-800 uppercase tracking-widest">
-          {title}
-        </span>
-        <h2 className="text-3xl font-bold text-gray-800 mt-1 tracking-tight">
-          {value}
-        </h2>
+        <span
+          className="text-xs font-semibold text-gray-800 uppercase tracking-widest"
+          children={title}
+        />
+        <h2
+          className="text-3xl font-bold text-gray-800 mt-1 tracking-tight"
+          children={value}
+        />
       </footer>
     </section>
   );

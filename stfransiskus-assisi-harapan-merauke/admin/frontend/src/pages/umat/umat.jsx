@@ -96,7 +96,7 @@ export default function Umat() {
                 Data Umat Paroki St.Fransiskus Assisi.
               </h2>
               <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                Arsip Data & Statistik Umat
+                Input, Table & Statistik Umat
               </p>
             </div>
           </div>

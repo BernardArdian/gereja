@@ -41,7 +41,7 @@ export default function Katekese() {
                   Katekese Paroki St.Fransiskus Assisi.
                 </h2>
                 <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                  Arsip Katekese Paroki
+                  Orang Kudus, Renungan, Devosi & Tradisi Gereja
                 </p>
               </section>
             </form>

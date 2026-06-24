@@ -3,26 +3,65 @@ import { useState } from "react";
 import Admin_List from "./list/list_admin";
 import Input_Admin from "./input/input_admin";
 
-export default function AdminPages({ isOpen, onClose }) {
+export default function AdminPages({ isOpen, handlers }) {
   const [activeTab, setActiveTab] = useState("table");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formData, setFormData] = useState({
+    nama: "",
+    password: "",
+  });
+
+  const resetForm = () => {
+    setFormData({
+      nama: "",
+      password: "",
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDevault();
+    setIsSubmitting(true);
+  };
+
+  const handleInputChange = (setter) => async (e) => {
+    const { name, value } = e.target;
+    setter((prev) => ({ ...prev, [name]: value }));
+  };
 
   const renderContent = {
     table: <Admin_List />,
-    input: <Input_Admin />,
+    input: (
+      <Input_Admin
+        formData={formData}
+        isSubmitting={isSubmitting}
+        validations={() => {
+          !!(formData?.nama && formData?.password);
+        }}
+        handlers={{
+          reset: () => {
+            resetForm();
+          },
+          input: handleInputChange(setFormData),
+          submit: handleSubmit,
+        }}
+        onClose={handlers.cancel}
+      />
+    ),
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-      <main className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col h-fit max-h-[90vh]">
+    <section className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+      <main className="w-full max-w-2xl bg-white rounded-xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col h-fit max-h-[90vh]">
         {/* Header - Dibuat ringkas */}
         <header className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h2 className="font-bold text-base text-gray-800">
             Manajemen Administrator
           </h2>
           <button
-            onClick={onClose}
+            onClick={handlers.cancel}
             className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={18} />
@@ -51,6 +90,6 @@ export default function AdminPages({ isOpen, onClose }) {
           <section>{renderContent[activeTab]}</section>
         </section>
       </main>
-    </div>
+    </section>
   );
 }

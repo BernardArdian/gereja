@@ -17,7 +17,7 @@ class administratifService {
     }
 
     const cleanedData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== "")
+      Object.entries(data).filter(([_, value]) => value !== ""),
     );
 
     return dppMember({
@@ -52,7 +52,7 @@ class administratifService {
       }
 
       const cleanedData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== "")
+        Object.entries(data).filter(([_, value]) => value !== ""),
       );
       const syaratBaptis = new SyaratAdministratif({
         ...cleanedData,

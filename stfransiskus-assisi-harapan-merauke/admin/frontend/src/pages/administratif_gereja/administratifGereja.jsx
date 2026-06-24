@@ -115,7 +115,7 @@ export default function AdministraifGereja() {
                   Administratif Paroki St.Fransiskus Assisi.
                 </h2>
                 <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                  Arsip Administratif Gereja
+                  Dokumen Administratif Gereja
                 </p>
               </div>
             </form>

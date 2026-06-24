@@ -1,10 +1,10 @@
-import { MapPin } from "lucide-react";
+import { PieChart } from "lucide-react";
 
 export default function StatistikPerStasi({ stasiDistribusi }) {
   return (
     <section className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
       <h3 className="font-black text-gray-900 uppercase tracking-tighter mb-6 flex items-center gap-2">
-        <MapPin size={20} className="text-indigo-600" /> Statistik Per Stasi
+        <PieChart size={20} className="text-indigo-600" /> Statistik Per Stasi
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">

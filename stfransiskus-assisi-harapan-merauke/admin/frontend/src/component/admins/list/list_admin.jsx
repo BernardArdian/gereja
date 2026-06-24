@@ -98,11 +98,28 @@ export default function Admin_List() {
 
             {/* Aksi */}
             <section className="flex items-center justify-end gap-1">
-              <button className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white">
+              <button
+                className="cursor-pointer p-3 
+                bg-slate-200
+                rounded text-yellow-700 
+                hover:bg-amber-600 
+                hover:text-white 
+                transition-all 
+                active:scale-90
+                tarcking-widest"
+                type="button"
+              >
                 <Edit2 size={18} />
               </button>
 
-              <button className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white">
+              <button
+                className="cursor-pointer p-3 
+                bg-slate-200 rounded text-rose-400 hover:bg-red-600 
+                hover:text-white 
+                transition-all 
+                active:scale-90 
+                tarcking-widest"
+              >
                 <Trash2 size={18} />
               </button>
             </section>
@@ -113,7 +130,7 @@ export default function Admin_List() {
       {/* Footer */}
       <footer className="pt-4 border-t border-gray-50 flex justify-between items-center text-[11px] text-gray-400">
         <p>* Password disembunyikan untuk keamanan.</p>
-        <p>Total: {admins.length} Admin</p>
+        <span children={`Total: ${admins.length} Admin`} />
       </footer>
     </section>
   );

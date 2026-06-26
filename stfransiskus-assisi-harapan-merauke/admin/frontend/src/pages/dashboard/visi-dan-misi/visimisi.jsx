@@ -100,7 +100,7 @@ export default function VisiMisi() {
       <ContentEditorModal
         isOpen={isModalOpen}
         mode="visimisi"
-        title="Panel input Visi & Misi"
+        title="Input Panel Visi & Misi"
         labelTitle="Visi Utama"
         handlers={{
           close: () => setIsModalOpen(false),

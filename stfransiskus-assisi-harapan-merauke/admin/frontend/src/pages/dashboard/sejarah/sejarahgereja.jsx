@@ -32,11 +32,6 @@ export default function SejarahGereja() {
     ],
   };
 
-  const handleModalOpens = (e) => {
-    e.preventDefault();
-    setIsModalOpen(false);
-  };
-
   return (
     <section className="min-h-screen">
       {/* HEADER */}
@@ -150,7 +145,7 @@ export default function SejarahGereja() {
         </section>
       </main>
 
-      <ContentEditorModal
+      {/* <ContentEditorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         mode="history"
@@ -164,6 +159,24 @@ export default function SejarahGereja() {
           console.log("Timeline Baru:", updated.items);
           // Masukkan logika setState kamu di sini
           handleModalOpens;
+        }}
+      /> */}
+
+      <ContentEditorModal
+        isOpen={isModalOpen}
+        mode="history"
+        title="Input Panel Sejarah & Timeline"
+        labelTitle="Ringkasan Pendek"
+        handlers={{
+          close: () => setIsModalOpen(false),
+          confirm: (updated) => {
+            console.log("Sejarah baru dan timeline baru:", updated.items);
+            setIsModalOpen(false);
+          },
+          initialData: {
+            judul: data.ringkasan,
+            items: data.milestones,
+          },
         }}
       />
     </section>

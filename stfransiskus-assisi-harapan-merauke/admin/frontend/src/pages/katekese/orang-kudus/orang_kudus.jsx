@@ -7,9 +7,9 @@ import {
   Star,
   ShieldCheck,
   ArrowRight,
-  CircleUser,
   Trash2,
   Edit2,
+  Users2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
@@ -92,14 +92,12 @@ export default function OrangKudus() {
 
   if (selectedItem) {
     return (
-      <div className="fixed top-0 bottom-0 right-0 left-[80px] overflow-y-auto bg-white">
+      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
         <Detail
-          title={selectedItem.name}
-          content={selectedItem.summary}
-          image={selectedItem.image}
-          date={selectedItem.feastDay}
-          author="Admin Paroki"
-          onBack={() => setSelectedItem(null)}
+          formData={selectedItem}
+          handlers={{
+            onBack: () => setSelectedItem(null),
+          }}
         />
       </div>
     );
@@ -131,7 +129,7 @@ export default function OrangKudus() {
           </div>
         </div>
         <div className="absolute top-0 right-0 opacity-20 text-amber-500 transform translate-x-10 -translate-y-5 pointer-events-none z-10">
-          <CircleUser size={300} />
+          <Users2 size={300} />
         </div>
       </header>
 
@@ -169,9 +167,15 @@ export default function OrangKudus() {
         )}
 
         {paginatedData.map((item) => (
-          <div
+          <section
             key={item.id}
-            onClick={() => setSelectedItem(item)}
+            onClick={() =>
+              setSelectedItem({
+                ...item,
+                title: item.name,
+                content: item.summary,
+              })
+            }
             className="group cursor-pointer bg-white border border-gray-100 p-4 hover:shadow-lg hover:border-indigo-100 transition-all duration-300 flex items-center"
           >
             <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
@@ -208,59 +212,74 @@ export default function OrangKudus() {
               </button>
               <section className="flex items-center justify-end gap-3">
                 <button
-                  className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                  className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
                   onClick={(i) => {
                     i.stopPropagation();
                   }}
-                >
-                  <Edit2 size={18} />
-                </button>
+                  children={<Edit2 size={18} />}
+                />
 
                 <button
-                  className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                  className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
                   onClick={(i) => {
                     i.stopPropagation();
                   }}
-                >
-                  <Trash2 size={18} />
-                </button>
+                  children={<Trash2 size={18} />}
+                />
               </section>
             </div>
-          </div>
+          </section>
         ))}
 
         {totalPages > 1 && (
-          <div className="mt-12 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="p-2.5 rounded-xl border bg-white disabled:opacity-20 hover:bg-gray-50 transition-all"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <div className="flex gap-1">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-9 h-9 rounded-xl text-[10px] font-black transition-all ${
-                    currentPage === i + 1
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white text-gray-400 border border-gray-100"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs text-gray-600 font-medium">
+              Menampilkan{" "}
+              <span
+                className="text-gray-700 font-bold"
+                children={paginatedData.length}
+              />{" "}
+              dari{" "}
+              <span
+                className="text-gray-700 font-bold"
+                children={filteredSaints.length}
+              />{" "}
+              orang kudus
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div
+                className="flex gap-1"
+                children={[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
+                      currentPage === i + 1
+                        ? "bg-blue-500/30 text-black"
+                        : "bg-white text-gray-400 border border-gray-50"
+                    }`}
+                    children={i + 1}
+                  />
+                ))}
+              />
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
             </div>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="p-2.5 rounded-xl border bg-white disabled:opacity-20 hover:bg-gray-50 transition-all"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
+          </footer>
         )}
       </main>
     </section>

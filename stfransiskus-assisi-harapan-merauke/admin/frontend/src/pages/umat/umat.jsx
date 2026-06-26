@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import InputUmat from "../../component/umat/input/inputUmat";
 import TableUmat from "../../component/umat/table/tableUmat";
@@ -7,7 +8,14 @@ import { umatServiceApi } from "../../api/umatApi/umatServiceApi";
 import { motion as Motion } from "framer-motion";
 
 export default function Umat() {
-  const [activeTab, setActiveTab] = useState("input");
+  const navigate = useNavigate();
+  const { tab } = useParams();
+  const activeTab = tab ? tab.replace(/-/g, " ") : "input";
+
+  const setActiveTab = (t) => {
+    navigate(`/umat/${t}`);
+  };
+
   const [selectedUmat, setSelectedUmat] = useState(null);
   const [umatList, setUmatList] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -5,7 +5,6 @@ export default function Input_Admin({
   isSubmitting,
   validations,
   handlers,
-  onClose,
 }) {
   //const roles = ["super admin", "admin"];
   return (
@@ -38,6 +37,7 @@ export default function Input_Admin({
                 <User size={18} />
               </div>
               <input
+                name="nama"
                 type="text"
                 placeholder="Ex: Alexander Maria"
                 className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
@@ -57,7 +57,13 @@ export default function Input_Admin({
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
                 <ShieldCheck size={18} />
               </div>
-              <select className="w-full pl-11 cursor-pointer pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium appearance-none">
+              <select
+                className="w-full pl-11 cursor-pointer pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium appearance-none"
+                name="role"
+                onChange={handlers.input}
+                value={formData.role}
+                disabled={isSubmitting}
+              >
                 <option value="" disabled>
                   -- Select Role --
                 </option>
@@ -78,6 +84,7 @@ export default function Input_Admin({
               <Lock size={18} />
             </div>
             <input
+              name="password"
               type="password"
               placeholder="••••••••"
               className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
@@ -91,7 +98,7 @@ export default function Input_Admin({
         {/* Tombol Simpan */}
         <footer className="flex w-full items-center justify-end gap-4 pt-4">
           <button
-            className="w-[10dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-rose-500 hover:bg-rose-500/20 hover:text-rose-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98]"
+            className="w-[10dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-rose-500 hover:bg-rose-500/20 hover:text-rose-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
             type="button"
             disabled={!validations() || isSubmitting}
             onClick={handlers.reset}
@@ -99,7 +106,7 @@ export default function Input_Admin({
             batal
           </button>
           <button
-            className="w-[12dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98]"
+            className="w-[12dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
             type="button"
             disabled={!validations() || isSubmitting}
           >

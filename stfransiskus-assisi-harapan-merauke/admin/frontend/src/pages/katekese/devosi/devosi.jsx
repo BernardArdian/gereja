@@ -111,15 +111,12 @@ export default function Devosi() {
   // Jika ada item yang dipilih, render halaman Detail secara Fullscreen
   if (selectedItem) {
     return (
-      <div className="fixed top-0 bottom-0 right-0 left-[80px] overflow-y-auto">
+      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
         <Detail
-          title={selectedItem.title}
-          content={selectedItem.description} // PAKAI DESCRIPTION
-          image={selectedItem.image}
-          date={selectedItem.period} // PAKAI PERIOD
-          author="Admin Paroki"
-          onBack={() => setSelectedItem(null)}
-          onEdit={() => setIsModalOpen(true)}
+          formData={selectedItem}
+          handlers={{
+            onBack: () => setSelectedItem(null),
+          }}
         />
       </div>
     );
@@ -182,7 +179,9 @@ export default function Devosi() {
           {paginatedData.map((item) => (
             <section
               key={item.id}
-              onClick={() => setSelectedItem(item)}
+              onClick={() =>
+                setSelectedItem({ ...item, content: item.schedule })
+              }
               className="group cursor-pointer bg-slate-500 rounded border border-gray-100 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
             >
               <section className="relative h-48 overflow-hidden">
@@ -225,22 +224,20 @@ export default function Devosi() {
                   </button>
                   <section className="flex items-center justify-end gap-3">
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
-                    >
-                      <Edit2 size={18} />
-                    </button>
+                      children={<Edit2 size={18} />}
+                    />
 
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                      children={<Trash2 size={18} />}
+                    />
                   </section>
                 </footer>
               </section>
@@ -250,38 +247,52 @@ export default function Devosi() {
 
         {/* PAGINATION CONTROLS */}
         {totalPages > 1 && (
-          <section className="mt-16 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className={`p-3 rounded-2xl border bg-white transition-all ${currentPage === 1 ? "opacity-20 cursor-not-allowed" : "hover:bg-indigo-600 hover:text-white shadow-sm"}`}
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <section className="flex gap-2">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-11 h-11 rounded-2xl text-[11px] font-black transition-all ${
-                    currentPage === i + 1
-                      ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
-                      : "bg-white text-gray-400 border border-gray-100 hover:border-indigo-300"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </section>
-
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className={`p-3 rounded-2xl border bg-white transition-all ${currentPage === totalPages ? "opacity-20 cursor-not-allowed" : "hover:bg-indigo-600 hover:text-white shadow-sm"}`}
-              children={<ChevronRight size={20} />}
-            />
-          </section>
+          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs text-gray-600 font-medium">
+              Menampilkan{" "}
+              <span className="text-gray-700 font-bold">
+                {paginatedData.length}
+              </span>{" "}
+              dari{" "}
+              <span className="text-gray-700 font-bold">
+                {filteredDevosi.length}
+              </span>{" "}
+              devosi
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div
+                className="flex gap-1"
+                children={[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
+                      currentPage === i + 1
+                        ? "bg-blue-500/30 text-black"
+                        : "bg-white text-gray-400 border border-gray-50"
+                    }`}
+                    children={i + 1}
+                  />
+                ))}
+              ></div>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </footer>
         )}
       </main>
     </section>

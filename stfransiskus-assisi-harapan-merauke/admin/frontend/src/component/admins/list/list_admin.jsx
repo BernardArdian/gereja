@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export default function Admin_List() {
+export default function Admin_List({ handlers }) {
   const admins = [
     {
       id: 1,
@@ -85,7 +85,7 @@ export default function Admin_List() {
                   e.stopPropagation();
                   togglePassword(admin.id);
                 }}
-                className="cursor-pointer p-5 text-gray-300 hover:text-gray-500 transition-colors"
+                className="cursor-pointer text-gray-300 hover:text-gray-500 transition-colors"
                 children={
                   visibleIds.includes(admin.id) ? (
                     <EyeOff size={20} />
@@ -108,6 +108,10 @@ export default function Admin_List() {
                 active:scale-90
                 tarcking-widest"
                 type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlers.onEdit(admin);
+                }}
               >
                 <Edit2 size={18} />
               </button>

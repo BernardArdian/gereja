@@ -18,6 +18,7 @@ export default function KontakDanLokasi() {
               Nomor Telepon / WhatsApp
             </label>
             <input
+              name="kontak"
               className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
               type="number"
               id="kontak"
@@ -34,6 +35,7 @@ export default function KontakDanLokasi() {
               Alamat Lengkap
             </label>
             <input
+              name="alamat"
               className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
               type="text"
               id="alamat"
@@ -49,9 +51,10 @@ export default function KontakDanLokasi() {
             URL Embed Google Maps
           </label>
           <input
+            name="map"
+            id="map"
             className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
             type="text"
-            id="map"
             placeholder="Tempelkan link src dari embed Google Maps..."
             value={mapUrl}
             onChange={(e) => setMapUrl(e.target.value)}

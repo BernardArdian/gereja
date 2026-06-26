@@ -9,18 +9,20 @@ export default function AdminPages({ isOpen, handlers }) {
 
   const [formData, setFormData] = useState({
     nama: "",
+    role: "",
     password: "",
   });
 
   const resetForm = () => {
     setFormData({
       nama: "",
+      role: "",
       password: "",
     });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDevault();
+    e.preventDefault();
     setIsSubmitting(true);
   };
 
@@ -29,15 +31,20 @@ export default function AdminPages({ isOpen, handlers }) {
     setter((prev) => ({ ...prev, [name]: value }));
   };
 
+  const editAdmin = (admin) => {
+    setFormData({ nama: admin.name, role: admin.role, password: admin.pass });
+    setActiveTab("input");
+  };
+
   const renderContent = {
-    table: <Admin_List />,
+    table: <Admin_List handlers={{ onEdit: editAdmin }} />,
     input: (
       <Input_Admin
         formData={formData}
         isSubmitting={isSubmitting}
-        validations={() => {
-          !!(formData?.nama && formData?.password);
-        }}
+        validations={() =>
+          !!(formData?.nama && formData?.password && formData?.role)
+        }
         handlers={{
           reset: () => {
             resetForm();

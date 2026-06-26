@@ -4,23 +4,19 @@ import { createPortal } from "react-dom";
 
 export default function ContentEditorModal({
   isOpen,
-  onClose,
-  onConfirm,
+  handlers = {},
   title = "Edit Konten",
-  //subtitle = "Perbarui informasi detail di bawah ini",
   icon,
   labelTitle = "Judul",
   labelContent = "Konten Narasi",
   showCategory = false,
   categories = [],
   mode = "default",
-  initialData = { judul: "", konten: "", category: "", items: [] },
 }) {
-  // INISIALISASI STATE
-  const [judul, setJudul] = useState(initialData.judul || "");
-  const [konten, setKonten] = useState(initialData.konten || "");
+  const [judul, setJudul] = useState(handlers.initialData?.judul || "");
+  const [konten, setKonten] = useState(handlers.initialData?.konten || "");
   const [category, setCategory] = useState(
-    initialData.category ||
+    handlers.initialData?.category ||
       (categories.length > 0
         ? categories[0] !== "Semua"
           ? categories[0]
@@ -28,13 +24,36 @@ export default function ContentEditorModal({
         : ""),
   );
   const [items, setItems] = useState(
-    Array.isArray(initialData.items) ? [...initialData.items] : [],
+    Array.isArray(handlers.initialData?.items)
+      ? [...handlers.initialData.items]
+      : [],
   );
 
-  if (!isOpen) return null;
-  const IconComponent = icon || FileText;
+  const isValid = () => {
+    if (mode === "visimisi")
+      return (
+        konten.trim() !== "" &&
+        items.length > 0 &&
+        items.every((item) => item.trim() !== "")
+      );
+    if (mode === "history")
+      return (
+        konten.trim() !== "" &&
+        items.length > 0 &&
+        items.every(
+          (item) => item.tahun.trim() !== "" && item.event.trim() !== "",
+        )
+      );
+    return judul.trim() !== "" && konten.trim() !== "";
+  };
 
-  // HANDLER ITEM
+  const resetForm = () => {
+    setJudul(handlers.initialData?.judul || "");
+    setKonten(handlers.initialData?.konten || "");
+    setCategory(handlers.initialData?.category || "");
+    setItems([]);
+  };
+
   const addItem = (e) => {
     e.preventDefault();
     const newItem = mode === "history" ? { tahun: "", event: "" } : "";
@@ -58,18 +77,20 @@ export default function ContentEditorModal({
     });
   };
 
-  // Logika penamaan label konten narasi agar dinamis
   const getDynamicLabelContent = () => {
     if (mode === "history") return "Sejarah";
     if (mode === "visimisi") return "Visi Utama";
     return labelContent;
   };
 
+  if (!isOpen) return null;
+  const IconComponent = icon || FileText;
+
   return createPortal(
     <section className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-md"
-        onClick={onClose}
+        onClick={handlers.close}
       />
 
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -84,7 +105,7 @@ export default function ContentEditorModal({
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handlers.close}
             className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
           >
             <X size={20} />
@@ -114,7 +135,6 @@ export default function ContentEditorModal({
             </div>
           )}
 
-          {/* INPUT JUDUL (Disembunyikan jika mode history/visimisi untuk fokus ke konten utama) */}
           {mode === "default" && (
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
@@ -129,13 +149,12 @@ export default function ContentEditorModal({
             </div>
           )}
 
-          {/* INPUT UTAMA (SEJARAH / VISI UTAMA) */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
               <FileText size={16} /> {getDynamicLabelContent()}
             </label>
             <textarea
-              rows={mode === "default" ? 8 : 12} // Dibuat lebih tinggi untuk Visi & Sejarah
+              rows={mode === "default" ? 8 : 12}
               value={konten}
               onChange={(e) => setKonten(e.target.value)}
               placeholder={`Tuliskan ${getDynamicLabelContent()} di sini...`}
@@ -143,7 +162,6 @@ export default function ContentEditorModal({
             />
           </div>
 
-          {/* TIMELINE / DAFTAR MISI */}
           {(mode === "history" || mode === "visimisi") && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -155,7 +173,7 @@ export default function ContentEditorModal({
                 <button
                   type="button"
                   onClick={addItem}
-                  className="px-3 py-1.5 cursor-pointer text-xs font-bold text-white bg-blue-500 rounded-lg flex items-center gap-1 hover:bg-blue-500/20 hover:text-blue-500 transition-colors"
+                  className="px-3 py-1.5 cursor-pointer text-xs font-bold text-white bg-blue-500 rounded-lg flex items-center gap-1 hover:bg-blue-500/20 hover:text-blue-500 transition-colors transition-all active:scale-95"
                 >
                   <Plus size={14} /> Tambah time line
                 </button>
@@ -183,7 +201,7 @@ export default function ContentEditorModal({
                             updateItem(idx, e.target.value, "event")
                           }
                           className="flex-1 px-2 py-2 border rounded-lg text-sm resize-none focus:ring-2 focus:ring-indigo-400 outline-none leading-relaxed"
-                          rows={3} // Lebih tinggi sedikit
+                          rows={3}
                         />
                       </>
                     ) : (
@@ -192,13 +210,13 @@ export default function ContentEditorModal({
                         value={item || ""}
                         onChange={(e) => updateItem(idx, e.target.value)}
                         className="flex-1 px-2 py-2 border rounded-lg text-sm resize-none focus:ring-2 focus:ring-indigo-400 outline-none leading-relaxed"
-                        rows={3} // Lebih tinggi sedikit
+                        rows={3}
                       />
                     )}
                     <button
                       type="button"
                       onClick={(e) => removeItem(e, idx)}
-                      className="text-red-500 p-2 cursor-pointer hover:bg-red-50 rounded-lg transition-colors"
+                      className="text-red-500 p-2 cursor-pointer hover:bg-red-50 rounded-lg transition-colors transition-all active:scale-95"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -217,14 +235,19 @@ export default function ContentEditorModal({
         {/* FOOTER */}
         <footer className="px-6 py-4 border-t bg-white flex justify-end gap-3 shrink-0">
           <button
-            onClick={onClose}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors"
+            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors
+             disabled:opacity-40"
+            type="button"
+            disabled={!isValid()}
+            onClick={resetForm}
           >
             Batal
           </button>
           <button
-            onClick={() => onConfirm({ judul, konten, category, items })}
-            className="flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto px-6 bg-amber-600 hover:bg-amber-500/20 hover:text-amber-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+            className="flex items-center gap-2 justify-center bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 cursor-pointer text-white px-8 py-2.5 rounded-lg font-bold transition-all active:scale-95  disabled:opacity-40 disabled:cursor-not-allowed"
+            type="button"
+            disabled={!isValid()}
+            onClick={() => handlers.confirm({ judul, konten, category, items })}
           >
             <Save size={16} /> Simpan
           </button>

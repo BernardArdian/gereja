@@ -60,10 +60,13 @@ function App() {
         <Routes>
           {/* <Route path="*" element={token ? <Navigate to="/" replace /> : <Login />} /> */}
 
-          <Route path="/*" element={<Dashboard />} />
-          <Route path="/umat" element={<Umat />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+          <Route path="/dashboard/:tab?" element={<Dashboard />} />
+          <Route path="/umat/:tab?" element={<Umat />} />
           <Route path="/berita" element={<Berita />} />
-          <Route path="/katekese" element={<Katekese />} />
+          <Route path="/katekese/:tab?" element={<Katekese />} />
+
           <Route path="/administratif" element={<AdministraifGereja />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>

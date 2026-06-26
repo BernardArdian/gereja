@@ -96,15 +96,12 @@ export default function Tradisi() {
   // Jika ada item yang dipilih, render halaman Detail secara Fullscreen
   if (selectedItem) {
     return (
-      <div className="fixed top-0 bottom-0 right-0 left-[80px] overflow-y-auto">
+      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
         <Detail
-          title={selectedItem.title}
-          content={selectedItem.description} // PAKAI DESCRIPTION
-          image={selectedItem.image}
-          date={selectedItem.period} // PAKAI PERIOD
-          author="Admin Paroki"
-          onBack={() => setSelectedItem(null)}
-          onEdit={() => setIsModalOpen(true)}
+          formData={selectedItem}
+          handlers={{
+            onBack: () => setSelectedItem(null),
+          }}
         />
       </div>
     );
@@ -140,7 +137,7 @@ export default function Tradisi() {
         </section>
 
         {/* ICON DEKORATIF */}
-        <section className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
+        <section className="absolute top-0 right-0 opacity-20 transform translate-x-10 text-amber-500 -translate-y-5 pointer-events-none z-10">
           <BookOpen size={300} />
         </section>
       </header>
@@ -175,7 +172,13 @@ export default function Tradisi() {
           {paginatedTradisi.map((item) => (
             <section
               key={item.id}
-              onClick={() => setSelectedItem(item)}
+              onClick={() =>
+                setSelectedItem({
+                  ...item,
+                  title: item.name,
+                  content: item.summary,
+                })
+              }
               className="group cursor-pointer bg-yellow-800/60 rounded border border-gray-100 hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col"
             >
               <section className="relative aspect-video overflow-hidden">
@@ -199,7 +202,7 @@ export default function Tradisi() {
                   {item.title}
                 </h3>
                 <p className="text-sm text-white line-clamp-2 mb-6 leading-relaxed">
-                  {item.description}
+                  {item.content}
                 </p>
 
                 <footer className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
@@ -208,22 +211,20 @@ export default function Tradisi() {
                   </button>
                   <section className="flex items-center justify-end gap-3">
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
-                    >
-                      <Edit2 size={18} />
-                    </button>
+                      children={<Edit2 size={18} />}
+                    />
 
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                      children={<Trash2 size={18} />}
+                    />
                   </section>
                 </footer>
               </section>
@@ -233,36 +234,53 @@ export default function Tradisi() {
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <footer className="mt-16 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="p-2.5 rounded-xl border bg-white disabled:opacity-20 hover:bg-gray-50 transition-all shadow-sm"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <section className="flex gap-1.5">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${
-                    currentPage === i + 1
-                      ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
-                      : "bg-white text-gray-400 border border-gray-100 hover:border-indigo-300"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </section>
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="p-2.5 rounded-xl border bg-white disabled:opacity-20 hover:bg-gray-50 transition-all shadow-sm"
-            >
-              <ChevronRight size={20} />
-            </button>
+          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs text-gray-600 font-medium">
+              Menampilkan{" "}
+              <span
+                className="text-gray-700 font-bold"
+                children={paginatedTradisi.length}
+              />{" "}
+              dari{" "}
+              <span
+                className="text-gray-700 font-bold"
+                children={filteredTradisi.length}
+              />{" "}
+              tradisi
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div
+                className="flex gap-1"
+                children={[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
+                      currentPage === i + 1
+                        ? "bg-blue-500/30 text-black"
+                        : "bg-white text-gray-400 border border-gray-50"
+                    }`}
+                    children={i + 1}
+                  />
+                ))}
+              />
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </footer>
         )}
       </main>

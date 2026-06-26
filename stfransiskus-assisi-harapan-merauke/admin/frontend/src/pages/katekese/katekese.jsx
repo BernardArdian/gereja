@@ -7,11 +7,17 @@ import Devosi from "./devosi/devosi";
 import Renungan from "./renungan/renungan";
 import OrangKudus from "./orang-kudus/orang_kudus";
 import Tradisi from "./tradisi/tradisi";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Katekese() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("orang kudus");
+  const navigate = useNavigate();
+  const { tab } = useParams();
+  const activeTab = tab ? tab.replace(/-/g, " ") : "orang kudus";
 
+  const setActiveTab = (t) => {
+    navigate(`/katekese/${t}`);
+  };
   const navTittle = ["orang kudus", "renungan", "devosi", "tradisi gereja"];
 
   const renderContent = () => {

@@ -16,11 +16,6 @@ export default function VisiMisi() {
     ],
   };
 
-  const handleModalOpens = (e) => {
-    e.preventDefault(); // Tidak perlu jika hanya menutup modal
-    setIsModalOpen(false);
-  };
-
   return (
     <section className="min-h-screen">
       {/* HEADER */}
@@ -104,18 +99,20 @@ export default function VisiMisi() {
 
       <ContentEditorModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        mode="visimisi" // AKTIFKAN MODE LIST MISI
-        title="Panel Konten Visi & Misi"
+        mode="visimisi"
+        title="Panel input Visi & Misi"
         labelTitle="Visi Utama"
-        initialData={{
-          judul: data.visi,
-          items: data.misi, // DATA MISI KIRIM KE SINI
-        }}
-        onConfirm={(updated) => {
-          console.log("Misi Baru:", updated.items);
-          // Masukkan logika setState kamu di sini
-          handleModalOpens;
+        handlers={{
+          close: () => setIsModalOpen(false),
+          confirm: (updated) => {
+            console.log("Misi Baru:", updated.items);
+            setIsModalOpen(false);
+          },
+          clear: () => {},
+          initialData: {
+            judul: data.visi,
+            items: data.misi,
+          },
         }}
       />
     </section>

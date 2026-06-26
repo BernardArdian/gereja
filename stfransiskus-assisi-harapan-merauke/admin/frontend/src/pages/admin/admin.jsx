@@ -1,5 +1,4 @@
 import { Bell, Church, Edit, User, X } from "lucide-react";
-
 import { useState } from "react";
 
 import AdminPages from "../../component/admins/admin_page";
@@ -13,23 +12,18 @@ export default function Admin() {
   const [isStasiModalOpen, setIsStasiModalOpen] = useState(false);
   const [isDppModalOpen, setIsDppModaOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModaOpen] = useState(false);
-
   const [selectedDivisi, setSelectedDivisi] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //const [currentPage, setCurrentPage] = useState(1);
-
   const handleSubmit = async (e) => {
-    e.preventDevault();
+    e.preventDefault();
     setIsSubmitting(true);
   };
 
   const handleDivisiChange = (e) => {
     setSelectedDivisi(e.target.value);
-    // setCurrentPage(1);
   };
 
-  // stasi
   const [formData, setFormData] = useState({
     stasi: "",
     jumlahUmat: "",
@@ -38,7 +32,7 @@ export default function Admin() {
     alamat: "",
   });
 
-  const resetForm = () => {
+  const resetForm = () =>
     setFormData({
       stasi: "",
       jumlahUmat: "",
@@ -46,22 +40,14 @@ export default function Admin() {
       desa: "",
       alamat: "",
     });
-  };
 
-  // dpp
   const [dppFormData, setDppFormData] = useState({
     nama: "",
     jabatan: "",
     periode: "",
   });
-
-  const dppResetForm = () => {
-    setDppFormData({
-      nama: "",
-      jabatan: "",
-      periode: "",
-    });
-  };
+  const dppResetForm = () =>
+    setDppFormData({ nama: "", jabatan: "", periode: "" });
 
   const [dppList, setDppList] = useState([
     { nama: "mawar", jabatan: "Anggota", periode: "2022 - 2025" },
@@ -93,59 +79,52 @@ export default function Admin() {
     },
   ]);
 
-  const handleDeleteDpp = (data) => {
+  const handleDeleteDpp = (data) =>
     setDppList((prev) => prev.filter((item) => item.nama !== data.nama));
-  };
-
-  const handleDeleteStasi = (stasi) => {
+  const handleDeleteStasi = (stasi) =>
     setStasiList((prev) => prev.filter((item) => item.nama !== stasi.nama));
-  };
-
   const handleInputChange = (setter) => async (e) => {
     const { name, value } = e.target;
     setter((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <section className="w-full min-h-screen pl-0.5 pr-0.5">
-      {/* Header Section */}
-      <header className="flex flex-col h-16 bg-slate-700/40 items-center p-2 top-0 z-30 border-b border-white md:flex-row  justify-between gap-4">
-        <section>
-          <section className="flex items-center gap-4">
-            <div>
-              <h2
-                className="text-xl font-serif text-gray-900 tracking-tight"
-                children={"Admin Paroki St.Fransiskus Assisi."}
-              />
-              <p
-                className="text-[10px] font-serif text-gray-900 uppercase tracking-widest"
-                children={"Admin, Stasi & Anggota Dewan Pastoral"}
-              />
-            </div>
-          </section>
-        </section>
-        <section className="flex items-center justify-center gap-3">
-          <button className="cursor-pointer p-2.5 bg-white border border-gray-200 rounded-xl text-gray-500 hover:bg-gray-50 transition-all">
-            <Bell size={20} color="black" />
+    <section className="w-full min-h-screen">
+      {/* Header */}
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-2 px-4 h-16 bg-slate-700/40 border-b border-white/30 backdrop-blur-sm">
+        {/* Judul */}
+        <div className="min-w-0">
+          <h2 className="text-sm sm:text-xl font-serif text-gray-900 tracking-tight truncate">
+            Admin Paroki St.Fransiskus Assisi.
+          </h2>
+          <p className="text-[9px] sm:text-[10px] font-serif text-gray-900 uppercase tracking-widest truncate">
+            Admin, Stasi & Anggota Dewan Pastoral
+          </p>
+        </div>
+
+        {/* Aksi kanan */}
+        <div className="flex items-center gap-2 shrink-0">
+          <button className="cursor-pointer p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:bg-gray-50 transition-all">
+            <Bell size={18} color="black" />
           </button>
-          <div className="h-10 w-[1px] bg-white mx-2 hidden md:block" />
           <button
             onClick={() => setIsAdminModaOpen(true)}
-            className="cursor-pointer flex items-center gap-3 bg-white border border-gray-200 p-1.5 pr-4 rounded-2xl"
+            className="cursor-pointer flex items-center gap-2 bg-white border border-gray-200 p-1.5 pr-3 rounded-2xl"
           >
-            <p className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+            <p className="h-7 w-7 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
               AD
             </p>
-            <span className="text-sm font-bold text-gray-700">
+            <span className="text-xs sm:text-sm font-bold text-gray-700 hidden xs:block sm:block">
               Administrator
             </span>
           </button>
-        </section>
+        </div>
       </header>
 
-      <main className="max-w-6xl bg-slate-700/40 mx-auto space-y-5 p-2">
+      {/* Konten */}
+      <main className="max-w-6xl mx-auto space-y-5 p-3 sm:p-4">
         {/* Stats Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StasiDanDppCard
             title="Anggota Dpp"
             value="12"
@@ -158,15 +137,12 @@ export default function Admin() {
             value="08"
             icon={<Church size={20} />}
             color="bg-amber-500"
-            onInputClick={() => {
-              setIsStasiModalOpen(true);
-            }}
+            onInputClick={() => setIsStasiModalOpen(true)}
           />
         </section>
 
-        {/* Main Content Area */}
+        {/* List Grid */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {/* section anggota dewan paroki */}
           <ListAnggotaDpp
             data={dppList}
             handlers={{
@@ -182,8 +158,6 @@ export default function Admin() {
               delete: handleDeleteDpp,
             }}
           />
-
-          {/* stasi secion */}
           <ListStatidanParoki
             data={stasiList}
             handlers={{
@@ -207,9 +181,7 @@ export default function Admin() {
         isOpen={isAdminModalOpen}
         handlers={{
           open: isAdminModalOpen,
-          cancel: () => {
-            setIsAdminModaOpen(false);
-          },
+          cancel: () => setIsAdminModaOpen(false),
         }}
       />
 
@@ -231,9 +203,7 @@ export default function Admin() {
             setIsStasiModalOpen(false);
             resetForm();
           },
-          reset: () => {
-            resetForm();
-          },
+          reset: resetForm,
           submit: handleSubmit,
           input: handleInputChange(setFormData),
         }}

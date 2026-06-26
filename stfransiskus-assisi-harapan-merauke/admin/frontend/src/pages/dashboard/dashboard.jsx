@@ -1,4 +1,5 @@
-import { useState } from "react";
+//import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import KontakDanLokasi from "./kontak-dan-lokasi/kontak-dan-lokasi";
 import Pengumuman from "./pengumuman/pengumuman";
 import Thumbnail from "./thumbnail/thumbnail";
@@ -9,7 +10,15 @@ import CalendarPage from "./kalender/kalender";
 import { motion as Motion } from "framer-motion";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("thumbnail & gallery");
+  const navigate = useNavigate();
+  const { tab } = useParams();
+
+  const setActiveTab = (t) => {
+    const slug = t.replace(/ /g, "-");
+    navigate(`/dashboard/${slug}`);
+  };
+
+  const activeTab = tab ? tab.replace(/-/g, " ") : "thumbnail & gallery";
 
   const navTitle = [
     "thumbnail & gallery",

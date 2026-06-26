@@ -204,16 +204,9 @@ export default function Berita() {
   if (selectedNews) {
     return (
       <Detail
-        title={selectedNews.title}
-        content={selectedNews.content || selectedNews.excerpt}
-        image={selectedNews.image}
-        date={selectedNews.date}
-        author={selectedNews.author}
-        tags={selectedNews.tags || ["Berita"]}
-        onBack={() => setSelectedNews(null)} // Tutup detail
-        onEdit={() => {
-          console.log("Edit:", selectedNews.id);
-          setIsModalOpen(true);
+        formData={selectedNews}
+        handlers={{
+          onBack: () => setSelectedNews(null),
         }}
       />
     );
@@ -344,7 +337,6 @@ export default function Berita() {
         </section>
 
         {/* --- PAGINATION --- */}
-        {/* PAGINATION */}
         {totalPages > 1 && (
           <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
             <p className="text-xs text-gray-600 font-medium">
@@ -408,18 +400,6 @@ export default function Berita() {
           //submit: handleSubmit
         }}
       />
-
-      {/* <DetailBerita
-        isOpen={isModalOpen}
-        formData={formData}
-        handlers={{
-          cancel: () => {
-            setIsModalOpen(null);
-            resetForm;
-          },
-          input: handleInputChange,
-        }}
-      /> */}
     </section>
   );
 }

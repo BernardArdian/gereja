@@ -7,6 +7,7 @@ import {
   BookOpenTextIcon,
   LogOutIcon,
   PanelLeftCloseIcon,
+  MenuIcon,
   UserSquare2Icon,
   FolderEditIcon,
 } from "lucide-react";
@@ -17,13 +18,20 @@ import StFransis from "../../../public/saint_francis_assisi.png";
 export default function Layout({ children, onLogout }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const location = useLocation();
   const mainRef = useRef(null);
 
-  const handleLogout = () => {
-    setIsLogoutModalOpen(false);
-  };
+  // Deteksi ukuran layar
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (mainRef.current) {
@@ -31,12 +39,16 @@ export default function Layout({ children, onLogout }) {
     }
   }, [location.pathname]);
 
+  const handleLogout = () => {
+    setIsLogoutModalOpen(false);
+  };
+
   const menuItems = [
     {
       id: "Dashboard",
       icon: LayoutDashboardIcon,
       text: "Dashboard",
-      path: "/",
+      path: "/dashboard",
     },
     { id: "Umat", icon: UsersIcon, text: "Umat", path: "/umat" },
     {
@@ -55,9 +67,8 @@ export default function Layout({ children, onLogout }) {
     { id: "Admin", icon: UserSquare2Icon, text: "Admin", path: "/admin" },
   ];
 
-  // Variabel untuk sinkronisasi lebar agar tidak berantakan
-  const sidebarWidth = isSidebarOpen ? "w-64" : "w-20";
-  const mainPadding = isSidebarOpen ? "pl-64" : "pl-20";
+  // Sidebar selalu fixed overlay di semua ukuran layar — tidak pernah mendorong konten
+  const desktopSidebarWidth = isSidebarOpen ? "w-64" : "w-20";
 
   return (
     <>
@@ -71,16 +82,27 @@ export default function Layout({ children, onLogout }) {
       />
 
       <section className="relative flex h-screen w-full bg-gray-50 overflow-hidden">
-        {/* Overlay untuk mobile saat sidebar terbuka */}
+        {/* Overlay — muncul di semua ukuran layar saat sidebar terbuka */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden transition-opacity"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
+        {/* SIDEBAR */}
         <aside
-          className={`fixed left-0 top-0 h-full transition-all duration-300 flex flex-col z-50 shadow-xl border-r border-amber-200 bg-[#B38728] ${sidebarWidth}`}
+          className={`
+            fixed left-0 top-0 h-full flex flex-col z-50 shadow-xl border-r border-amber-200 bg-[#B38728]
+            transition-all duration-300
+            ${
+              isMobile
+                ? isSidebarOpen
+                  ? "w-64"
+                  : "w-0 overflow-hidden border-none shadow-none"
+                : desktopSidebarWidth
+            }
+          `}
         >
           {/* Header Sidebar */}
           <header className="h-16 flex items-center border-b border-amber-300/50 shrink-0 relative">
@@ -120,14 +142,17 @@ export default function Layout({ children, onLogout }) {
               <Link
                 key={item.id}
                 to={item.path}
+                onClick={() => {
+                  if (isMobile || isSidebarOpen) setIsSidebarOpen(false);
+                }}
                 className={`group relative flex items-center h-12 transition-all duration-200 w-full
                   ${
-                    location.pathname === item.path
+                    location.pathname === item.path ||
+                    location.pathname.startsWith(item.path + "/")
                       ? "bg-slate-500/30 text-amber-950 border-r-4 border-amber-900/60 font-bold shadow-sm"
                       : "text-white hover:bg-slate-300/40 hover:text-white"
                   }`}
               >
-                {/* ICON CONTAINER - Pakai w-20 biar sejajar sama logo di atas */}
                 <div className="w-20 h-full flex items-center justify-center shrink-0 z-20">
                   <item.icon
                     size={22}
@@ -136,7 +161,6 @@ export default function Layout({ children, onLogout }) {
                   />
                 </div>
 
-                {/* TEXT LABEL */}
                 <div
                   className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${
                     isSidebarOpen ? "w-auto opacity-100" : "w-0 opacity-0"
@@ -148,7 +172,7 @@ export default function Layout({ children, onLogout }) {
             ))}
           </nav>
 
-          {/* Logout Section */}
+          {/* Logout */}
           <footer className="border-t border-amber-300/50 py-3 shrink-0">
             <button
               onClick={() => setIsLogoutModalOpen(true)}
@@ -171,10 +195,37 @@ export default function Layout({ children, onLogout }) {
           </footer>
         </aside>
 
-        {/* Konten Utama - Padding kiri dinamis mengikuti lebar sidebar */}
+        {/* MOBILE TOP NAVBAR — hanya muncul di mobile */}
+        {isMobile && (
+          <header className="fixed top-0 left-0 right-0 h-14 bg-[#B38728] border-b border-amber-300/50 flex items-center px-4 z-30 shadow-md">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 rounded-lg text-amber-950 hover:bg-white/10 transition-colors"
+            >
+              <MenuIcon size={22} />
+            </button>
+            <div className="flex items-center gap-2 ml-3">
+              <div className="h-8 w-8 overflow-hidden rounded-full border border-white/50 shadow-sm bg-white flex items-center justify-center">
+                <img
+                  src={StFransis}
+                  alt="Logo"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="text-base font-bold text-amber-950 font-serif">
+                Gereja
+              </span>
+            </div>
+          </header>
+        )}
+
+        {/* KONTEN UTAMA */}
         <main
           ref={mainRef}
-          className={`flex-1 h-screen overflow-y-auto overflow-x-hidden transition-all duration-300 ${mainPadding}`}
+          className={`
+            flex-1 h-screen overflow-y-auto overflow-x-hidden transition-all duration-300
+            ${isMobile ? "pl-0 pt-14" : "pl-20"}
+          `}
         >
           <div className="w-full h-full">{children}</div>
         </main>

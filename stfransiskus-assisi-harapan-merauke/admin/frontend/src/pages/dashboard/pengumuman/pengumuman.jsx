@@ -253,14 +253,14 @@ export default function Pengumuman() {
         {currentItems.length > 0 ? (
           <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-gray-100 divide-x gap-1 rounded overflow-hidden">
             {currentItems.map((item) => (
-              <form
+              <div
                 key={item.id}
                 onClick={() => handleShowDetail(item)}
                 className="bg-blue-300/40 hover:bg-slate-500/50 transition-colors cursor-pointer border border-gray-100 rounded flex flex-col p-8 group"
               >
                 {/* KONTEN */}
                 <section className="p-6">
-                  <form className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-4">
                     <span
                       className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${
                         item.status === "pernikahan"
@@ -275,6 +275,7 @@ export default function Pengumuman() {
                     <section className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                       <button
                         className="p-2 cursor-pointer bg-slate-200 rounded text-yellow-700 hover:bg-amber-500 hover:text-white transition-all active:scale-75"
+                        type="button"
                         onClick={(i) => {
                           i.stopPropagation();
                           setFormData(item);
@@ -287,6 +288,7 @@ export default function Pengumuman() {
                       </button>
                       <button
                         className="p-2 cursor-pointer bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
+                        type="button"
                         onClick={(i) => {
                           i.stopPropagation();
                           handleDelete(item.id);
@@ -295,9 +297,9 @@ export default function Pengumuman() {
                         <Trash2 size={16} />
                       </button>
                     </section>
-                  </form>
+                  </div>
 
-                  <form className="space-y-2">
+                  <section className="space-y-2">
                     <h3 className="text-base font-bold text-gray-800 leading-tight capitalize">
                       {item.status === "pernikahan" ? (
                         <span className="block italic text-rose-600">
@@ -311,29 +313,29 @@ export default function Pengumuman() {
                     <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed font-medium">
                       {item.description}
                     </p>
-                  </form>
+                  </section>
                 </section>
 
                 {/* FOOTER CARD */}
                 <footer className="mt-6 pt-6 border-t border-gray-100 flex flex-col gap-2">
-                  <form className="flex items-center gap-2 text-[10px] text-gray-900 uppercase tracking-widest">
+                  <section className="flex items-center gap-2 text-[10px] text-gray-900 uppercase tracking-widest">
                     <MapPin size={11} />
                     <span>Stasi {item.stasi}</span>
-                  </form>
+                  </section>
                   <section className="flex justify-between text-[10px] text-gray-900 uppercase tracking-widest">
-                    <form className="flex items-center gap-1.5">
+                    <section className="flex items-center gap-1.5">
                       <Calendar size={11} />
                       {item.status === "pernikahan"
                         ? item.pernikahanData.tanggalPernikahan
                         : item.tanggal}
-                    </form>
+                    </section>
                     <form className="flex items-center gap-1.5">
                       <Clock size={11} />
                       {item.waktu} WITA
                     </form>
                   </section>
                 </footer>
-              </form>
+              </div>
             ))}
           </section>
         ) : (
@@ -352,6 +354,7 @@ export default function Pengumuman() {
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
               className="p-3 rounded-2xl border border-gray-200 hover:bg-gray-50 disabled:opacity-20 transition-all active:scale-90"
+              type="button"
             >
               <ChevronLeft size={20} />
             </button>
@@ -365,6 +368,7 @@ export default function Pengumuman() {
                       ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
                       : "text-gray-400 hover:bg-gray-100"
                   }`}
+                  type="button"
                 >
                   {i + 1}
                 </button>
@@ -374,6 +378,7 @@ export default function Pengumuman() {
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="p-3 rounded-2xl border border-gray-200 hover:bg-gray-50 disabled:opacity-20 transition-all active:scale-90"
+              type="button"
             >
               <ChevronRight size={20} />
             </button>

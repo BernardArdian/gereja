@@ -1,6 +1,7 @@
 const express = require('express')
 const connectDB = require('./config/config')
 const cors = require('cors')
+const securityMiddleware = require('./midleware/securityMiddleware')
 
 const eventRoute = require('./route/eventroute')
 const adminRoute = require('./route/adminroute')
@@ -11,24 +12,29 @@ const administratifRoute = require('./route/administrativeroute')
 
 const app = express()
 const port = 5000
+const allowedOrigins = new Set([
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+])
 
 // Middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-app.use((req, res, next) => {
-    console.log(`[${req.method}] ${req.url} - Body:`, req.body)
-    next()
-})
-
-connectDB()
-
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.has(origin)) {
+            return callback(null, true)
+        }
+        return callback(new Error(`Origin ${origin} tidak diizinkan oleh CORS`))
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: false, limit: '1mb' }))
+app.use(securityMiddleware)
+
+connectDB()
 
 // Routes
 app.use('/api/admin', adminRoute)
@@ -55,5 +61,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 })
-
-

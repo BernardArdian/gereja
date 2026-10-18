@@ -6,23 +6,24 @@ import {
   Calendar,
   ArrowRight,
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
   Trash2,
   Edit2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
+import PaginationFooter from "../../../component/PaginationFooter";
+import DeleteModal from "../../../component/alert/deleteModal";
 
 export default function Tradisi() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [_isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  //const [_isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 6;
 
   // Data dummy tradisi
-  const [tradisiData] = useState([
+  const [tradisiData, setTradisiData] = useState([
     {
       id: 1,
       title: "Perarakan Patung Maria",
@@ -78,6 +79,62 @@ export default function Tradisi() {
       image: "https://picsum.photos/seed/fire/800/600",
       category: "LITURGI",
     },
+
+    {
+      id: 7,
+      title: "Perarakan Patung Maria",
+      location: "Gereja Pusat",
+      period: "Mei & Oktober",
+      description:
+        "Tradisi doa Rosario keliling lingkungan setiap malam di bulan Maria.",
+      image: "https://picsum.photos/seed/maria/800/600",
+      category: "LITURGI",
+    },
+    {
+      id: 8,
+      title: "Pesta Pelindung Paroki",
+      location: "Pusat Paroki",
+      period: "15 Agustus",
+      description: "Perayaan syukur pelindung paroki dengan pesta rakyat.",
+      image: "https://picsum.photos/seed/pesta/800/600",
+      category: "BUDAYA",
+    },
+    {
+      id: 9,
+      title: "Misa Inkulturasi",
+      location: "Stasi Kurik",
+      period: "Acara Khusus",
+      description: "Perpaduan tata gerak musik tradisional dalam Ekaristi.",
+      image: "https://picsum.photos/seed/culture/800/600",
+      category: "BUDAYA",
+    },
+    {
+      id: 10,
+      title: "Visualisasi Jalan Salib",
+      location: "Pusat Paroki",
+      period: "Jumat Agung",
+      description: "Tablo kisah sengsara Yesus Kristus oleh OMK.",
+      image: "https://picsum.photos/seed/salib/800/600",
+      category: "LITURGI",
+    },
+    {
+      id: 11,
+      title: "Pemberkatan Benih",
+      location: "Stasi Harapan",
+      period: "Musim Tanam",
+      description: "Syukur atas hasil bumi dan pemberkatan bibit tani.",
+      image: "https://picsum.photos/seed/seed/800/600",
+      category: "SOSIAL",
+    },
+    {
+      id: 12,
+      title: "Api Unggun Paskah",
+      location: "Seluruh Stasi",
+      period: "Vigili Paskah",
+      description: "Tradisi penyalaan lilin Paskah dari api suci.",
+      image: "https://picsum.photos/seed/fire/800/600",
+      category: "LITURGI",
+    },
   ]);
 
   const filteredTradisi = useMemo(() => {
@@ -86,7 +143,6 @@ export default function Tradisi() {
     );
   }, [searchQuery, tradisiData]);
 
-  const totalPages = Math.ceil(filteredTradisi.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedTradisi = filteredTradisi.slice(
     startIndex,
@@ -96,20 +152,18 @@ export default function Tradisi() {
   // Jika ada item yang dipilih, render halaman Detail secara Fullscreen
   if (selectedItem) {
     return (
-      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
-        <Detail
-          formData={selectedItem}
-          handlers={{
-            onBack: () => setSelectedItem(null),
-          }}
-        />
-      </div>
+      <Detail
+        formData={selectedItem}
+        handlers={{
+          onBack: () => setSelectedItem(null),
+        }}
+      />
     );
   }
 
   return (
-    <section className="min-h-screen pb-20">
-      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
+      <header className="relative w-full overflow-hidden rounded-2xl px-5 py-10 sm:px-8 sm:py-14">
         {/* LAYER GAMBAR  */}
         <section
           className="absolute inset-0 w-full h-full z-0"
@@ -130,7 +184,7 @@ export default function Tradisi() {
             <div className="flex items-center gap-2 text-indigo-300 font-bold text-[10px] uppercase tracking-widest mb-2">
               <History size={14} /> Warisan Budaya & Iman
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
               Tradisi Gereja
             </h1>
           </div>
@@ -138,15 +192,15 @@ export default function Tradisi() {
 
         {/* ICON DEKORATIF */}
         <section className="absolute top-0 right-0 opacity-20 transform translate-x-10 text-amber-500 -translate-y-5 pointer-events-none z-10">
-          <BookOpen size={300} />
+          <BookOpen size={180} className="sm:h-75 sm:w-75" />
         </section>
       </header>
 
       {/* STICKY SEARCH BAR */}
-      <section className="sticky top-0 z-40 -mt-8 px-6 transition-all duration-300">
+      <section className="sticky top-0 z-40 -mt-5 px-1 transition-all duration-300 sm:-mt-8 sm:px-6">
         <div className="max-w-4xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
-            <div className="relative felx-1">
+            <div className="relative flex-1">
               <Search
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                 size={20}
@@ -167,19 +221,24 @@ export default function Tradisi() {
       </section>
 
       {/* MAIN CONTENT */}
-      <main className="max-w-6xl mx-auto px-6 mt-12">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+      <main className="mx-auto mt-6 w-full max-w-6xl px-0 sm:mt-10 sm:px-2">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {paginatedTradisi.length === 0 && (
+            <p className="col-span-full rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-500">
+              Tidak ada tradisi yang cocok dengan pencarian.
+            </p>
+          )}
           {paginatedTradisi.map((item) => (
             <section
               key={item.id}
               onClick={() =>
                 setSelectedItem({
                   ...item,
-                  title: item.name,
-                  content: item.summary,
+                  title: item.title,
+                  content: item.description,
                 })
               }
-              className="group cursor-pointer bg-yellow-800/60 rounded border border-gray-100 hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col"
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
               <section className="relative aspect-video overflow-hidden">
                 <img
@@ -194,24 +253,36 @@ export default function Tradisi() {
                 </div>
               </section>
 
-              <section className="p-7 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 text-[0.8em] font-bold text-white uppercase mb-2">
+              <section className="flex flex-1 flex-col p-4 sm:p-5">
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase text-amber-800">
                   <Calendar size={12} /> {item.period}
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 leading-tight mb-2 group-hover:text-indigo-600/70 transition-colors">
+                <h3 className="mb-2 wrap-break-word text-lg font-bold leading-tight text-slate-900 transition-colors group-hover:text-amber-800 sm:text-xl">
                   {item.title}
                 </h3>
-                <p className="text-sm text-white line-clamp-2 mb-6 leading-relaxed">
-                  {item.content}
+                <p className="mb-5 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                  {item.description}
                 </p>
 
-                <footer className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
-                  <button className="cursor-pointer text-black text-[0.6em] font-black uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                <footer className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedItem({
+                        ...item,
+                        title: item.title,
+                        content: item.description,
+                      })
+                    }
+                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-50"
+                  >
                     Baca <ArrowRight size={14} />
                   </button>
-                  <section className="flex items-center justify-end gap-3">
+                  <section className="flex items-center justify-end gap-1 sm:gap-2">
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
+                      type="button"
+                      aria-label={`Edit ${item.title}`}
+                      className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:p-2.5"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
@@ -219,9 +290,12 @@ export default function Tradisi() {
                     />
 
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
+                      type="button"
+                      aria-label={`Hapus ${item.title}`}
+                      className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 sm:p-2.5"
                       onClick={(i) => {
                         i.stopPropagation();
+                        setItemToDelete(item);
                       }}
                       children={<Trash2 size={18} />}
                     />
@@ -231,59 +305,28 @@ export default function Tradisi() {
             </section>
           ))}
         </section>
-
-        {/* PAGINATION */}
-        {totalPages > 1 && (
-          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
-            <p className="text-xs text-gray-600 font-medium">
-              Menampilkan{" "}
-              <span
-                className="text-gray-700 font-bold"
-                children={paginatedTradisi.length}
-              />{" "}
-              dari{" "}
-              <span
-                className="text-gray-700 font-bold"
-                children={filteredTradisi.length}
-              />{" "}
-              tradisi
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <div
-                className="flex gap-1"
-                children={[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
-                      currentPage === i + 1
-                        ? "bg-blue-500/30 text-black"
-                        : "bg-white text-gray-400 border border-gray-50"
-                    }`}
-                    children={i + 1}
-                  />
-                ))}
-              />
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </footer>
-        )}
       </main>
+      <PaginationFooter
+        currentPage={currentPage}
+        pageSize={itemsPerPage}
+        totalItems={filteredTradisi.length}
+        onPageChange={setCurrentPage}
+        itemLabel="tradisi gereja"
+      />
+      <DeleteModal
+        isOpen={Boolean(itemToDelete)}
+        onClose={() => setItemToDelete(null)}
+        onConfirm={() => {
+          setTradisiData((previous) =>
+            previous.filter((entry) => entry.id !== itemToDelete?.id),
+          );
+          setItemToDelete(null);
+        }}
+        title="Hapus tradisi gereja?"
+        description="Tradisi yang dihapus tidak lagi tersedia di daftar."
+        itemName={itemToDelete?.title}
+        confirmText="Ya, hapus tradisi"
+      />
     </section>
   );
 }

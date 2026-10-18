@@ -4,38 +4,58 @@ const memberService = require("../service/member/memberservice");
 const authMiddleware = require("../midleware/authMiddleware");
 const mongoose = require("mongoose");
 
-//input, display, update, delete member
+function sendError(res, error, fallbackStatus = 500) {
+  res
+    .status(error.statusCode || fallbackStatus)
+    .json({ error: error.message || "Terjadi kesalahan pada data umat." });
+}
+
 router.post("/inputmember", async (req, res) => {
   try {
-    const result = await memberService.createMember(req.body);
-    res.status(201).json(result);
+    const member = await memberService.createMember(req.body);
+    res.status(201).json(member);
   } catch (error) {
-    const status = error.statusCode || 400;
-    res.status(status).json({ error: error.message });
+    sendError(res, error, 400);
   }
-}).get("/displaymember", async (req, res) => {
+});
+
+router.get("/displaymember", async (_req, res) => {
   try {
     const members = await memberService.getAllMember();
     res.status(200).json(members);
   } catch (error) {
-    const status = error.statusCode || 500;
-    res.status(status).json({ error: error.message });
+    sendError(res, error);
   }
 });
 
-router.put("/:id", authMiddleware, async (req, res) => {});
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
+router.get("/:id", async (req, res) => {
+  try {
+    const member = await memberService.getAllMemberById(req.params.id);
+    res.status(200).json(member);
+  } catch (error) {
+    sendError(res, error, 400);
+  }
+});
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "ID tidak valid" });
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const member = await memberService.updateMember(req.params.id, req.body);
+    res.status(200).json(member);
+  } catch (error) {
+    sendError(res, error, 400);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ error: "ID umat tidak valid." });
   }
 
   try {
-    const result = await memberService.deleteMember(id);
-    res.status(200).json(result);
+    const member = await memberService.deleteMember(req.params.id);
+    res.status(200).json(member);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    sendError(res, error, 400);
   }
 });
 

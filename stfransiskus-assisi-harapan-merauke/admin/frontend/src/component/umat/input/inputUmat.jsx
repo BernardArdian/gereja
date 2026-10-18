@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { umatServiceApi } from "../../../api/umatApi/umatServiceApi";
-import { Save } from "lucide-react";
+import { Check, LoaderCircle, Save, UserRound } from "lucide-react";
 
 // TRANSFORM: formData UI => payload backend
 const STATUS_NIKAH_MAP = {
@@ -44,17 +44,17 @@ const transformToPayload = (formData) => {
   const statusNikah =
     STATUS_NIKAH_MAP[formData.statusNikah] ?? formData.statusNikah;
 
-  // LAJANG => simpan ke koleksi Lajang via field "personal"
+  // Data belum menikah disimpan pada field `single` sesuai schema backend.
   if (formData.statusNikah === "belum menikah") {
     return {
       statusNikah,
       ...(formData.noKk && { noKk: formData.noKk }),
       ...(formData.stasiKeluarga && { stasiKeluarga: formData.stasiKeluarga }),
-      personal: mapPerson(formData.individu),
+      single: mapPerson(formData.individu),
     };
   }
 
-  // MENIKAH / DUDA / JANDA => simpan ke koleksi Umat via field "keluarga"
+  // Data menikah, duda, dan janda menggunakan struktur keluarga backend.
   const statusSuami =
     formData.statusNikah === "janda"
       ? "meninggal"
@@ -85,15 +85,107 @@ const transformToPayload = (formData) => {
         tglMeninggal: almarhum.tglMeninggal || "Data Awal",
         lokasiMakam: almarhum.lokasiMakam || "-",
       }),
-      anak: formData.anak.map(mapPerson),
+      anak: formData.anak
+        .filter((child) => child.nama.trim())
+        .map(mapPerson),
     },
   };
 };
 
+const createPersonTemplate = () => ({
+  nama: "",
+  tempatLahir: "",
+  tglLahir: "",
+  statusHidup: "hidup",
+  statusNikah: "belum",
+  tglMeninggal: "",
+  lokasiMakam: "",
+  baptis: { status: "belum", tempat: "", tanggal: "", stasi: "" },
+  komuni: { status: "belum", tempat: "", tanggal: "", stasi: "" },
+  krisma: { status: "belum", tempat: "", tanggal: "", stasi: "" },
+});
+
+function readSacrament(value) {
+  const record = Array.isArray(value) ? value[0] : value;
+  return record
+    ? {
+        status: record.status || "belum",
+        tempat: record.tempat || "",
+        tanggal: record.tanggal || "",
+        stasi: record.stasi || "",
+      }
+    : { status: "belum", tempat: "", tanggal: "", stasi: "" };
+}
+
+function readPerson(source = {}) {
+  const person = { ...createPersonTemplate(), ...source };
+  for (const key of ["baptis", "komuni", "krisma"]) {
+    person[key] = readSacrament(source[key]);
+  }
+  return person;
+}
+
+function createInitialFormData(initialData) {
+  const maritalStatus = (initialData?.statusNikah || "belum menikah")
+    .toLowerCase()
+    .replaceAll("_", " ");
+  const statusNikah =
+    maritalStatus === "sudah menikah" ? "menikah" : maritalStatus;
+  const family = initialData?.keluarga || {};
+  const personal = initialData?.single || initialData?.personal || {};
+  const husband = {
+    ...family.statusSakramentSuami,
+    nama: family.namaSuami || "",
+    statusHidup: family.statusSuami || "hidup",
+    ...(family.statusSuami === "meninggal" && {
+      tglMeninggal: family.tglMeninggal || "",
+      lokasiMakam: family.lokasiMakam || "",
+    }),
+  };
+  const wife = {
+    ...family.statusSakramentIstri,
+    nama: family.namaIstri || "",
+    statusHidup: family.statusIstri || "hidup",
+    ...(family.statusIstri === "meninggal" && {
+      tglMeninggal: family.tglMeninggal || "",
+      lokasiMakam: family.lokasiMakam || "",
+    }),
+  };
+  const toFormPerson = (person) => {
+    const result = readPerson(person);
+    for (const key of ["baptis", "komuni", "krisma"]) {
+      result[key] = readSacrament(person[key]);
+    }
+    return result;
+  };
+
+  return {
+    statusNikah: ["menikah", "duda", "janda"].includes(statusNikah)
+      ? statusNikah
+      : "belum menikah",
+    noKk: initialData?.noKk || "",
+    stasiKeluarga:
+      typeof initialData?.stasiKeluarga === "string"
+        ? initialData.stasiKeluarga
+        : initialData?.stasiKeluarga?.nama_stasi ||
+          initialData?.stasiKeluarga?.nama ||
+          "",
+    individu: toFormPerson(initialData?.individu || personal),
+    suami: toFormPerson(initialData?.suami || husband),
+    istri: toFormPerson(initialData?.istri || wife),
+    anak: (initialData?.anak || family.anak || []).map(toFormPerson),
+  };
+}
+
 // sub-komponen
-const SakramenDetail = ({ personData, sacramentKey, onUpdate }) => {
+const SakramenDetail = ({
+  personData,
+  sacramentKey,
+  personLabel,
+  onUpdate,
+}) => {
   const inputClass =
-    "w-full border border-gray-100 rounded-xl p-3 text-sm outline-none transition-all focus:border-indigo-300 focus:bg-white bg-gray-50 placeholder:text-gray-300";
+    "w-full min-h-11 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
       {[
@@ -107,10 +199,14 @@ const SakramenDetail = ({ personData, sacramentKey, onUpdate }) => {
         { label: "Stasi", key: "stasi", type: "text", placeholder: "Stasi..." },
       ].map(({ label, key, type, placeholder }) => (
         <div key={key} className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest ml-1">
+          <label
+            htmlFor={`${personLabel}-${sacramentKey}-${key}`}
+            className="text-xs font-medium text-slate-600"
+          >
             {label}
           </label>
           <input
+            id={`${personLabel}-${sacramentKey}-${key}`}
             type={type}
             placeholder={placeholder}
             className={inputClass}
@@ -123,28 +219,29 @@ const SakramenDetail = ({ personData, sacramentKey, onUpdate }) => {
   );
 };
 
-const SakramenBlock = ({ personData, onUpdate }) => (
+const SakramenBlock = ({ personData, onUpdate, personLabel }) => (
   <div className="space-y-2">
     {["baptis", "komuni", "krisma"].map((s) => (
-      <div key={s} className="p-4 border border-gray-100 rounded-xl bg-white">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-          <span className="text-[10px] font-semibold uppercase tracking-widest w-14 text-gray-400">
-            {s}
+      <div key={s} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+          <span className="w-32 text-sm font-semibold capitalize text-slate-800">
+            {s === "komuni" ? "Komuni pertama" : s}
           </span>
           <div className="flex flex-wrap gap-4">
             {["belum", "sudah"].map((status) => (
               <label
                 key={status}
-                className="flex items-center gap-2 cursor-pointer"
+                className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm text-slate-700 hover:bg-slate-50"
               >
                 <input
                   type="radio"
-                  className="w-4 h-4 accent-indigo-600"
+                  name={`sacrament-${personLabel}-${s}`}
+                  className="h-4 w-4 accent-amber-700"
                   checked={personData[s].status === status}
                   onChange={() => onUpdate(s, "status", status)}
                 />
                 <span
-                  className={`text-xs font-medium ${personData[s].status === status ? "text-indigo-600" : "text-gray-300"}`}
+                  className={`capitalize ${personData[s].status === status ? "font-semibold text-amber-800" : "text-slate-500"}`}
                 >
                   {status}
                 </span>
@@ -156,6 +253,7 @@ const SakramenBlock = ({ personData, onUpdate }) => (
           <SakramenDetail
             personData={personData}
             sacramentKey={s}
+            personLabel={personLabel}
             onUpdate={onUpdate}
           />
         )}
@@ -166,22 +264,23 @@ const SakramenBlock = ({ personData, onUpdate }) => (
 
 const StatusHidupBlock = ({ personData, onUpdate, label }) => (
   <div
-    className={`p-4 rounded-xl border space-y-3 transition-colors ${personData.statusHidup === "meninggal" ? "bg-red-50/50 border-red-100" : "bg-gray-50/50 border-gray-100"}`}
+    className={`space-y-3 rounded-xl border p-4 transition-colors ${personData.statusHidup === "meninggal" ? "border-rose-200 bg-rose-50" : "border-slate-200 bg-slate-50"}`}
   >
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-      <label className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+      <span className="text-sm font-semibold text-slate-700">
         Riwayat {label}
-      </label>
+      </span>
       <div className="flex gap-4">
         {["hidup", "meninggal"].map((s) => (
-          <label key={s} className="flex items-center gap-2 cursor-pointer">
+          <label key={s} className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm text-slate-700 hover:bg-white">
             <input
               type="radio"
-              className="w-4 h-4 accent-red-500"
+              name={`life-status-${label}`}
+              className="h-4 w-4 accent-rose-600"
               checked={personData.statusHidup === s}
               onChange={() => onUpdate("statusHidup", s)}
             />
-            <span className="text-xs font-medium capitalize text-gray-600">
+            <span className="capitalize">
               {s}
             </span>
           </label>
@@ -192,14 +291,16 @@ const StatusHidupBlock = ({ personData, onUpdate, label }) => (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           type="date"
-          className="border border-gray-100 rounded-xl p-2.5 text-xs bg-white outline-none focus:border-red-200"
+          aria-label={`Tanggal meninggal ${label}`}
+          className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
           value={personData.tglMeninggal || ""}
           onChange={(e) => onUpdate("tglMeninggal", e.target.value)}
         />
         <input
           type="text"
           placeholder="Lokasi Makam"
-          className="border border-gray-100 rounded-xl p-2.5 text-xs bg-white outline-none focus:border-red-200 placeholder:text-gray-300"
+          aria-label={`Lokasi makam ${label}`}
+          className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
           value={personData.lokasiMakam || ""}
           onChange={(e) => onUpdate("lokasiMakam", e.target.value)}
         />
@@ -210,13 +311,13 @@ const StatusHidupBlock = ({ personData, onUpdate, label }) => (
 
 const SectionHeader = ({ label, color = "indigo" }) => {
   const colors = {
-    indigo: "text-indigo-500 border-indigo-100",
-    blue: "text-blue-500 border-blue-100",
-    pink: "text-pink-500 border-pink-100",
-    green: "text-green-500 border-green-100",
+    indigo: "text-amber-800 border-amber-200",
+    blue: "text-sky-800 border-sky-200",
+    pink: "text-rose-800 border-rose-200",
+    green: "text-emerald-800 border-emerald-200",
   };
   return (
-    <div className={`pb-2 border-b ${colors[color]}`}>
+    <div className={`border-b pb-2 ${colors[color]}`}>
       <h3
         className={`text-xs font-semibold uppercase tracking-widest ${colors[color].split(" ")[0]}`}
       >
@@ -227,54 +328,86 @@ const SectionHeader = ({ label, color = "indigo" }) => {
 };
 
 const inputBase =
-  "w-full border border-gray-100 bg-white p-3 rounded-xl text-sm outline-none transition-all placeholder:text-gray-300";
+  "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
 export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
-  const createPersonTemplate = () => ({
-    nama: "",
-    tempatLahir: "",
-    tglLahir: "",
-    statusHidup: "hidup",
-    statusNikah: "belum",
-    tglMeninggal: "",
-    lokasiMakam: "",
-    baptis: { status: "belum", tempat: "", tanggal: "", stasi: "" },
-    komuni: { status: "belum", tempat: "", tanggal: "", stasi: "" },
-    krisma: { status: "belum", tempat: "", tanggal: "", stasi: "" },
-  });
-
-  const [formData, setFormData] = useState({
-    statusNikah: initialData?.statusNikah || "belum menikah",
-    noKk: initialData?.noKk || "",
-    stasiKeluarga: initialData?.stasiKeluarga || "",
-    individu: initialData?.individu || createPersonTemplate(),
-    suami: initialData?.suami || createPersonTemplate(),
-    istri: initialData?.istri || createPersonTemplate(),
-    anak: initialData?.anak || [],
-  });
+  const [formData, setFormData] = useState(() =>
+    createInitialFormData(initialData),
+  );
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    setFormData(createInitialFormData(initialData));
+    setError("");
+  }, [initialData]);
 
   //simpan / update
   const handleSimpan = async () => {
-    setLoading(true);
     setError("");
+    setSuccess("");
 
-    const payload = transformToPayload(formData); // <= transform formData ke struktur backend
-
-    const [data, err] = isEdit
-      ? await umatServiceApi.updateDataUmat(editId, payload) // PATCH /umat/:id
-      : await umatServiceApi.inputDataUmat(payload); // POST  /umat
-
-    setLoading(false);
-
-    if (err) {
-      setError(err);
+    if (!formData.stasiKeluarga.trim()) {
+      setError("Stasi keluarga harus diisi.");
       return;
     }
 
-    onSuccess?.(data); // misal: navigate ke halaman list
+    if (formData.statusNikah === "belum menikah") {
+      if (!formData.individu.nama.trim()) {
+        setError("Nama umat harus diisi.");
+        return;
+      }
+    } else if (
+      !formData.noKk.trim() ||
+      !formData.suami.nama.trim() ||
+      !formData.istri.nama.trim()
+    ) {
+      setError("Nomor KK dan nama suami serta istri harus diisi.");
+      return;
+    }
+
+    setLoading(true);
+    const payload = transformToPayload(formData);
+    const minimumLoadingTime = new Promise((resolve) => {
+      window.setTimeout(resolve, 5000);
+    });
+
+    try {
+      const [data, err] = isEdit
+        ? await umatServiceApi.updateDataUmat(editId, payload)
+        : await umatServiceApi.inputDataUmat(payload);
+      await minimumLoadingTime;
+
+      if (err) {
+        setError(
+          typeof err === "string"
+            ? err
+            : "Data umat gagal disimpan. Periksa kembali isian dan coba lagi.",
+        );
+        return;
+      }
+
+      const handled = await onSuccess?.(data, isEdit);
+      if (handled === false) return;
+
+      if (!isEdit) {
+        setFormData(createInitialFormData(null));
+        setSuccess(
+          "Data umat berhasil ditambahkan. Form siap untuk input berikutnya.",
+        );
+      }
+    } catch (saveError) {
+      await minimumLoadingTime;
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Data umat gagal disimpan. Silakan coba lagi.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   //status nikah
@@ -313,34 +446,58 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
   };
 
   return (
-    <main className="max-w-4xl mx-auto p-4 md:p-6 bg-slate-400/20 border border-gray-100 rounded space-y-8 my-10 w-full">
-      {/* header */}
-      <header className="text-center space-y-4">
-        <h1 className="text-lg font-semibold text-gray-800 tracking-tight">
-          Data Umat
+    <main
+      onChange={() => {
+        if (success) setSuccess("");
+      }}
+      className="mx-auto my-4 w-full max-w-5xl space-y-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:my-6 sm:space-y-8 sm:p-6 lg:p-8"
+    >
+      <header className="space-y-4">
+        <div className="flex items-start gap-3">
+        <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+          <UserRound size={20} aria-hidden="true" />
+        </span>
+        <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+          {isEdit ? "Perbarui data terdaftar" : "Pendaftaran umat"}
+        </p>
+        <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          {isEdit ? "Edit data umat" : "Input data umat"}
         </h1>
+        <p className="mt-1 text-sm leading-6 text-slate-600">
+          Pilih status pernikahan, lalu lengkapi data diri dan sakramen.
+        </p>
+        </div>
+        </div>
         <div className="flex flex-wrap justify-center gap-2">
-          {["belum menikah", "menikah", "duda", "janda"].map((s) => {
-            const isActive = formData.statusNikah === s;
-            return (
-              <button
-                key={s}
-                onClick={() => handleStatusNikahChange(s)}
-                className={`px-4 py-2 cursor-pointer rounded-xl text-xs font-semibold capitalize transition-all border ${isActive ? statusConfig[s] : "bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-200"}`}
-              >
-                {s}
-              </button>
-            );
-          })}
+        {["belum menikah", "menikah", "duda", "janda"].map((s) => {
+          const isActive = formData.statusNikah === s;
+          return (
+            <button
+              key={s}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => handleStatusNikahChange(s)}
+              className={`inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold capitalize transition sm:px-4 ${
+                isActive
+                  ? `${statusConfig[s]} ring-2 ring-amber-100`
+                  : "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50"
+              }`}
+            >
+              {isActive && <Check size={14} aria-hidden="true" />}
+              {s}
+            </button>
+          );
+        })}
         </div>
       </header>
 
-      <hr className="border-gray-100" />
+      <hr className="border-slate-200" />
 
       {!isSudahNikah ? (
         /* lajang */
-        <section className="space-y-6 animate-in fade-in duration-500">
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50 p-4 md:p-5 rounded-2xl border border-gray-100">
+        <section className="space-y-6">
+          <section className="grid grid-cols-1 gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 sm:p-5">
             {[
               {
                 label: "No. KK (Opsional)",
@@ -354,26 +511,20 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               },
             ].map(({ label, placeholder, key }) => (
               <div key={key} className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-semibold text-red-400 uppercase tracking-widest">
+                <label htmlFor={`umat-${key}`} className="text-xs font-medium text-slate-700">
                   {label}
                 </label>
                 <input
                   placeholder={placeholder}
+                  id={`umat-${key}`}
                   type="text"
                   className={`${inputBase} focus:border-indigo-300`}
+                  aria-label={label}
                   value={formData[key]}
                   onChange={(e) => {
                     const val = e.target.value;
                     if (key === "noKk") {
                       const cleanValue = val.replace(/\D/g, ""); // Menghapus semua yang bukan angka
-                      setFormData({ ...formData, [key]: cleanValue });
-                      return;
-                    }
-                    if (key === "stasiKeluarga") {
-                      const cleanValue = val.replace(
-                        /[{[:;"'<>,.?/|}~!@#$%^*()_+=-]/g,
-                        "",
-                      ); // Menghapus karakter special
                       setFormData({ ...formData, [key]: cleanValue });
                       return;
                     }
@@ -390,39 +541,38 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             <input
               placeholder="Nama Lengkap"
               type="text"
+              aria-label="Nama lengkap umat"
+              autoComplete="name"
+              required
               className={`${inputBase} focus:border-indigo-300`}
-              pattern="[A-Za-z\s]*"
               value={formData.individu.nama}
-              onChange={(e) => {
-                if (e.target.validity.valid) {
-                  setFormData({
-                    ...formData,
-                    individu: { ...formData.individu, nama: e.target.value },
-                  });
-                }
-              }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  individu: { ...formData.individu, nama: e.target.value },
+                })
+              }
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 placeholder="Tempat Lahir"
                 type="text"
+                aria-label="Tempat lahir umat"
                 className={`${inputBase} focus:border-indigo-300`}
-                pattern="[A-Za-z\s]*"
                 value={formData.individu.tempatLahir || ""}
-                onChange={(e) => {
-                  if (e.target.validity.valid) {
-                    setFormData({
-                      ...formData,
-                      individu: {
-                        ...formData.individu,
-                        tempatLahir: e.target.value,
-                      },
-                    });
-                  }
-                }}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    individu: {
+                      ...formData.individu,
+                      tempatLahir: e.target.value,
+                    },
+                  })
+                }
               />
               <input
                 type="date"
+                aria-label="Tanggal lahir umat"
                 className={`${inputBase} focus:border-indigo-300`}
                 value={formData.individu.tglLahir || ""}
                 max={new Date().toISOString().split("T")[0]}
@@ -450,6 +600,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             }
           />
           <SakramenBlock
+            personLabel="umat"
             personData={formData.individu}
             onUpdate={(s, f, v) =>
               setFormData({
@@ -464,8 +615,8 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
         </section>
       ) : (
         /* menikah / duda / janda */
-        <section className="space-y-10 animate-in slide-in-from-top-4 duration-500">
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50/50 p-4 md:p-5 rounded-2xl border border-gray-100">
+        <section className="space-y-8">
+          <section className="grid grid-cols-1 gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 sm:p-5">
             {[
               {
                 label: "No. Kartu Keluarga *",
@@ -479,13 +630,16 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               },
             ].map(({ label, placeholder, key }) => (
               <div key={key} className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                <label htmlFor={`family-${key}`} className="text-xs font-medium text-slate-700">
                   {label}
                 </label>
                 <input
                   placeholder={placeholder}
+                  id={`family-${key}`}
                   type="text"
+                  required
                   className={`${inputBase} focus:border-indigo-300`}
+                  aria-label={label}
                   value={formData[key]}
                   onChange={(e) => {
                     const val = e.target.value;
@@ -496,11 +650,6 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
                       return;
                     }
 
-                    if (key === "stasiKeluarga") {
-                      const cleanValue = val.replace(/[0-9]/g, ""); // Menghapus semua angka
-                      setFormData({ ...formData, [key]: cleanValue });
-                      return;
-                    }
                     setFormData({ ...formData, [key]: val });
                   }}
                 />
@@ -515,39 +664,38 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               <input
                 placeholder="Nama Suami"
                 type="text"
+                aria-label="Nama suami"
+                autoComplete="name"
+                required
                 className={`${inputBase} focus:border-blue-300`}
-                pattern="[A-Za-z\s]*"
                 value={formData.suami.nama}
-                onChange={(e) => {
-                  if (e.target.validity.valid) {
-                    setFormData({
-                      ...formData,
-                      suami: { ...formData.suami, nama: e.target.value },
-                    });
-                  }
-                }}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    suami: { ...formData.suami, nama: e.target.value },
+                  })
+                }
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   placeholder="Tempat Lahir"
                   type="text"
+                  aria-label="Tempat lahir suami"
                   className={`${inputBase} focus:border-blue-300`}
                   value={formData.suami.tempatLahir || ""}
-                  pattern="[A-Za-z\s]*"
-                  onChange={(e) => {
-                    if (e.target.validity.valid) {
-                      setFormData({
-                        ...formData,
-                        suami: {
-                          ...formData.suami,
-                          tempatLahir: e.target.value,
-                        },
-                      });
-                    }
-                  }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      suami: {
+                        ...formData.suami,
+                        tempatLahir: e.target.value,
+                      },
+                    })
+                  }
                 />
                 <input
                   type="date"
+                  aria-label="Tanggal lahir suami"
                   className={`${inputBase} focus:border-blue-300`}
                   value={formData.suami.tglLahir || ""}
                   max={new Date().toISOString().split("T")[0]}
@@ -571,6 +719,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               }
             />
             <SakramenBlock
+              personLabel="suami"
               personData={formData.suami}
               onUpdate={(s, f, v) =>
                 setFormData({
@@ -591,39 +740,38 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               <input
                 placeholder="Nama Istri"
                 type="text"
+                aria-label="Nama istri"
+                autoComplete="name"
+                required
                 className={`${inputBase} focus:border-pink-300`}
-                pattern="[A-Za-z\s]*"
                 value={formData.istri.nama}
-                onChange={(e) => {
-                  if (e.target.validity.valid) {
-                    setFormData({
-                      ...formData,
-                      istri: { ...formData.istri, nama: e.target.value },
-                    });
-                  }
-                }}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    istri: { ...formData.istri, nama: e.target.value },
+                  })
+                }
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   placeholder="Tempat Lahir"
                   type="text"
+                  aria-label="Tempat lahir istri"
                   className={`${inputBase} focus:border-pink-300`}
-                  pattern="[A-Za-z\s]*"
                   value={formData.istri.tempatLahir || ""}
-                  onChange={(e) => {
-                    if (e.target.validity.valid) {
-                      setFormData({
-                        ...formData,
-                        istri: {
-                          ...formData.istri,
-                          tempatLahir: e.target.value,
-                        },
-                      });
-                    }
-                  }}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      istri: {
+                        ...formData.istri,
+                        tempatLahir: e.target.value,
+                      },
+                    })
+                  }
                 />
                 <input
                   type="date"
+                  aria-label="Tanggal lahir istri"
                   className={`${inputBase} focus:border-pink-300`}
                   value={formData.istri.tglLahir || ""}
                   max={new Date().toISOString().split("T")[0]}
@@ -647,6 +795,7 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               }
             />
             <SakramenBlock
+              personLabel="istri"
               personData={formData.istri}
               onUpdate={(s, f, v) =>
                 setFormData({
@@ -668,7 +817,10 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               </h3>
               <input
                 type="number"
-                className="w-14 border border-gray-100 rounded-xl p-2 text-center text-sm font-medium outline-none focus:border-green-200 bg-gray-50"
+                aria-label="Jumlah anak"
+                min="0"
+                step="1"
+                className="min-h-11 w-24 rounded-xl border border-slate-200 bg-white px-3 text-center text-sm font-medium text-slate-800 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                 value={formData.anak.length || ""}
                 onChange={(e) => {
                   const num = Math.max(0, parseInt(e.target.value, 10) || 0);
@@ -687,33 +839,35 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
             {formData.anak.map((a, idx) => (
               <div
                 key={idx}
-                className="p-4 md:p-5 border border-gray-100 rounded-2xl bg-gray-50/30 space-y-4"
+                className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5"
               >
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                  <span className="self-start sm:self-auto text-[10px] font-semibold bg-green-50 text-green-600 border border-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+                  <span className="self-start rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">
                     Anak ke-{idx + 1}
                   </span>
-                  <div className="flex flex-wrap items-center gap-3 md:gap-4 bg-white px-4 py-2 rounded-xl border border-gray-100">
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                  <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 sm:gap-4 sm:px-4">
+                    <span className="text-xs font-medium text-slate-600">
                       Status
                     </span>
                     {["belum", "sudah"].map((stat) => (
                       <label
                         key={stat}
-                        className="flex items-center gap-2 cursor-pointer"
+                        className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-xs text-slate-700 hover:bg-slate-50"
                       >
                         <input
                           type="radio"
-                          className="w-3 h-3 accent-green-600"
+                          name={`child-marital-status-${idx}`}
+                          className="h-4 w-4 accent-emerald-700"
                           checked={a.statusNikah === stat}
                           onChange={() => {
-                            const newAnak = [...formData.anak];
-                            newAnak[idx].statusNikah = stat;
+                            const newAnak = formData.anak.map((child, i) =>
+                              i === idx ? { ...child, statusNikah: stat } : child,
+                            );
                             setFormData({ ...formData, anak: newAnak });
                           }}
                         />
                         <span
-                          className={`text-[10px] font-medium uppercase ${a.statusNikah === stat ? "text-green-600" : "text-gray-300"}`}
+                          className={`capitalize ${a.statusNikah === stat ? "font-semibold text-emerald-800" : "text-slate-500"}`}
                         >
                           {stat} Menikah
                         </span>
@@ -725,41 +879,45 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
                 <div className="space-y-3">
                   <input
                     placeholder="Nama Anak"
+                    aria-label={`Nama anak ke-${idx + 1}`}
                     className={`${inputBase} focus:border-green-300`}
                     type="text"
-                    pattern="[A-Za-z\s]*"
                     value={a.nama}
                     onChange={(e) => {
-                      if (e.target.validity.valid) {
-                        const newAnak = [...formData.anak];
-                        newAnak[idx].nama = e.target.value;
-                        setFormData({ ...formData, anak: newAnak });
-                      }
+                      const newAnak = formData.anak.map((child, i) =>
+                        i === idx ? { ...child, nama: e.target.value } : child,
+                      );
+                      setFormData({ ...formData, anak: newAnak });
                     }}
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       placeholder="Tempat Lahir"
+                      aria-label={`Tempat lahir anak ke-${idx + 1}`}
                       type="text"
                       className={`${inputBase} focus:border-green-300`}
-                      pattern="[A-Za-z\s]*"
                       value={a.tempatLahir || ""}
                       onChange={(e) => {
-                        if (e.target.validity.valid) {
-                          const newAnak = [...formData.anak];
-                          newAnak[idx].tempatLahir = e.target.value;
-                          setFormData({ ...formData, anak: newAnak });
-                        }
+                        const newAnak = formData.anak.map((child, i) =>
+                          i === idx
+                            ? { ...child, tempatLahir: e.target.value }
+                            : child,
+                        );
+                        setFormData({ ...formData, anak: newAnak });
                       }}
                     />
                     <input
                       type="date"
+                      aria-label={`Tanggal lahir anak ke-${idx + 1}`}
                       className={`${inputBase} focus:border-green-300`}
                       value={a.tglLahir || ""}
                       max={new Date().toISOString().split("T")[0]}
                       onChange={(e) => {
-                        const newAnak = [...formData.anak];
-                        newAnak[idx].tglLahir = e.target.value;
+                        const newAnak = formData.anak.map((child, i) =>
+                          i === idx
+                            ? { ...child, tglLahir: e.target.value }
+                            : child,
+                        );
                         setFormData({ ...formData, anak: newAnak });
                       }}
                     />
@@ -767,19 +925,24 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
                 </div>
 
                 <StatusHidupBlock
-                  label="Anak"
+                  label={`Anak ke-${idx + 1}`}
                   personData={a}
                   onUpdate={(f, v) => {
-                    const newAnak = [...formData.anak];
-                    newAnak[idx][f] = v;
+                    const newAnak = formData.anak.map((child, i) =>
+                      i === idx ? { ...child, [f]: v } : child,
+                    );
                     setFormData({ ...formData, anak: newAnak });
                   }}
                 />
                 <SakramenBlock
+                  personLabel={`anak-${idx + 1}`}
                   personData={a}
                   onUpdate={(s, f, v) => {
-                    const newAnak = [...formData.anak];
-                    newAnak[idx][s][f] = v;
+                    const newAnak = formData.anak.map((child, i) =>
+                      i === idx
+                        ? { ...child, [s]: { ...child[s], [f]: v } }
+                        : child,
+                    );
                     setFormData({ ...formData, anak: newAnak });
                   }}
                 />
@@ -791,17 +954,35 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
 
       {/* errr message */}
       {error && (
-        <p className="text-center text-xs text-red-500 font-medium">{error}</p>
+        <p
+          role="alert"
+          className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800"
+        >
+          {error}
+        </p>
+      )}
+      {success && (
+        <p
+          role="status"
+          className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
+        >
+          {success}
+        </p>
       )}
 
-      <footer className="flex w-full items-center justify-end">
+      <footer className="sticky bottom-0 -mx-4 flex justify-end border-t border-slate-200 bg-white/95 px-4 pb-1 pt-4 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
         <button
+          type="button"
           onClick={handleSimpan}
           disabled={loading}
-          className="flex items-center gap-1 justify-center cursor-pointer w-[16dvw] bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 disabled:opacity-50 text-white py-4 rounded-xl font-semibold text-sm transition-all tracking-widest active:scale-95"
+          aria-busy={loading}
+          className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
         >
-          <Save size={25} />
-
+          {loading ? (
+            <LoaderCircle size={18} className="animate-spin" aria-hidden="true" />
+          ) : (
+            <Save size={18} aria-hidden="true" />
+          )}
           {loading ? "Menyimpan..." : isEdit ? "Update Data" : "Simpan"}
         </button>
       </footer>

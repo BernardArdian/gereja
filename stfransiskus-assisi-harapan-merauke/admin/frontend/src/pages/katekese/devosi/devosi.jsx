@@ -6,8 +6,6 @@ import {
   Clock,
   Users,
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
   Trash2,
   Edit2,
@@ -15,15 +13,18 @@ import {
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
+import PaginationFooter from "../../../component/PaginationFooter";
+import DeleteModal from "../../../component/alert/deleteModal";
 
 export default function Devosi() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [_isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  //const [_isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 6; // Menampilkan 6 kartu per halaman
 
-  const [devosiList] = useState([
+  const [devosiList, setDevosiList] = useState([
     {
       id: 1,
       title: "Doa Koronka",
@@ -96,7 +97,6 @@ export default function Devosi() {
     );
   }, [searchQuery, devosiList]);
 
-  const totalPages = Math.ceil(filteredDevosi.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredDevosi.slice(
     startIndex,
@@ -111,21 +111,19 @@ export default function Devosi() {
   // Jika ada item yang dipilih, render halaman Detail secara Fullscreen
   if (selectedItem) {
     return (
-      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
-        <Detail
-          formData={selectedItem}
-          handlers={{
-            onBack: () => setSelectedItem(null),
-          }}
-        />
-      </div>
+      <Detail
+        formData={selectedItem}
+        handlers={{
+          onBack: () => setSelectedItem(null),
+        }}
+      />
     );
   }
 
   return (
-    <section className="min-h-screen pb-20">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* COMPACT HERO SECTION */}
-      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <header className="relative w-full overflow-hidden rounded-2xl px-5 py-10 sm:px-8 sm:py-14">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -142,18 +140,18 @@ export default function Devosi() {
             <div className="flex items-center gap-2 text-indigo-300 font-bold text-[10px] uppercase tracking-widest mb-2">
               <BookOpen size={14} /> Kehidupan Spiritual & Doa
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
               Devosi
             </h1>
           </div>
         </div>
         <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-rose-500 pointer-events-none z-10">
-          <Heart size={300} />
+          <Heart size={180} className="sm:h-75 sm:w-75" />
         </div>
       </header>
 
       {/* STICKY SEARCH BAR */}
-      <div className="sticky top-0 z-40 -mt-8 px-6">
+      <div className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-8 sm:px-6">
         <div className="max-w-4xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -174,23 +172,28 @@ export default function Devosi() {
       </div>
 
       {/* MAIN CONTENT GRID */}
-      <main className="max-w-6xl mx-auto px-6 mt-12">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+      <main className="mx-auto mt-6 w-full max-w-6xl px-0 sm:mt-10 sm:px-2">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {paginatedData.length === 0 && (
+            <p className="col-span-full rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-500">
+              Tidak ada devosi yang cocok dengan pencarian.
+            </p>
+          )}
           {paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() =>
                 setSelectedItem({ ...item, content: item.schedule })
               }
-              className="group cursor-pointer bg-slate-500 rounded border border-gray-100 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <section className="relative h-48 overflow-hidden">
+              <section className="relative aspect-16/10 overflow-hidden bg-slate-100">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-80"></div>
                 <section className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-[9px] font-black text-white rounded-lg tracking-widest uppercase">
                     {item.category}
@@ -198,33 +201,41 @@ export default function Devosi() {
                 </section>
               </section>
 
-              <section className="p-7 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold text-gray-800 leading-tight mb-4 group-hover:text-indigo-600 transition-colors">
+              <section className="flex flex-1 flex-col p-4 sm:p-5">
+                <h3 className="mb-4 wrap-break-word text-lg font-bold leading-tight text-slate-900 transition-colors group-hover:text-amber-800 sm:text-xl">
                   {item.title}
                 </h3>
 
                 <section className="space-y-3 mb-6">
-                  <div className="flex items-center gap-3 text-sm text-gray-900 font-medium">
-                    <div className="p-2 bg-gray-50 rounded-xl text-indigo-600">
+                  <div className="flex min-w-0 items-center gap-3 text-sm font-medium text-slate-700">
+                    <div className="shrink-0 rounded-xl bg-amber-50 p-2 text-amber-800">
                       <Clock size={14} />
                     </div>
-                    {item.schedule}
+                    <span className="wrap-break-word">{item.schedule}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-900 font-medium">
-                    <div className="p-2 bg-gray-50 rounded-xl text-indigo-600">
+                  <div className="flex min-w-0 items-center gap-3 text-sm font-medium text-slate-700">
+                    <div className="shrink-0 rounded-xl bg-amber-50 p-2 text-amber-800">
                       <Users size={14} />
                     </div>
-                    {item.members}
+                    <span className="wrap-break-word">{item.members}</span>
                   </div>
                 </section>
 
-                <footer className="flex items-center justify-between pt-5 border-t border-gray-50 mt-auto">
-                  <button className="flex items-center gap-2 text-indigo-600 text-[10px] font-black uppercase tracking-[0.15em] hover:gap-3 transition-all">
+                <footer className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedItem({ ...item, content: item.schedule })
+                    }
+                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-50"
+                  >
                     Detail Panduan <ArrowRight size={14} />
                   </button>
-                  <section className="flex items-center justify-end gap-3">
+                  <section className="flex items-center justify-end gap-1 sm:gap-2">
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
+                      type="button"
+                      aria-label={`Edit ${item.title}`}
+                      className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:p-2.5"
                       onClick={(i) => {
                         i.stopPropagation();
                       }}
@@ -232,9 +243,12 @@ export default function Devosi() {
                     />
 
                     <button
-                      className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
+                      type="button"
+                      aria-label={`Hapus ${item.title}`}
+                      className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 sm:p-2.5"
                       onClick={(i) => {
                         i.stopPropagation();
+                        setItemToDelete(item);
                       }}
                       children={<Trash2 size={18} />}
                     />
@@ -244,57 +258,28 @@ export default function Devosi() {
             </section>
           ))}
         </section>
-
-        {/* PAGINATION CONTROLS */}
-        {totalPages > 1 && (
-          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
-            <p className="text-xs text-gray-600 font-medium">
-              Menampilkan{" "}
-              <span className="text-gray-700 font-bold">
-                {paginatedData.length}
-              </span>{" "}
-              dari{" "}
-              <span className="text-gray-700 font-bold">
-                {filteredDevosi.length}
-              </span>{" "}
-              devosi
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <div
-                className="flex gap-1"
-                children={[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
-                      currentPage === i + 1
-                        ? "bg-blue-500/30 text-black"
-                        : "bg-white text-gray-400 border border-gray-50"
-                    }`}
-                    children={i + 1}
-                  />
-                ))}
-              ></div>
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </footer>
-        )}
       </main>
+      <PaginationFooter
+        currentPage={currentPage}
+        pageSize={itemsPerPage}
+        totalItems={filteredDevosi.length}
+        onPageChange={setCurrentPage}
+        itemLabel="devosi"
+      />
+      <DeleteModal
+        isOpen={Boolean(itemToDelete)}
+        onClose={() => setItemToDelete(null)}
+        onConfirm={() => {
+          setDevosiList((previous) =>
+            previous.filter((entry) => entry.id !== itemToDelete?.id),
+          );
+          setItemToDelete(null);
+        }}
+        title="Hapus devosi?"
+        description="Devosi yang dihapus tidak lagi tersedia di daftar."
+        itemName={itemToDelete?.title}
+        confirmText="Ya, hapus devosi"
+      />
     </section>
   );
 }

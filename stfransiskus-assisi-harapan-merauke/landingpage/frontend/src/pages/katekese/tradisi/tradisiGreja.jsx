@@ -63,6 +63,61 @@ export default function TradisiGereja() {
       image: "https://picsum.photos/seed/fire/800/600",
       category: "LITURGI",
     },
+    {
+      id: 7,
+      title: "Perarakan Patung Maria",
+      location: "Gereja Pusat",
+      period: "Mei & Oktober",
+      description:
+        "Tradisi doa Rosario keliling lingkungan setiap malam di bulan Maria.",
+      image: "https://picsum.photos/seed/maria/800/600",
+      category: "LITURGI",
+    },
+    {
+      id: 8,
+      title: "Pesta Pelindung Paroki",
+      location: "Pusat Paroki",
+      period: "15 Agustus",
+      description: "Perayaan syukur pelindung paroki dengan pesta rakyat.",
+      image: "https://picsum.photos/seed/pesta/800/600",
+      category: "BUDAYA",
+    },
+    {
+      id: 9,
+      title: "Misa Inkulturasi",
+      location: "Stasi Kurik",
+      period: "Acara Khusus",
+      description: "Perpaduan tata gerak musik tradisional dalam Ekaristi.",
+      image: "https://picsum.photos/seed/culture/800/600",
+      category: "BUDAYA",
+    },
+    {
+      id: 10,
+      title: "Visualisasi Jalan Salib",
+      location: "Pusat Paroki",
+      period: "Jumat Agung",
+      description: "Tablo kisah sengsara Yesus Kristus oleh OMK.",
+      image: "https://picsum.photos/seed/salib/800/600",
+      category: "LITURGI",
+    },
+    {
+      id: 11,
+      title: "Pemberkatan Benih",
+      location: "Stasi Harapan",
+      period: "Musim Tanam",
+      description: "Syukur atas hasil bumi dan pemberkatan bibit tani.",
+      image: "https://picsum.photos/seed/seed/800/600",
+      category: "SOSIAL",
+    },
+    {
+      id: 12,
+      title: "Api Unggun Paskah",
+      location: "Seluruh Stasi",
+      period: "Vigili Paskah",
+      description: "Tradisi penyalaan lilin Paskah dari api suci.",
+      image: "https://picsum.photos/seed/fire/800/600",
+      category: "LITURGI",
+    },
   ]);
 
   const filteredData = useMemo(
@@ -123,20 +178,21 @@ export default function TradisiGereja() {
       </header>
 
       {/* GRID */}
-      <main className="px-15">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden">
+      <main className="px-15 pb-15">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden"
+        children=
           {paginatedData.length === 0 && (
             <section className="flex w-full items-center justify-center">
               <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
                 Katekese belum di inputkan atau judul yang anda cari tidak ada.
               </span>
             </section>
-          )}
-          {paginatedData.map((item) => (
+          ),
+          paginatedData.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/50 hover:bg-slate-200/60 transition-colors border border-gray-100 rounded cursor-pointer flex flex-col group overflow-hidden"
+              className="bg-stone-500/50 hover:bg-slate-200/60 transition-colors border border-gray-100 rounded cursor-pointer flex flex-col group overflow-hidden"
             >
               <div className="relative aspect-video overflow-hidden">
                 <img
@@ -144,42 +200,46 @@ export default function TradisiGereja() {
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <span className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-sm text-[9px] font-medium text-white uppercase tracking-widest">
-                  {item.category}
-                </span>
+                <span
+                  className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-sm text-[9px] font-medium text-white uppercase tracking-widest"
+                  children={item.category}
+                />
               </div>
               <div className="p-6 flex-1 flex flex-col">
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-3">
-                  {item.period}
-                </p>
-                <h3 className="font-serif text-lg text-gray-900 leading-snug mb-2 group-hover:text-gray-500 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-gray-400 leading-relaxed font-light line-clamp-2 flex-1">
-                  {item.description}
-                </p>
-                <div className="mt-6 text-[10px] text-gray-300 uppercase tracking-widest group-hover:text-gray-500 transition-colors">
+                <p
+                  className="text-[10px] text-gray-900 uppercase tracking-widest mb-3"
+                  children={item.period}
+                />
+                <h3
+                  className="font-serif text-lg text-gray-900 leading-snug mb-2 group-hover:text-gray-900 transition-colors"
+                  children={item.title}
+                />
+                <p
+                  className="text-xs text-gray-900 leading-relaxed font-light line-clamp-2 flex-1"
+                  children={item.description}
+                />
+                <div className="mt-6 text-[12px] text-gray-100 uppercase tracking-widest group-hover:text-gray-500 transition-colors">
                   Detail →
                 </div>
               </div>
             </div>
           ))}
+        >
         </section>
       </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+        <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
           <p className="text-xs text-gray-100">
-            Menampilkan{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {paginatedData.length}
-            </span>{" "}
-            dari{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {filteredData.length}
-            </span>{" "}
-            tardisi gereja
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={`Menapilkan ${paginatedData.length} dari`}
+            />
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={` ${filteredData.length} tardisi gereja`}
+            />
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -189,17 +249,17 @@ export default function TradisiGereja() {
             >
               <ChevronLeft size={14} />
             </button>
-            <div className="flex gap-1">
-              {[...Array(totalPages)].map((_, i) => (
+            <div
+              className="flex gap-1"
+              children={[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
                   className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
-                >
-                  {i + 1}
-                </button>
+                  children={i + 1}
+                />
               ))}
-            </div>
+            />
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}

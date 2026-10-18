@@ -1,128 +1,147 @@
-import { Edit2, Trash2, Printer } from "lucide-react";
-//import { useState } from "react";
-
-import InputStasi from "../input/input_stasi";
-import LogoutModal from "../../alert/logout_modal";
+import { Edit2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import DeleteModal from "../../alert/deleteModal";
 
 export default function StasiListModal({ data, handlers }) {
-  //const [iSActiveModal, setActiveModal] = useState(false);
+  const [selectedStasi, setSelectedStasi] = useState(null);
+  const total = data.reduce(
+    (sum, stasi) => sum + Number(stasi.jumlahUmat || 0),
+    0,
+  );
 
-  const handleDelte = () => {
-    window.confirm("apakah anda yakin untuk menghapus stasi ini?");
+  const confirmDelete = () => {
+    if (!selectedStasi) return;
+    handlers.delete(selectedStasi);
+    setSelectedStasi(null);
   };
 
-  //const total = 355;
-
-  const total = data.reduce((sum, stasi) => sum + Number(stasi.jumlahUmat), 0);
-
   return (
-    <section className="lg:col-span-2 bg-yellow-500/50 border border-gray-100 rounded-xl overflow-hidden mb-3">
-      <header className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h3 className="text-sm font-serif text-gray-900">
-          Stasi Paroki ST.Fransiskus Assisi Harapan Makmur
-        </h3>
-
-        <h2 className="text-sm font-serif text-gary-900">
-          total umat: {total}
-        </h2>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
+        <div>
+          <h3 className="text-base font-semibold text-slate-900">
+            Daftar Stasi
+          </h3>
+          <p className="mt-1 text-xs text-slate-500">
+            Paroki St. Fransiskus Assisi Harapan Makmur
+          </p>
+        </div>
+        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
+          {total.toLocaleString("id-ID")} umat
+        </span>
       </header>
 
-      <section className="p-0">
-        <table className="w-full text-left border-collapse">
-          <thead className="flext items-center justify-center sticky top-0">
-            <tr className="border-b border-gray-100">
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-225 border-collapse text-left">
+          <thead className="bg-slate-50">
+            <tr className="border-b border-slate-200">
+              <th
+                scope="col"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
                 Nama Stasi
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th
+                scope="col"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
                 Nama Gereja
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th
+                scope="col"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
                 Alamat
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th
+                scope="col"
+                className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
                 Desa
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest text-center">
-                Jumblah Umat
+              <th
+                scope="col"
+                className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
+                Jumlah Umat
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest text-center">
+              <th
+                scope="col"
+                className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+              >
                 Kelola
               </th>
             </tr>
           </thead>
-          <tbody
-            children={data.map((stasi, i) => (
-              <tr
-                key={i}
-                className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors"
-                children={
-                  <>
-                    <td
-                      className="px-6 py-4 text-sm font-medium text-gray-900"
-                      children={stasi.stasi}
-                    />
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      children={stasi.namaGereja}
-                    />
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      children={stasi.alamat}
-                    />
-                    <td
-                      className="px-6 py-4 text-sm text-gray-900"
-                      children={stasi.desa}
-                    />
-                    <td
-                      className="px-6 py-4 text-center"
-                      children={
-                        <span
-                          className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1"
-                          children={stasi.jumlahUmat}
-                        />
-                      }
-                    />
-                    <td
-                      className="px-6 py-4 text-center"
-                      children={
-                        <section
-                          className="flex items-center justify-center gap-2"
-                          children={
-                            <>
-                              <button
-                                className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90 tarcking-widest"
-                                type="button"
-                                onClick={(i) => {
-                                  handlers.edit(stasi);
-                                  i.stopPropagation();
-                                }}
-                                children={<Edit2 size={18} />}
-                              />
-
-                              <button
-                                className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all 
-                                active:scale-90 tarcking-widest"
-                                onClick={(i) => {
-                                  i.stopPropagation();
-                                  handleDelte(stasi);
-                                }}
-                                children={<Trash2 size={18} />}
-                              />
-                            </>
-                          }
-                        />
-                      }
-                    />
-                  </>
-                }
-              ></tr>
-            ))}
-          />
+          <tbody className="divide-y divide-slate-100">
+            {data.length ? (
+              data.map((stasi) => (
+                <tr
+                  key={stasi.stasi}
+                  className="transition-colors hover:bg-slate-50"
+                >
+                  <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-slate-900 sm:px-6">
+                    {stasi.stasi}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-700 sm:px-6">
+                    {stasi.namaGereja}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-slate-600 sm:px-6">
+                    {stasi.alamat}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-600 sm:px-6">
+                    {stasi.desa}
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <span className="inline-flex rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
+                      {Number(stasi.jumlahUmat || 0).toLocaleString("id-ID")}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        aria-label={`Edit ${stasi.stasi}`}
+                        className="cursor-pointer rounded-lg p-2.5 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        onClick={() => handlers.edit(stasi)}
+                      >
+                        <Edit2 size={17} aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Hapus ${stasi.stasi}`}
+                        className="cursor-pointer rounded-lg p-2.5 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                        onClick={() => setSelectedStasi(stasi)}
+                      >
+                        <Trash2 size={17} aria-hidden="true" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-6 py-10 text-center text-sm text-slate-500"
+                >
+                  Belum ada data stasi. Tambahkan stasi untuk mulai mengelola
+                  data.
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
-      </section>
-
-      {/* <InputStasi onClose={() => setActiveModal(null)} /> */}
+      </div>
+      <DeleteModal
+        isOpen={Boolean(selectedStasi)}
+        onClose={() => setSelectedStasi(null)}
+        onConfirm={confirmDelete}
+        title="Hapus stasi?"
+        description="Stasi ini akan dihapus dari data komunitas paroki."
+        itemName={selectedStasi?.stasi}
+        confirmText="Ya, hapus stasi"
+      />
     </section>
   );
 }

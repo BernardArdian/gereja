@@ -1,141 +1,109 @@
-import {
-  Trash2,
-  ShieldCheck,
-  User,
-  Lock,
-  Eye,
-  EyeOff,
-  Edit2,
-} from "lucide-react";
+import { Pencil, ShieldCheck, Trash2, UserRound } from "lucide-react";
 import { useState } from "react";
+import DeleteModal from "../../alert/deleteModal";
 
-export default function Admin_List({ handlers }) {
-  const admins = [
-    {
-      id: 1,
-      name: "Alexander Maria",
-      role: "Super Admin",
-      pass: "superadmin123",
-    },
-    { id: 2, name: "Siti Aminah", role: "Sekretaris", pass: "sekretaris456" },
-    { id: 3, name: "Yohanes Bosco", role: "Bendahara", pass: "bendahara789" },
-  ];
+export default function Admin_List({ admins = [], handlers = {} }) {
+  const [adminToDelete, setAdminToDelete] = useState(null);
 
-  const [visibleIds, setVisibleIds] = useState([]);
-
-  const togglePassword = (id) => {
-    setVisibleIds((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
-    );
+  const confirmDelete = () => {
+    if (!adminToDelete) return;
+    handlers.onDelete?.(adminToDelete);
+    setAdminToDelete(null);
   };
 
   return (
     <section className="space-y-4">
-      {/* Header */}
-      <header className="hidden md:grid grid-cols-4 gap-4 px-6 py-3 border-b border-gray-100">
-        <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest">
-          Admin Name
-        </span>
-        <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest">
-          Role
-        </span>
-        <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest">
-          Password
-        </span>
-        <span className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest text-right">
-          Actions
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-amber-800">
+            Hak akses dan akun
+          </p>
+          <h3 className="mt-1 text-lg font-bold text-slate-900">
+            Daftar administrator
+          </h3>
+          <p className="mt-1 text-sm text-slate-600">
+            Kelola akun yang memiliki akses ke panel administrasi.
+          </p>
+        </div>
+        <span className="w-fit rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900">
+          {admins.length.toLocaleString("id-ID")} akun
         </span>
       </header>
 
-      {/* List Admin */}
-      <main className="space-y-2">
-        {admins.map((admin) => (
-          <div
-            key={admin.id}
-            className="cursor-pointer grid grid-cols-1 md:grid-cols-4 gap-4 items-center px-6 py-4 bg-slate-300 border border-gray-100 rounded-2xl hover:border-gray-200 hover:bg-gray-50/40 transition-all"
-          >
-            {/* Nama */}
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500">
-                <User size={15} />
+      {admins.length ? (
+        <ul className="space-y-3" aria-label="Daftar administrator">
+          {admins.map((admin) => (
+            <li
+              key={admin.id}
+              className="flex min-w-0 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-amber-200 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+            >
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-800">
+                  <UserRound size={19} aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                  <p className="break-words text-sm font-semibold text-slate-900">
+                    {admin.name}
+                  </p>
+                  <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
+                    <ShieldCheck size={13} aria-hidden="true" />
+                    {admin.role}
+                  </span>
+                </div>
               </div>
-              <span className="text-sm font-medium text-gray-800">
-                {admin.name}
-              </span>
-            </div>
 
-            {/* Role */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1">
-                {admin.role}
-              </span>
-            </div>
+              <div className="flex shrink-0 items-center justify-end gap-1 border-t border-slate-100 pt-2 sm:border-0 sm:pt-0">
+                <button
+                  type="button"
+                  aria-label={`Edit administrator ${admin.name}`}
+                  onClick={() => handlers.onEdit?.(admin)}
+                  className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl px-3 text-sm font-medium text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+                >
+                  <Pencil size={16} aria-hidden="true" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Hapus administrator ${admin.name}`}
+                  onClick={() => setAdminToDelete(admin)}
+                  className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl px-3 text-sm font-medium text-rose-700 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+                >
+                  <Trash2 size={16} aria-hidden="true" />
+                  Hapus
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center">
+          <UserRound
+            size={28}
+            className="mx-auto text-slate-400"
+            aria-hidden="true"
+          />
+          <p className="mt-3 text-sm font-semibold text-slate-800">
+            Belum ada administrator
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            Tambahkan administrator melalui formulir untuk mulai mengelola akses.
+          </p>
+        </div>
+      )}
 
-            {/* Password */}
-            <section className="flex items-center gap-2 text-gray-400">
-              <Lock size={13} />
-              <span
-                className="text-sm tracking-widest font-mono text-gray-500 flex-1"
-                children={
-                  visibleIds.includes(admin.id) ? admin.pass : "••••••••"
-                }
-              ></span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  togglePassword(admin.id);
-                }}
-                className="cursor-pointer text-gray-300 hover:text-gray-500 transition-colors"
-                children={
-                  visibleIds.includes(admin.id) ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )
-                }
-              />
-            </section>
+      <p className="border-t border-slate-100 pt-3 text-xs leading-5 text-slate-500">
+        Demi keamanan, sandi tidak ditampilkan pada daftar akun.
+      </p>
 
-            {/* Aksi */}
-            <section className="flex items-center justify-end gap-1">
-              <button
-                className="cursor-pointer p-3 
-                bg-slate-200
-                rounded text-yellow-700 
-                hover:bg-amber-600 
-                hover:text-white 
-                transition-all 
-                active:scale-90
-                tarcking-widest"
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlers.onEdit(admin);
-                }}
-              >
-                <Edit2 size={18} />
-              </button>
-
-              <button
-                className="cursor-pointer p-3 
-                bg-slate-200 rounded text-rose-400 hover:bg-red-600 
-                hover:text-white 
-                transition-all 
-                active:scale-90 
-                tarcking-widest"
-              >
-                <Trash2 size={18} />
-              </button>
-            </section>
-          </div>
-        ))}
-      </main>
-
-      {/* Footer */}
-      <footer className="pt-4 border-t border-gray-50 flex justify-between items-center text-[11px] text-gray-400">
-        <p>* Password disembunyikan untuk keamanan.</p>
-        <span children={`Total: ${admins.length} Admin`} />
-      </footer>
+      <DeleteModal
+        isOpen={Boolean(adminToDelete)}
+        onClose={() => setAdminToDelete(null)}
+        onConfirm={confirmDelete}
+        title="Hapus administrator?"
+        description="Akun ini tidak lagi dapat digunakan untuk mengakses panel."
+        itemName={adminToDelete?.name}
+        confirmText="Ya, hapus administrator"
+      />
     </section>
   );
 }

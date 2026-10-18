@@ -1,8 +1,10 @@
 import { Maximize2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import CustomDropdown from "../../component/option/dropdown";
 
 export default function GalleryGereja() {
-  const [stasiFilter, setStasiFilter] = useState("Semua");
+  //const [stasiFilter, setStasiFilter] = useState("Semua");
   const [currentPage, setCurrentPage] = useState(1);
 
   const gallerys = [
@@ -34,12 +36,33 @@ export default function GalleryGereja() {
       date: "05 Jan 2024",
       stasi: "Kurik",
     },
+    {
+      id: 7,
+      url: "https://picsum.photos/seed/gal4/1000/1000",
+      title: "Pembangunan Gereja",
+      date: "05 Jan 2024",
+      stasi: "candra",
+    },
   ];
+
+  const stasi = [
+    { id: 1, value: "Harapan", label: "Paroki Harapan" },
+    { id: 2, value: "Kurik", label: "Stasi Kurik" },
+    { id: 3, value: "candra", label: "Stasi candra" },
+  ];
+
+  const [stasiFilter, setStasiFilter] = useState(
+    () => localStorage.getItem("stasiFilter") || "Semua",
+  );
 
   const filteredData = gallerys.filter((item) => {
     const matchesStasi = stasiFilter === "Semua" || item.stasi === stasiFilter;
     return matchesStasi;
   });
+
+  useEffect(() => {
+    localStorage.setItem("stasiFilter", stasiFilter);
+  }, [stasiFilter]);
 
   const itemsPerPage = 3;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -51,29 +74,24 @@ export default function GalleryGereja() {
   return (
     <section className="min-h-screen px-4">
       {/* HEADER */}
-      <header className="flex items-center justify-between py-4 border-b border-amber-500 mb-4">
-        <section
-          children={
-            <>
-              <h2 className="font-serif text-1xl text-gray-900">
-                Gallery Gereja Paroki St.Fransiskus Assisi
-              </h2>
-              <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
-                Arsip Foto & Kegiatan Gereja
-              </p>
-            </>
-          }
-        />
+      <header className="flex items-center justify-between py-4 border-b border-amber-500 rounded-b-xl mt-1 bg-[#B38728]/60 mb-4">
+        <section className="ml-1">
+          <h2 className="font-serif text-1xl text-gray-900">
+            Gallery Gereja Paroki St.Fransiskus Assisi
+          </h2>
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
+            Arsip Foto & Kegiatan Gereja
+          </p>
+        </section>
 
         <section
-          className="relative"
-          children={
-            <>
-              <Filter
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={13}
-              />
-              <select
+          className="relative mr-1"
+          children={[
+            <Filter
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
+              size={13}
+            />,
+            /* <select
                 className="pl-9 pr-8 py-2 border border-gray-300 rounded text-sm text-gray-500 outline-none appearance-none cursor-pointer bg-white focus:border-gray-300 transition-all"
                 value={stasiFilter}
                 onChange={(i) => {
@@ -87,9 +105,23 @@ export default function GalleryGereja() {
                     <option value="Kurik">Stasi Kurik</option>
                   </>
                 }
-              />
-            </>
-          }
+              /> */
+
+            <CustomDropdown
+              value={stasiFilter}
+              onChange={(val) => {
+                setStasiFilter(val);
+                setCurrentPage(1);
+              }}
+              options={[
+                { value: "Semua", label: "Semua Stasi" },
+                ...stasi.map((item) => ({
+                  value: item.value,
+                  label: item.label,
+                })),
+              ]}
+            />,
+          ]}
         />
       </header>
       <main className="max-w-5xl mx-auto px-8  pb-10">
@@ -159,58 +191,47 @@ export default function GalleryGereja() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <footer
-            className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6"
-            children={
-              <>
-                <p className="text-xs text-gray-100">
-                  Menampilkan{" "}
-                  <span
-                    className="text-gray-700 font-serif font-medium"
-                    children={paginatedData.length}
-                  />{" "}
-                  dari{" "}
-                  <span
-                    className="text-gray-700 font-serif font-medium"
-                    children={filteredData.length}
-                  />{" "}
-                  data
-                </p>
-                <div className="flex items-center gap-1">
+          <footer className="flex p-5 rounded-xl bg-gray-300 items-center justify-between border-t border-gray-100 ">
+            <p className="text-xs text-gray-100">
+              <span
+                className="text-gray-700 font-serif font-medium"
+                children={`Menampilkan ${paginatedData.length} dari`}
+              />
+              <span
+                className="text-gray-700 font-serif font-medium"
+                children={` ${filteredData.length} gallery`}
+              />
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <div
+                className="flex gap-1"
+                children={[...Array(totalPages)].map((_, i) => (
                   <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
-                    children={<ChevronLeft size={14} />}
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                    children={i + 1}
                   />
-
-                  <div
-                    className="flex gap-1"
-                    children={[...Array(totalPages)].map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${
-                          currentPage === i + 1
-                            ? "bg-gray-900 text-white"
-                            : "border border-gray-100 text-gray-400 hover:bg-gray-50"
-                        }`}
-                        children={i + 1}
-                      />
-                    ))}
-                  />
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    disabled={currentPage === totalPages}
-                    className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
-                    children={<ChevronRight size={14} />}
-                  />
-                </div>
-              </>
-            }
-          />
+                ))}
+              />
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              >
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          </footer>
         )}
       </main>
     </section>

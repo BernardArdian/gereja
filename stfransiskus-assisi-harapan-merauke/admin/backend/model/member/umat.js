@@ -1,56 +1,65 @@
 const mongoose = require("mongoose");
-const anakSchema = require("./anak");
-const sakramenSchema = require("./sakramen");
-const singleSchema = require("./single");
-const almarhumSchema = require("./almarhum");
-const StasiSchema = require("./stasi");
 
-// Fungsi pembantu untuk mengatur urutan
-function reorderFields(doc, ret) {
-  if (ret.keluarga) {
-    const { namaSuami, namaIstri, anak, ...rest } = ret.keluarga;
-    //susun ulang manual: Suami -> Istri -> Anak
-    ret.keluarga = {
-      namaSuami,
-      namaIstri,
-      anak,
-      ...rest,
-    };
-  }
-  return ret;
-}
+const sacramentSchema = new mongoose.Schema(
+  {
+    status: { type: String, enum: ["sudah"], required: true },
+    tempat: { type: String, trim: true, default: "" },
+    tanggal: { type: String, trim: true, default: "" },
+    stasi: { type: String, trim: true, default: "" },
+  },
+  { _id: false },
+);
+
+const personSchema = new mongoose.Schema(
+  {
+    nama: { type: String, required: true, trim: true },
+    tempatLahir: { type: String, trim: true, default: "" },
+    tglLahir: { type: String, trim: true, default: "" },
+    statusHidup: {
+      type: String,
+      enum: ["hidup", "meninggal"],
+      default: "hidup",
+    },
+    tglMeninggal: { type: String, trim: true, default: "" },
+    lokasiMakam: { type: String, trim: true, default: "" },
+    baptis: { type: [sacramentSchema], default: [] },
+    komuni: { type: [sacramentSchema], default: [] },
+    krisma: { type: [sacramentSchema], default: [] },
+  },
+  { _id: false, minimize: true },
+);
 
 const keluargaSchema = new mongoose.Schema(
   {
-    namaSuami: { type: String, require: true },
+    namaSuami: { type: String, required: true, trim: true },
     statusSuami: {
       type: String,
       enum: ["hidup", "meninggal"],
       default: "hidup",
     },
     statusSakramentSuami: {
-      baptis: [sakramenSchema],
-      komuni: [sakramenSchema],
-      krisma: [sakramenSchema],
+      baptis: { type: [sacramentSchema], default: [] },
+      komuni: { type: [sacramentSchema], default: [] },
+      krisma: { type: [sacramentSchema], default: [] },
     },
-    namaIstri: { type: String, require: true },
+    namaIstri: { type: String, required: true, trim: true },
     statusIstri: {
       type: String,
       enum: ["hidup", "meninggal"],
       default: "hidup",
     },
     statusSakramentIstri: {
-      baptis: [sakramenSchema],
-      komuni: [sakramenSchema],
-      krisma: [sakramenSchema],
+      baptis: { type: [sacramentSchema], default: [] },
+      komuni: { type: [sacramentSchema], default: [] },
+      krisma: { type: [sacramentSchema], default: [] },
     },
-    riwayatPasangan: { type: [almarhumSchema], default: undefined },
-    anak: { type: [anakSchema], default: undefined },
+    tglMeninggal: { type: String, trim: true, default: "" },
+    lokasiMakam: { type: String, trim: true, default: "" },
+    anak: { type: [personSchema], default: [] },
   },
   {
     _id: false,
     minimize: true,
-    toObject: { transform: reorderFields },
     strict: true,
   },
 );
@@ -64,73 +73,38 @@ const umatSchema = new mongoose.Schema(
     },
     noKk: {
       type: String,
+      trim: true,
       unique: true,
       sparse: true,
     },
-    stasiKeluarga: { type: StasiSchema, require: true },
-    single: { type: singleSchema, default: undefined },
+    stasiKeluarga: { type: String, trim: true, required: true },
+    single: { type: personSchema, default: undefined },
     keluarga: { type: keluargaSchema, default: undefined },
   },
   {
     timestamps: true,
     minimize: true,
-    toJSON: {
-      transform: (doc, ret) => {
-        // Menghapus field null/kosong saat data dikirim ke client
-        if (!ret.single) delete ret.single;
-        if (!ret.keluarga) delete ret.keluarga;
-        if (ret.keluarga?.anak?.length === 0) delete ret.keluarga.anak;
-        return ret;
-      },
-    },
     strict: true,
   },
 );
 
-// Middleware: Pre-save
-umatSchema.pre("save", function (next) {
-  console.log("[PRE-SAVE] Validating and preparing umat before save...");
-  this.nama = this.nama.trim();
-  this.stasi = this.stasi.trim();
-  this.birth_place = this.birth_place.trim();
+umatSchema.pre("validate", function () {
+  if (this.statusNikah === "belum menikah") {
+    if (!this.single || this.keluarga) {
+      this.invalidate(
+        "single",
+        "Data individu wajib diisi untuk umat yang belum menikah.",
+      );
+    }
+    return;
+  }
 
-  if (this.status === "menikah" && (!this.partner_name || !this.married_date)) {
-    return next(
-      new Error(
-        "Pasangan dan tanggal pernikahan harus diisi jika status menikah",
-      ),
+  if (!this.keluarga || this.single) {
+    this.invalidate(
+      "keluarga",
+      "Data suami dan istri wajib diisi untuk data keluarga.",
     );
   }
-  next();
-});
-
-// Middleware: Pre-find (for .find, .findOne, etc)
-umatSchema.pre(/^find/, function (next) {
-  console.log("[PRE-FIND] Querying umat data...");
-  next();
-});
-
-// Middleware: Pre-update
-umatSchema.pre("findOneAndUpdate", function (next) {
-  console.log("[PRE-UPDATE] Updating umat...");
-  next();
-});
-
-// Middleware: Pre-remove
-umatSchema.pre("remove", function (next) {
-  console.log("[PRE-REMOVE] Umat will be removed: ", this._id);
-  next();
-});
-
-umatSchema.pre("save", function (next) {
-  if (this.status === "menikah" && (!this.partner_name || !this.married_date)) {
-    return next(
-      new Error(
-        "Pasangan dan tanggal pernikahan harus diisi jika status menikah",
-      ),
-    );
-  }
-  next();
 });
 
 module.exports = mongoose.model("Umat", umatSchema);

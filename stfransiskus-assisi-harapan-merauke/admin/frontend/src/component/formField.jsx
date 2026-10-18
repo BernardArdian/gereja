@@ -1,11 +1,11 @@
-export default function FormField({ label, icon, required, children }) {
+export default function FormField({ label, icon, required, children, htmlFor }) {
   return (
-    <div className="w-full">
-      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 ml-1">
+    <label htmlFor={htmlFor} className="block w-full space-y-2">
+      <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
         <span className="text-indigo-500">{icon}</span>
         {label} {required && <span className="text-red-500">*</span>}
-      </label>
+      </span>
       {children}
-    </div>
+    </label>
   );
 }

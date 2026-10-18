@@ -1,109 +1,123 @@
-//import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { motion as Motion } from "framer-motion";
 import KontakDanLokasi from "./kontak-dan-lokasi/kontak-dan-lokasi";
 import Pengumuman from "./pengumuman/pengumuman";
 import Thumbnail from "./thumbnail/thumbnail";
 import SejarahGereja from "./sejarah/sejarahgereja";
 import VisiMisi from "./visi-dan-misi/visimisi";
 import Pedoman from "./pedoman/pedoman";
-import CalendarPage from "./kalender/kalender";
-import { motion as Motion } from "framer-motion";
+
+const dashboardTabs = [
+  {
+    label: "Thumbnail & galeri",
+    slug: "thumbnail-galeri",
+    legacySlug: "thumbnail-&-gallery",
+    content: Thumbnail,
+  },
+  {
+    label: "Sejarah gereja",
+    slug: "sejarah-gereja",
+    content: SejarahGereja,
+  },
+  {
+    label: "Visi & misi",
+    slug: "visi-misi",
+    legacySlug: "visi-&-misi",
+    content: VisiMisi,
+  },
+  { label: "Pedoman pastoral", slug: "pedoman-pastoral", content: Pedoman },
+  { label: "Pengumuman", slug: "pengumuman", content: Pengumuman },
+  {
+    label: "Alamat, kontak & lokasi",
+    slug: "alamat-kontak-lokasi",
+    legacySlug: "alamat,-kontak-&-lokasi",
+    content: KontakDanLokasi,
+  },
+];
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { tab } = useParams();
-
-  const setActiveTab = (t) => {
-    const slug = t.replace(/ /g, "-");
-    navigate(`/dashboard/${slug}`);
-  };
-
-  const activeTab = tab ? tab.replace(/-/g, " ") : "thumbnail & gallery";
-
-  const navTitle = [
-    "thumbnail & gallery",
-    "sejarah gereja",
-    "visi & misi",
-    "pedoman pastoral",
-    "pengumuman",
-    "alamat, kontak & lokasi",
-  ];
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case "thumbnail & gallery":
-        return <Thumbnail />;
-      case "sejarah gereja":
-        return <SejarahGereja />;
-      case "visi & misi":
-        return <VisiMisi />;
-      case "pengumuman":
-        return <Pengumuman />;
-      case "pedoman pastoral":
-        return <Pedoman />;
-      case "alamat, kontak & lokasi":
-        return <KontakDanLokasi />;
-      default:
-        return null;
-    }
-  };
+  const activeTab =
+    dashboardTabs.find(
+      (item) => item.slug === tab || item.legacySlug === tab,
+    ) ?? dashboardTabs[0];
+  const ActiveContent = activeTab.content;
 
   return (
-    <section className="w-full min-h-screen pl-0.5 pr-0.5 ">
-      <main className="max-w-5xl mx-auto">
-        <div className="bg-gray-500/30 shadow-sm h-full p-2">
-          {/* HEADER TITTLE*/}
-          <header className="mb-5">
-            <section className="flex items-center gap-4">
-              <div>
-                <h2 className="text-xl font-serif text-gray-900 tracking-tight">
-                  Dashboard Paroki St.Fransiskus Assisi.
-                </h2>
-                <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                  Thumbnail, Gallery, Sejarah, Visi Misi, Pedoman Pasotral,
-                  Pengumuman, Alamat & kontak
-                </p>
-              </div>
-            </section>
-          </header>
+    <section className="min-h-full w-full bg-slate-50">
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+        <header>
+          <p className="text-sm font-semibold text-amber-700">
+            Pengelolaan situs paroki
+          </p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Dashboard Paroki
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            Kelola informasi dan konten yang ditampilkan kepada umat.
+          </p>
+        </header>
 
-          {/* TABS HEADER */}
-          <section className="w-full max-w-full mb-10 overflow-hidden bg-slate-500/40 rounded backdrop-blur-sm p-2">
-            <nav className="flex items-center gap-2 overflow-x-auto no-scrollbar select-none relative">
-              {navTitle.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setActiveTab(t)}
-                  className={`
-          cursor-pointer relative px-6 py-3 text-[13px] font-serif uppercase tracking-widest rounded-xl transition-colors duration-300 
-          whitespace-nowrap flex-shrink-0 z-10
-          ${activeTab === t ? "text-white" : "text-gray-900 hover:bg-blue-500/20 hover:text-white"}
-        `}
-                >
-                  {/* TEKS MENU */}
-                  <span className="relative z-20">{t}</span>
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <nav
+            aria-label="Bagian dashboard"
+            className="overflow-x-auto border-b border-slate-200 px-3 pt-3 sm:px-5"
+          >
+            <div className="flex min-w-max items-center gap-1">
+              {dashboardTabs.map((item) => {
+                const isActive = activeTab.slug === item.slug;
 
-                  {/* ANIMASI BACKGROUND PUTIH (SLIDING EFFECT) */}
-                  {activeTab === t && (
-                    <Motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-blue-500/70 rounded-xl z-10"
-                      transition={{
-                        type: "spring",
-                        bounce: 0.2,
-                        duration: 0.6,
-                      }}
-                    />
-                  )}
-                </button>
-              ))}
-            </nav>
+                return (
+                  <button
+                    key={item.slug}
+                    type="button"
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => navigate(`/dashboard/${item.slug}`)}
+                    className={`relative cursor-pointer whitespace-nowrap rounded-t-lg px-4 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600 ${
+                      isActive
+                        ? "text-amber-900"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    }`}
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    {isActive && (
+                      <Motion.span
+                        layoutId="dashboard-active-tab"
+                        aria-hidden="true"
+                        className="absolute inset-0 rounded-t-lg bg-amber-50"
+                        transition={{
+                          type: "spring",
+                          bounce: 0.15,
+                          duration: 0.35,
+                        }}
+                      />
+                    )}
+                    {isActive && (
+                      <Motion.span
+                        layoutId="dashboard-active-indicator"
+                        aria-hidden="true"
+                        className="absolute inset-x-3 bottom-0 z-20 h-0.5 rounded-full bg-amber-700"
+                        transition={{
+                          type: "spring",
+                          bounce: 0.15,
+                          duration: 0.35,
+                        }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
+
+          <section
+            aria-label={activeTab.label}
+            className="min-h-72 p-4 sm:p-6"
+          >
+            <ActiveContent />
           </section>
-          {/* AREA KONTEN */}
-          <section className="min-h-screen">
-            <section>{renderContent()}</section>
-          </section>
-        </div>
+        </section>
       </main>
     </section>
   );

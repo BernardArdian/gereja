@@ -5,72 +5,39 @@ export default function StasiDanDppCard({
   value,
   icon,
   color,
+  actionLabel,
+  description,
   onInputClick,
-  onClick,
 }) {
   return (
-    <section
-      onClick={onClick}
-      className={`p-5 rounded-2xl transition-all group
-        ${
-          title === "Anggota Dpp"
-            ? "bg-blue-500/50 border-blue-100"
-            : title === "Total Stasi"
-              ? "bg-yellow-500/50 border-amber-100"
-              : "bg-white"
-        }`}
-    >
-      {/* Baris Atas: Icon di Kiri, Tombol/Trend di Kanan */}
-      <header className="flex justify-between items-center mb-5">
-        {/* ICON (Kiri) */}
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <header className="flex items-start justify-between gap-3">
         <div
-          className={`w-10 h-10 flex items-center justify-center rounded-xl ${color} text-white`}
-          children={icon}
-        />
-
-        {/* BAGIAN KANAN (Trend atau Tombol Input) */}
-        <section>
-          {/*Cek jika judulnya persis "Total Stasi" */}
-          {title === "Total Stasi" && (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onInputClick();
-              }}
-              className="flex flex-row items-center gap-1.5 cursor-pointer bg-amber-50 text-amber-600 border border-amber-200 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-all"
-            >
-              <Plus size={13} /> Tambah Stasi
-            </button>
-          )}
-
-          {/*Cek jika judulnya persis "Anggota Dpp" */}
-          {title === "Anggota Dpp" && (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onInputClick();
-              }}
-              className="flex flex-row items-center gap-1.5 cursor-pointer bg-green-50 text-green-600 border border-green-200 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all"
-            >
-              <Plus size={13} /> Tambah DPP
-            </button>
-          )}
-        </section>
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${color} text-white`}
+          aria-hidden="true"
+        >
+          {icon}
+        </div>
+        {actionLabel && onInputClick && (
+          <button
+            type="button"
+            onClick={onInputClick}
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          >
+            <Plus size={14} aria-hidden="true" />
+            {actionLabel}
+          </button>
+        )}
       </header>
-
-      {/* Judul & Angka */}
-      <footer>
-        <span
-          className="text-xs font-semibold text-gray-800 uppercase tracking-widest"
-          children={title}
-        />
-        <h2
-          className="text-3xl font-bold text-gray-800 mt-1 tracking-tight"
-          children={value}
-        />
-      </footer>
+      <div className="mt-5">
+        <p className="text-sm font-medium text-slate-600">{title}</p>
+        <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+          {value}
+        </p>
+        {description && (
+          <p className="mt-1 text-xs text-slate-500">{description}</p>
+        )}
+      </div>
     </section>
   );
 }

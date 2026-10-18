@@ -1,25 +1,73 @@
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  User,
-  Share2,
-  Edit3,
-  X,
-} from "lucide-react";
+import { useState } from "react";
+import { Calendar, User, Share2, X } from "lucide-react";
+import ListBerita from "../../component/berita/lsitBerita";
+
+const newsList = [
+  {
+    id: 1,
+    title: "Pembangunan Gedung Serbaguna Stasi Harapan Memasuki Tahap Akhir",
+    excerpt: "Proses pembangunan kini sudah mencapai 90%...",
+    content: "Isi lengkap berita pembangunan gedung serbaguna...",
+    date: "02 Feb 2026",
+    author: "Admin",
+    image: "https://picsum.photos/seed/n1/800/600",
+    tags: ["Pembangunan", "Stasi Harapan"],
+  },
+  {
+    id: 2,
+    title: "Latihan Gabungan Koor Paroki Persiapan Paskah",
+    excerpt: "Seluruh anggota koor berkumpul di Gereja Pusat...",
+    content: "Menyambut hari raya Paskah, tim liturgi mengadakan latihan...",
+    date: "01 Feb 2026",
+    author: "Liturgi",
+    image: "https://picsum.photos/seed/n2/800/600",
+    tags: ["Liturgi", "Paskah"],
+  },
+  {
+    id: 3,
+    title: "Misa Perdana Pastor Baru Paroki St. Fransiskus",
+    excerpt: "Umat menyambut dengan antusias kedatangan pastor baru...",
+    content: "Perayaan misa perdana berlangsung dengan khidmat...",
+    date: "30 Jan 2026",
+    author: "Admin",
+    image: "https://picsum.photos/seed/n3/800/600",
+    tags: ["Misa", "Pastor"],
+  },
+];
 
 export default function DetailBerita({
   title = "Judul Konten Detail",
-  //subtitle = "Kategori atau Sub-informasi",
   date = "02 Feb 2026",
   author = "Admin Paroki",
   image = "https://picsum.photos/seed/detail/1200/600",
   content = "Isi konten utama akan tampil di sini...",
+  tags = ["Berita"],
   onBack = () => window.history.back(),
 }) {
+  // State untuk navigasi ke berita lain dari footer
+  const [currentTitle, setCurrentTitle] = useState(title);
+  const [currentDate, setCurrentDate] = useState(date);
+  const [currentAuthor, setCurrentAuthor] = useState(author);
+  const [currentImage, setCurrentImage] = useState(image);
+  const [currentContent, setCurrentContent] = useState(content);
+
+  const handleShowOtherNews = (item) => {
+    setCurrentTitle(item.title);
+    setCurrentDate(item.date);
+    setCurrentAuthor(item.author);
+    setCurrentImage(item.image);
+    setCurrentContent(item.content || item.excerpt);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Filter berita lain (exclude yang sedang ditampilkan)
+  const otherNews = newsList
+    .filter((item) => item.title !== currentTitle)
+    .slice(0, 3);
+
   return (
-    <section className="min-h-screen w-full">
-      {/* ACTION BAR STICKY */}
+    <section className="min-h-screen w-full bg-[#f5f5f5] -mt-17.5 relative z-50">
+      {/* ACTION BAR */}
       <nav className="top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
@@ -32,22 +80,21 @@ export default function DetailBerita({
             Tutup Portal
           </button>
 
-          <div className="flex items-center gap-3">
-            <button className="cursor-pointer group flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
-              <div className="p-2 rounded-xl group-hover:bg-blue-100 transition-colors">
-                <Share2 size={20} />
-              </div>
-              Share
-            </button>
-          </div>
+          <button className="cursor-pointer group flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
+            <div className="p-2 rounded-xl group-hover:bg-blue-100 transition-colors">
+              <Share2 size={20} />
+            </div>
+            Share
+          </button>
         </div>
       </nav>
 
       {/* ARTICLE HEADER */}
       <header className="max-w-4xl mx-auto px-6 pt-12 pb-8">
-        <h1 className="text-3xl md:text-5xl font-black font-serif text-gray-900 leading-tight mb-8 tracking-tight">
-          {title}
-        </h1>
+        <h1
+          className="text-3xl md:text-5xl font-black font-serif text-gray-900 leading-tight mb-8 tracking-tight"
+          children={currentTitle}
+        />
 
         <div className="flex flex-wrap items-center gap-6 py-6 border-y border-gray-100 text-gray-400">
           <div className="flex items-center gap-2">
@@ -58,7 +105,10 @@ export default function DetailBerita({
               <p className="text-[0.5em] font-black uppercase tracking-tighter text-gray-800 leading-none mb-1">
                 Penulis
               </p>
-              <p className="text-[0.9em] font-bold text-gray-800">{author}</p>
+              <p
+                className="text-[0.9em] font-bold text-gray-800"
+                children={currentAuthor}
+              />
             </div>
           </div>
 
@@ -70,71 +120,54 @@ export default function DetailBerita({
               <p className="text-[0.5em] font-black uppercase tracking-tighter text-gray-800 leading-none mb-1">
                 Tanggal
               </p>
-              <p className="text-[0.9em] font-bold text-gray-800">{date}</p>
+              <p
+                className="text-[0.9em] font-bold text-gray-800"
+                children={currentDate}
+              />
             </div>
           </div>
         </div>
       </header>
 
+      {/* HERO IMAGE */}
       <section className="max-w-5xl mx-auto px-6 mb-12">
-        <form className="rounded-[1rem] border-1 overflow-hidden">
-          <img
-            src={image}
-            alt={title}
-            className="w-full h-auto object-cover aspect-video"
-          />
-        </form>
+        <div
+          className="rounded-[1rem] border overflow-hidden"
+          children={
+            <img
+              src={currentImage}
+              alt={currentTitle}
+              className="w-full h-auto object-cover aspect-video"
+            />
+          }
+        />
       </section>
 
       {/* ARTICLE BODY */}
       <article className="max-w-3xl mx-auto px-6 pb-32">
-        <div className="prose prose-lg prose-indigo max-w-none">
-          <p className="text-xl text-gray-800 leading-relaxed font-medium mb-8">
-            {content.substring(0, 150)}...
-          </p>
-          <div className="text-gray-800 leading-[1.8] space-y-6 whitespace-pre-line">
-            {content}
-          </div>
-        </div>
+        <div
+          className="prose prose-lg prose-indigo max-w-none"
+          children={[
+            <p
+              className="text-xl text-gray-800 leading-relaxed font-medium mb-8"
+              children={`${currentContent.substring(0, 150)} ...`}
+            />,
+            <div
+              className="text-gray-800 leading-[1.8] space-y-6 whitespace-pre-line"
+              children={currentContent}
+            />,
+          ]}
+        />
       </article>
+
+      {/* FOOTER - BERITA LAINNYA */}
       <footer className="border-t border-gray-900">
         <section className="px-15 py-5">
           <span className="font-serif text-[0.90em]">- berita lainnya -</span>
-          <form className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-300 border border-gray-300 rounded overflow-hidden">
-            {[
-              {
-                n: "01",
-                title: "Fitur Unggulan",
-                body: "Konten landing page yang bersih meningkatkan konversi pengunjung.",
-              },
-              {
-                n: "02",
-                title: "Responsif",
-                body: "Tampilan otomatis menyesuaikan di semua ukuran layar perangkat.",
-              },
-              {
-                n: "03",
-                title: "Cepat",
-                body: "Optimasi performa menggunakan Tailwind CSS dan framework modern.",
-              },
-            ].map((card) => (
-              <div
-                key={card.n}
-                className="p-8 md:p-10 hover:bg-gray-50 transition-colors cursor-pointer group"
-              >
-                <p className="text-[11px] text-gray-800 mb-5">{card.n}</p>
-                <h3 className="font-serif text-lg text-gray-900 mb-3 group-hover:text-gray-600 transition-colors">
-                  {card.title}
-                </h3>
-                <p className="text-xs text-gray-800 leading-relaxed font-light">
-                  {card.body}
-                </p>
-                <div className="mt-8 text-gray-300 group-hover:text-gray-500 transition-colors">
-                  <ArrowRight size={24} />
-                </div>
-              </div>
-            ))}
-          </form>
+          <ListBerita
+            data={otherNews}
+            handler={{ showDetail: handleShowOtherNews }}
+          />
         </section>
       </footer>
     </section>

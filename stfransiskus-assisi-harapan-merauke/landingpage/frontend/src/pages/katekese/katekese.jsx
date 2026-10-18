@@ -32,45 +32,47 @@ export default function Katekese() {
 
   return (
     <section className="w-full min-h-screen px-4">
-      <header className="flex items-center justify-between  gap-4 py-4 border-b border-amber-500 mb-4">
-        <section
-          children={
-            <>
-              <h2 className="font-serif text-1xl text-gray-900">
-                Katekese Paroki St.Fransiskus Assisi
-              </h2>
-              <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
-                Arsip Orang kudus, Devosi, Renugan dan Tradisi Gereja
-              </p>
-            </>
-          }
-        />
+      <header className="flex items-center justify-between rounded-b-xl mt-1 bg-[#B38728]/60 gap-4 py-4 border-b border-amber-500 mb-4">
+        <section className="ml-1">
+          <h2 className="font-serif text-1xl text-gray-900">
+            Katekese Paroki St.Fransiskus Assisi
+          </h2>
 
-        <section>
-          {/* TABS */}
-          <nav
-            className="flex justify-center items-center gap-0 overflow-hidden"
-            onWheel={(e) => e.preventDefault()}
-            children={katekeseSubMenu.map((t) => (
-              <button
-                key={t}
-                onClick={() => setActiveTab(t)}
-                className={`cursor-pointer px-6 py-3 text-[12px] font-serif font-medium uppercase tracking-widest whitespace-nowrap transition-colors border-b-4 -mb-px ${
-                  activeTab === t
-                    ? "border-gray-600 text-gray-900"
-                    : "border-transparent text-gray-100 hover:text-gray-700"
-                }`}
-                children={t}
-              />
-            ))}
-          />
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
+            Orang kudus, Devosi, Renugan dan Tradisi Gereja
+          </p>
         </section>
+
+        {/* TABS */}
+        <section
+          children={[
+            <nav
+              className="flex justify-center items-center gap-0 overflow-hidden"
+              onWheel={(e) => e.preventDefault()}
+              children={katekeseSubMenu.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setActiveTab(t)}
+                  className={`cursor-pointer px-6 py-3 text-[12px] font-serif font-medium uppercase tracking-widest whitespace-nowrap transition-colors border-b-4 -mb-px ${
+                    activeTab === t
+                      ? "border-gray-600 text-gray-900"
+                      : "border-transparent text-gray-100 hover:text-gray-700"
+                  }`}
+                  children={t}
+                />
+              ))}
+            />,
+          ]}
+        />
       </header>
 
-      <main className="max-w-5xl mx-auto">
-        {/* Main content */}
-        <section className="min-h-[400px]" children={renderContent()} />
-      </main>
+      {/* content */}
+      <main
+        className="max-w-5xl mx-auto"
+        children={
+          <section className="min-h-[400px]" children={renderContent()} />
+        }
+      />
     </section>
   );
 }

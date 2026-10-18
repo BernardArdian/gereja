@@ -1,305 +1,256 @@
+import { createElement } from "react";
 import {
-  Users,
-  MapPin,
-  Heart,
   Cross,
+  Heart,
+  MapPin,
   PieChart,
-  TrendingUp,
   Printer,
+  Users,
 } from "lucide-react";
 
 import StatistikPerStasi from "./statistikPerStasi";
 
-export default function StatistikUmat({ umatList = [] }) {
-  const totalUmat = umatList.length;
-  const hidupCount = umatList.filter(
-    (u) => u.statusHidup !== "meninggal",
-  ).length;
-  const meninggalCount = umatList.filter(
-    (u) => u.statusHidup === "meninggal",
-  ).length;
-  const uniqueKK = new Set(umatList.map((u) => u.noKk).filter(Boolean)).size;
-  // const uniqueStasi = new Set(
-  //   umatList.map((u) => u.stasiKeluarga).filter(Boolean),
-  // ).size;
+function normalizeMaritalStatus(status = "") {
+  const normalized = status.toLowerCase().replaceAll("_", " ");
+  if (normalized === "sudah menikah") return "menikah";
+  return normalized;
+}
 
-  const statsReal = [
+function hasCompletedSacrament(value) {
+  return Array.isArray(value)
+    ? value.some((item) => item?.status === "sudah")
+    : value?.status === "sudah";
+}
+
+function umatHasSacrament(umat, key) {
+  const family = umat.rawData?.keluarga || {};
+  return [
+    umat[key],
+    umat.rawData?.[key],
+    umat.rawData?.single?.[key],
+    umat.rawData?.personal?.[key],
+    family.statusSakramentSuami?.[key],
+    family.statusSakramentIstri?.[key],
+    ...(family.anak || []).map((child) => child[key]),
+  ].some(hasCompletedSacrament);
+}
+
+export default function StatistikUmat({ umatList = [] }) {
+  const totalDataUmat = umatList.length;
+  const hidupCount = umatList.filter(
+    (umat) => umat.statusHidup !== "meninggal",
+  ).length;
+  const meninggalCount = totalDataUmat - hidupCount;
+  const uniqueKK = new Set(
+    umatList
+      .map((umat) => umat.noKk?.trim())
+      .filter((number) => number && number !== "-"),
+  ).size;
+  const sacramentMetrics = [
+    { key: "baptis", label: "Baptis" },
+    { key: "komuni", label: "Komuni pertama" },
+    { key: "krisma", label: "Krisma" },
+  ].map((metric) => ({
+    ...metric,
+    count: umatList.filter((umat) => umatHasSacrament(umat, metric.key)).length,
+  }));
+  const maritalMetrics = [
+    { key: "menikah", label: "Menikah" },
+    { key: "belum menikah", label: "Belum menikah" },
+    { key: "duda", label: "Duda" },
+    { key: "janda", label: "Janda" },
+  ].map((metric) => ({
+    ...metric,
+    count: umatList.filter(
+      (umat) =>
+        normalizeMaritalStatus(umat.statusNikah || umat.status) === metric.key,
+    ).length,
+  }));
+
+  const stats = [
     {
-      id: 1,
-      tittle: "Total Umat",
-      label: "Total Umat",
-      value: totalUmat.toLocaleString("id-ID"),
+      label: "Data umat terdaftar",
+      value: totalDataUmat,
       icon: Users,
-      color: "bg-blue-600",
+      color: "blue",
     },
     {
-      id: 2,
-      tittle: "Riwayat Hidup",
-      label: "Umat Hidup",
-      value: hidupCount.toLocaleString("id-ID"),
+      label: "Data berstatus hidup",
+      value: hidupCount,
       icon: Heart,
-      color: "bg-rose-500",
+      color: "emerald",
     },
     {
-      id: 3,
-      tittle: "Riwayat Meninggal",
-      label: "Umat Meninggal",
-      value: meninggalCount.toLocaleString("id-ID"),
+      label: "Data berstatus meninggal",
+      value: meninggalCount,
       icon: Cross,
-      color: "bg-black",
+      color: "rose",
     },
     {
-      id: 4,
-      tittle: "KK Terdaftar",
-      label: "Keluarga (KK)",
-      value: uniqueKK.toLocaleString("id-ID"),
+      label: "Kartu keluarga terdaftar",
+      value: uniqueKK,
       icon: MapPin,
-      color: "bg-amber-500",
+      color: "amber",
     },
   ];
+  const colorClasses = {
+    blue: "border-sky-200 bg-sky-50 text-sky-800",
+    emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    rose: "border-rose-200 bg-rose-50 text-rose-800",
+    amber: "border-amber-200 bg-amber-50 text-amber-800",
+  };
 
-  const counts = {};
-  umatList.forEach((u) => {
-    const s = u.stasiKeluarga || "Tanpa Stasi";
-    if (!counts[s]) {
-      counts[s] = {
-        n: s,
+  const counts = new Map();
+  umatList.forEach((umat) => {
+    const stasi = umat.stasiKeluarga || umat.lingkungan || "Tanpa Stasi";
+    const status = normalizeMaritalStatus(umat.statusNikah || umat.status);
+    if (!counts.has(stasi)) {
+      counts.set(stasi, {
+        n: stasi,
         total: 0,
-        b: 0,
-        ko: 0,
-        kr: 0,
-        nikah: 0,
+        baptis: 0,
+        komuni: 0,
+        krisma: 0,
+        menikah: 0,
         belumNikah: 0,
         janda: 0,
         duda: 0,
-        h: 0,
-        m: 0,
-      };
+        hidup: 0,
+        meninggal: 0,
+      });
     }
-    counts[s].total += 1;
-    if (u.baptis?.status === "sudah") counts[s].b += 1;
-    if (u.komuni?.status === "sudah") counts[s].ko += 1;
-    if (u.krisma?.status === "sudah") counts[s].kr += 1;
-    if (u.statusNikah === "menikah") counts[s].nikah += 1;
-    if (u.statusNikah === "belum_menikah") counts[s].belumNikah += 1;
-    if (u.statusNikah === "janda") counts[s].janda += 1;
-    if (u.statusNikah === "duda") counts[s].duda += 1;
-    if (u.statusHidup !== "meninggal") counts[s].h += 1;
-    else counts[s].m += 1;
+
+    const stasiCounts = counts.get(stasi);
+    stasiCounts.total += 1;
+    if (umatHasSacrament(umat, "baptis")) stasiCounts.baptis += 1;
+    if (umatHasSacrament(umat, "komuni")) stasiCounts.komuni += 1;
+    if (umatHasSacrament(umat, "krisma")) stasiCounts.krisma += 1;
+    if (status === "menikah") stasiCounts.menikah += 1;
+    if (status === "belum menikah") stasiCounts.belumNikah += 1;
+    if (status === "duda") stasiCounts.duda += 1;
+    if (status === "janda") stasiCounts.janda += 1;
+    if (umat.statusHidup === "meninggal") stasiCounts.meninggal += 1;
+    else stasiCounts.hidup += 1;
   });
 
-  const stasiDistribusi = Object.values(counts).sort(
-    (a, b) => b.total - a.total,
+  const stasiDistribusi = [...counts.values()].sort(
+    (a, b) => b.total - a.total || a.n.localeCompare(b.n, "id"),
   );
 
   return (
-    <section className="p-6 space-y-8 min-h-screen rounded-3xl">
-      {/* HEADER */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <form>
-          <h1
-            className="text-2xl font-serif text-indigo-950 uppercase tracking-tighter"
-            children={`Statistik Umat Paroki St.Fransiskus Assisi harapan Makmur - Merauke,
-            Papua Selatan ${new Date().getFullYear()}`}
-          />
-          <p className="text-sm font-serif text-gray-900 font-medium">
-            Laporan statistik berdasarkan data yang diinput
+    <section className="w-full space-y-6 sm:space-y-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-amber-800">
+            Ringkasan data paroki
           </p>
-        </form>
-        <button className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-black text-white rounded text-xs font-bold uppercase tracking-widest hover:bg-black/30 hover:text-black transition-all active:scale-95">
-          <Printer size={25} /> Cetak
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+            Statistik umat
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            Ringkasan berdasarkan data umat yang tercatat, status sakramen,
+            perkawinan, dan stasi.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+        >
+          <Printer size={17} aria-hidden="true" />
+          Cetak laporan
         </button>
       </header>
 
-      {/* STATS GRID */}
       <section
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-        children={statsReal.map((item) => (
-          <div
-            key={item.id}
-            className={`p-6 rounded-xl
-              ${
-                item.label === "Total Umat"
-                  ? "bg-blue-300/40 border border-blue-500"
-                  : item.label === "Umat Hidup"
-                    ? "bg-rose-300/40 border border-rose-500"
-                    : item.label === "Umat Meninggal"
-                      ? "bg-black/40 border border-black"
-                      : item.label === "Keluarga (KK)"
-                        ? "bg-amber-500/30 border border-amber-600"
-                        : "bg-gray-600/40 border border-gray-100 "
-              }
-              `}
+        aria-label="Ringkasan jumlah umat"
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
+      >
+        {stats.map(({ label, value, icon, color }) => (
+          <article
+            key={label}
+            className={`rounded-2xl border p-4 sm:p-5 ${colorClasses[color]}`}
           >
-            <div className="flex items-start justify-between">
-              <div className={`p-4 rounded-xl text-white ${item.color}`}>
-                <item.icon size={22} strokeWidth={3} />
-              </div>
-              <span
-                className={`text-[16px] font-black text-gray-900 uppercase tracking-widest  px-3 py-1 
-                ${
-                  item.tittle === "Total Umat"
-                    ? "bg-blue-500 text-white rounded-md border border-white"
-                    : item.tittle === "Riwayat Hidup"
-                      ? "bg-rose-500 text-white rounded-md border border-white"
-                      : item.tittle === "Riwayat Meninggal"
-                        ? "bg-black text-white rounded-md border border-white"
-                        : item.tittle === "KK Terdaftar"
-                          ? "bg-amber-500 text-white rounded-md border border-white"
-                          : "bg-gray-50 rounded-md border"
-                }
-                `}
-                children={item.tittle}
-              />
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium leading-5">{label}</p>
+              <span className="rounded-xl bg-white/80 p-2.5">
+                {createElement(icon, { size: 19, "aria-hidden": true })}
+              </span>
             </div>
-            <div className="mt-6">
-              <p
-                className={`text-[16px] text-gray-900 font-black uppercase tracking-widest
-                ${item.label === "Umat Meninggal" ? "text-[16px] text-white " : ""}
-                `}
-                children={item.label}
-              />
-              <h3
-                className={`text-3xl font-black text-gray-900 mt-1 tracking-tighter
-                ${item.label === "Umat Meninggal" ? "text-white" : ""}
-                `}
-                children={item.value}
-              />
-            </div>
-          </div>
+            <p className="mt-5 text-3xl font-bold tracking-tight">
+              {value.toLocaleString("id-ID")}
+            </p>
+          </article>
         ))}
-      />
-
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* DETAIL SAKRAMEN */}
-        <section className="lg:col-span-2 bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
-          <h3 className="font-black text-gray-900 uppercase tracking-tighter mb-8 flex items-center gap-3">
-            <PieChart size={20} className="text-indigo-600" /> Statistik
-            Sakramen & Inisiasi
-          </h3>
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <section className="flex justify-between items-center mb-4">
-                <p className="text-[11px] font-black text-green-600 uppercase">
-                  sudah Melakukan Sakramen
-                </p>
-
-                <span
-                  className="text-[16px] font-black text-gray-900 tracking-widest"
-                  children={`total umat - ${totalUmat}`}
-                />
-              </section>
-              <section
-                className="space-y-4"
-                children={[
-                  {
-                    label: "Sudah Baptis",
-                    count: umatList.filter((u) => u.baptis?.status === "sudah")
-                      .length,
-                  },
-                  {
-                    label: "Sudah Komuni Pertama",
-                    count: umatList.filter((u) => u.komuni?.status === "sudah")
-                      .length,
-                  },
-                  {
-                    label: "Sudah Krisma",
-                    count: umatList.filter((u) => u.krisma?.status === "sudah")
-                      .length,
-                  },
-                  {
-                    label: "Sudah Nikah",
-                    count: umatList.filter((u) => u.statusNikah === "menikah")
-                      .length,
-                  },
-                ].map((data, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between text-[16px] font-black uppercase mb-1">
-                      <span className="text-gray-900" children={data.label} />
-
-                      <span
-                        className="text-gray-900"
-                        children={`${data.count} Jiwa`}
-                      />
-                    </div>
-                    <div className="w-full bg-white h-2 rounded-full border border-gray-100 overflow-hidden">
-                      <div
-                        className="bg-indigo-600 h-full"
-                        style={{
-                          width: `${totalUmat > 0 ? (data.count / totalUmat) * 100 : 0}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              />
-            </div>
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <secion className="flex justify-between items-center mb-4">
-                <p className="text-[11px] font-black text-rose-600 uppercase  ">
-                  Belum Melakukan Sakramen
-                </p>
-
-                <span
-                  className="text-[16px] font-black text-gray-900 tracking-widest"
-                  children={`total umat - ${totalUmat}`}
-                />
-              </secion>
-              <section
-                className="space-y-4"
-                children={[
-                  {
-                    label: "Belum Baptis",
-                    count:
-                      totalUmat -
-                      umatList.filter((u) => u.baptis?.status === "sudah")
-                        .length,
-                  },
-                  {
-                    label: "Belum Komuni Pertama",
-                    count:
-                      totalUmat -
-                      umatList.filter((u) => u.komuni?.status === "sudah")
-                        .length,
-                  },
-                  {
-                    label: "Belum Krisma",
-                    count:
-                      totalUmat -
-                      umatList.filter((u) => u.krisma?.status === "sudah")
-                        .length,
-                  },
-                  {
-                    label: "Belum Nikah",
-                    count:
-                      totalUmat -
-                      umatList.filter((u) => u.statusNikah === "menikah")
-                        .length,
-                  },
-                ].map((data, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between text-[16px] font-black uppercase mb-1">
-                      <span className="text-gray-500" children={data.label} />
-                      <span className="text-gray-900">{data.count} Jiwa</span>
-                    </div>
-                    <div className="w-full bg-white h-2 rounded-full border border-gray-100 overflow-hidden">
-                      <div
-                        className="bg-rose-400 h-full"
-                        style={{
-                          width: `${totalUmat > 0 ? (data.count / totalUmat) * 100 : 0}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              />
-            </div>
-          </section>
-        </section>
-
-        {/* STATISTIK PER STASI */}
-        <StatistikPerStasi stasiDistribusi={stasiDistribusi} />
       </section>
+
+      <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <MetricPanel
+          title="Status sakramen"
+          description="Data umat yang tercatat telah menerima sakramen."
+          metrics={sacramentMetrics}
+          total={totalDataUmat}
+          color="amber"
+        />
+        <MetricPanel
+          title="Status perkawinan"
+          description="Jumlah data berdasarkan status perkawinan."
+          metrics={maritalMetrics}
+          total={totalDataUmat}
+          color="sky"
+        />
+      </section>
+
+      <StatistikPerStasi stasiDistribusi={stasiDistribusi} />
+    </section>
+  );
+}
+
+function MetricPanel({ title, description, metrics, total, color }) {
+  const barColor = color === "amber" ? "bg-amber-600" : "bg-sky-700";
+
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+      <div className="mb-5 flex items-start gap-3">
+        <span className="rounded-xl bg-slate-100 p-2.5 text-slate-700">
+          <PieChart size={18} aria-hidden="true" />
+        </span>
+        <div>
+          <h3 className="font-semibold text-slate-900">{title}</h3>
+          <p className="mt-1 text-xs leading-5 text-slate-600">{description}</p>
+        </div>
+      </div>
+      <div className="space-y-5">
+        {metrics.map(({ key, label, count }) => {
+          const percentage = total ? Math.min((count / total) * 100, 100) : 0;
+          return (
+            <div key={key}>
+              <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                <span className="text-slate-700">{label}</span>
+                <span className="shrink-0 font-semibold tabular-nums text-slate-900">
+                  {count.toLocaleString("id-ID")}
+                  <span className="ml-1 text-xs font-normal text-slate-500">
+                    ({Math.round(percentage)}%)
+                  </span>
+                </span>
+              </div>
+              <div
+                className="h-2 overflow-hidden rounded-full bg-slate-100"
+                role="progressbar"
+                aria-label={label}
+                aria-valuemin={0}
+                aria-valuemax={total}
+                aria-valuenow={count}
+              >
+                <div
+                  className={`h-full rounded-full transition-[width] ${barColor}`}
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 }

@@ -1,16 +1,20 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import {
-  X,
-  Image as ImageIcon,
-  UploadCloud,
-  Layers,
   Calendar,
-  Type,
   FileText,
+  Image as ImageIcon,
+  Layers,
   MapPin,
   Save,
+  Type,
+  UploadCloud,
+  X,
 } from "lucide-react";
-import { createPortal } from "react-dom";
+import Dropdown from "../../dropdown/dropdown";
+
+const fieldClass =
+  "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
 export default function ThumbnaildanGallery({
   isOpen,
@@ -18,218 +22,342 @@ export default function ThumbnaildanGallery({
   onConfirm,
   initialTab,
 }) {
-  const [selectedTab, setSelectedTab] = useState(null);
-
-  const activeTab = selectedTab ?? initialTab ?? "thumbnail";
-
-  const handleCloseInternal = () => {
-    setSelectedTab(null);
-    onClose();
-  };
+  const [activeTab, setActiveTab] = useState(initialTab || "thumbnail");
+  const [title, setTitle] = useState("");
+  const [stasi, setStasi] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [error, setError] = useState("");
+  const isGallery = activeTab === "gallery";
 
   if (!isOpen) return null;
 
-  return createPortal(
-    <section className="fixed inset-0 z-[100] flex items-center justify-center p-2">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={handleCloseInternal}
-      />
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setError("");
+    if (tab === "thumbnail") {
+      setSelectedFiles((files) => files.slice(0, 1));
+      setDate("");
+      setDescription("");
+    }
+  };
 
-      <section className="relative flex flex-col w-[90%] md:w-[60%] h-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+  const handleFiles = (event) => {
+    const files = Array.from(event.target.files || []);
+    const limit = isGallery ? 10 : 1;
+    if (selectedFiles.length + files.length > limit) {
+      setError(
+        isGallery
+          ? "Unggah maksimal 10 foto dalam satu kali input."
+          : "Thumbnail hanya menerima satu gambar.",
+      );
+      event.target.value = "";
+      return;
+    }
+    if (
+      files.some(
+        (file) =>
+          !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+          file.size > 2 * 1024 * 1024,
+      )
+    ) {
+      setError(
+        "Gunakan gambar JPG, PNG, atau WebP dengan ukuran maksimal 2 MB.",
+      );
+      event.target.value = "";
+      return;
+    }
+
+    Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              if (typeof reader.result !== "string") {
+                reject(new Error(`Gambar ${file.name} tidak dapat dibaca.`));
+                return;
+              }
+              resolve({
+                name: file.name,
+                url: reader.result,
+                size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+              });
+            };
+            reader.onerror = () =>
+              reject(new Error(`Gambar ${file.name} gagal dibaca.`));
+            reader.readAsDataURL(file);
+          }),
+      ),
+    )
+      .then((newFiles) => {
+        setSelectedFiles((previous) => [...previous, ...newFiles]);
+        setError("");
+      })
+      .catch((fileError) => {
+        setError(fileError.message);
+      });
+    event.target.value = "";
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!title.trim() || !stasi || !selectedFiles.length) {
+      setError("Lengkapi judul, stasi, dan pilih minimal satu gambar.");
+      return;
+    }
+    if (isGallery && !date) {
+      setError("Pilih tanggal kegiatan galeri.");
+      return;
+    }
+
+    onConfirm?.({
+      type: activeTab,
+      title: title.trim(),
+      stasi,
+      date,
+      description: description.trim(),
+      files: selectedFiles,
+    });
+  };
+
+  return createPortal(
+    <section
+      className="fixed inset-0 z-100 flex items-center justify-center p-3 sm:p-5"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="thumbnail-modal-title"
+        className="relative flex max-h-[min(94dvh,900px)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
           <div>
-            <h3 className="text-lg font-bold text-gray-800">
-              Thumbnail dan Gallery
-            </h3>
-            <p className="text-sm text-gray-500">
-              Kelola gambar thumbnail dan galeri kegiatan
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+              Galeri media
+            </p>
+            <h2
+              id="thumbnail-modal-title"
+              className="mt-1 font-semibold text-slate-900"
+            >
+              Tambah {isGallery ? "foto galeri" : "thumbnail"}
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Gambar JPG, PNG, atau WebP · maksimal 2 MB per gambar.
             </p>
           </div>
           <button
-            onClick={handleCloseInternal}
-            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="flex border-b border-gray-200 px-6 shrink-0 bg-white">
-          <button
             type="button"
-            onClick={() => setSelectedTab("thumbnail")}
-            className={`cursor-pointer flex items-center gap-2 pb-3 pt-4 text-sm font-semibold transition-all border-b-2 ${
-              activeTab === "thumbnail"
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
+            onClick={onClose}
+            aria-label="Tutup formulir gambar"
+            className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
-            <ImageIcon size={18} />
-            Thumbnail
+            <X size={19} aria-hidden="true" />
           </button>
-          <button
-            type="button"
-            onClick={() => setSelectedTab("gallery")}
-            className={`cursor-pointer flex items-center gap-2 pb-3 pt-4 text-sm font-semibold transition-all border-b-2 ml-6 ${
-              activeTab === "gallery"
-                ? "border-indigo-600 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            <Layers size={18} />
-            Gallery
-          </button>
-        </div>
+        </header>
 
-        <div className="flex-1 p-6 overflow-y-auto bg-gray-50/50">
-          {activeTab === "thumbnail" && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800 flex items-start gap-2">
-                <span className="mt-0.5">ℹ️</span>
-                <span>
-                  <strong>Info:</strong> Gambar ini akan muncul sebagai cover
-                  utama. Gunakan format Landscape (16:9).
+        <form
+          id="thumbnail-upload-form"
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 space-y-5 overflow-y-auto bg-slate-50/70 p-4 sm:p-6"
+        >
+          <div className="flex gap-2 rounded-xl border border-slate-200 bg-white p-1">
+            <button
+              type="button"
+              aria-pressed={!isGallery}
+              onClick={() => handleTabChange("thumbnail")}
+              className={`inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 ${
+                !isGallery
+                  ? "bg-amber-50 text-amber-900"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+              }`}
+            >
+              <ImageIcon size={16} aria-hidden="true" />
+              Thumbnail
+            </button>
+            <button
+              type="button"
+              aria-pressed={isGallery}
+              onClick={() => handleTabChange("gallery")}
+              className={`inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 ${
+                isGallery
+                  ? "bg-amber-50 text-amber-900"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+              }`}
+            >
+              <Layers size={16} aria-hidden="true" />
+              Galeri
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className="block space-y-2">
+              <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <Type size={15} aria-hidden="true" />
+                {isGallery ? "Nama kegiatan" : "Judul thumbnail"}
+              </span>
+              <input
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                className={fieldClass}
+                placeholder={
+                  isGallery ? "Contoh: Misa Natal" : "Contoh: Beranda paroki"
+                }
+                required
+              />
+            </label>
+            <label className="block space-y-2">
+              <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <MapPin size={15} aria-hidden="true" />
+                Stasi
+              </span>
+              <Dropdown
+                ariaLabel="Stasi"
+                value={stasi}
+                onChange={setStasi}
+                placeholder="Pilih stasi"
+                className="cursor-pointer"
+                required
+                options={[
+                  { value: "Pusat", label: "Pusat Paroki" },
+                  { value: "Harapan", label: "Harapan" },
+                  { value: "Kurik", label: "Kurik" },
+                ]}
+              />
+            </label>
+            {isGallery && (
+              <label className="block space-y-2 sm:col-span-2">
+                <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <Calendar size={15} aria-hidden="true" />
+                  Tanggal kegiatan
                 </span>
-              </div>
-
-              <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-white hover:bg-gray-50 hover:border-indigo-400 transition-all group">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <div className="p-4 bg-indigo-50 text-indigo-600 rounded-full mb-3 group-hover:scale-110 transition-transform">
-                    <UploadCloud size={32} />
-                  </div>
-                  <p className="mb-2 text-sm text-gray-500 font-medium">
-                    <span className="font-semibold text-indigo-600">
-                      Klik untuk upload
-                    </span>{" "}
-                    atau drag & drop
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    SVG, PNG, JPG (Max. 2MB)
-                  </p>
-                </div>
-                <input type="file" className="hidden" accept="image/*" />
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(event) => setDate(event.target.value)}
+                  className={fieldClass}
+                  required
+                />
               </label>
+            )}
+            {isGallery && (
+              <label className="block space-y-2 sm:col-span-2">
+                <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <FileText size={15} aria-hidden="true" />
+                  Deskripsi singkat (opsional)
+                </span>
+                <textarea
+                  rows={3}
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  className={`${fieldClass} min-h-20 resize-y`}
+                  placeholder="Ceritakan singkat kegiatan ini."
+                />
+              </label>
+            )}
+          </div>
+
+          <section className="space-y-3">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-800">
+                Pilih gambar
+              </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                {isGallery
+                  ? `Pilih sampai ${10 - selectedFiles.length} foto lagi.`
+                  : "Thumbnail ditampilkan dalam rasio lebar."}
+              </p>
             </div>
-          )}
-
-          {activeTab === "gallery" && (
-            <section className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <h4 className="text-sm font-bold text-gray-800 border-b border-gray-100 pb-2 mb-2">
-                  Detail Kegiatan
-                </h4>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* FILTER STASI */}
-                  <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                      <MapPin size={14} /> Pilih Stasi
-                    </label>
-                    <select className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all">
-                      <option value="">Semua Stasi / Pusat</option>
-                      <option value="stasi-a">Stasi A</option>
-                      <option value="stasi-b">Stasi B</option>
-                      <option value="stasi-c">Stasi C</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                      <Type size={14} /> Nama Galeri
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Contoh: Misa Natal 2024"
-                      className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+            {(selectedFiles.length === 0 || isGallery) && (
+              <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-white p-4 text-center transition hover:border-amber-500 hover:bg-amber-50">
+                <UploadCloud
+                  size={23}
+                  className="text-amber-800"
+                  aria-hidden="true"
+                />
+                <span className="mt-2 text-sm font-semibold text-slate-800">
+                  Pilih {isGallery ? "foto" : "thumbnail"}
+                </span>
+                <span className="mt-1 text-xs text-slate-500">
+                  JPG, PNG, WebP · maksimal 2 MB
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple={isGallery}
+                  onChange={handleFiles}
+                  className="sr-only"
+                />
+              </label>
+            )}
+            {selectedFiles.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {selectedFiles.map((file, index) => (
+                  <article
+                    key={`${file.name}-${index}`}
+                    className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+                  >
+                    <img
+                      src={file.url}
+                      alt={`Pratinjau ${file.name}`}
+                      className={`w-full object-cover ${isGallery ? "aspect-square" : "aspect-video"}`}
                     />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                      <Calendar size={14} /> Tanggal Pelaksanaan
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2 space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                      <FileText size={14} /> Nama Kegiatan / Deskripsi Singkat
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Contoh: Dokumentasi kegiatan misa natal pagi di gereja pusat..."
-                      className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-700">
-                    Foto Dokumentasi
-                  </label>
-                  <span className="text-xs text-gray-400">Max 10 foto</span>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-white hover:bg-indigo-50 hover:border-indigo-400 transition-all group">
-                    <div className="p-2 bg-gray-100 rounded-full group-hover:bg-white group-hover:text-indigo-600 transition-colors">
-                      <UploadCloud
-                        size={20}
-                        className="text-gray-400 group-hover:text-indigo-600"
-                      />
+                    <div className="flex items-center justify-between gap-2 p-2">
+                      <span className="min-w-0 truncate text-xs text-slate-600">
+                        {file.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedFiles((previous) =>
+                            previous.filter(
+                              (_, fileIndex) => fileIndex !== index,
+                            ),
+                          )
+                        }
+                        aria-label={`Hapus ${file.name}`}
+                        className="shrink-0 cursor-pointer rounded-md p-1 text-rose-700 hover:bg-rose-50"
+                      >
+                        <X size={15} aria-hidden="true" />
+                      </button>
                     </div>
-                    <span className="mt-2 text-xs font-semibold text-gray-500 group-hover:text-indigo-600">
-                      Tambah Foto
-                    </span>
-                    <input
-                      type="file"
-                      multiple
-                      className="hidden"
-                      accept="image/*"
-                    />
-                  </label>
-
-                  {[1, 2].map((item) => (
-                    <div
-                      key={item}
-                      className="relative cursor-pointer aspect-square rounded-xl overflow-hidden group shadow-sm border border-gray-200"
-                    >
-                      <img
-                        src={`https://picsum.photos/300/300?random=${item}`}
-                        alt="Preview"
-                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <button className="bg-white cursor-pointer text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors shadow-lg">
-                          <X size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                  </article>
+                ))}
               </div>
-            </section>
-          )}
-        </div>
+            )}
+          </section>
 
-        <footer className="bg-white px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3">
+          {error && (
+            <p
+              role="alert"
+              className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"
+            >
+              {error}
+            </p>
+          )}
+        </form>
+
+        <footer className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-200 bg-white p-4 sm:flex-row sm:justify-end sm:px-6">
           <button
-            onClick={onConfirm}
-            className="cursor-pointer w-full flex items-center justify-center gap-1 sm:w-auto px-6 bg-blue-500/70 hover:bg-blue-500/20 hover:text-blue-500 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
-          >
-            <Save size={16} />
-            Simpan
-          </button>
-          <button
-            onClick={handleCloseInternal}
-            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors"
+            type="button"
+            onClick={onClose}
+            className="min-h-11 cursor-pointer rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
           >
             Batal
+          </button>
+          <button
+            type="submit"
+            form="thumbnail-upload-form"
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 text-sm font-semibold text-white transition hover:bg-amber-800"
+          >
+            <Save size={16} aria-hidden="true" />
+            Simpan gambar
           </button>
         </footer>
       </section>

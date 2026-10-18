@@ -99,7 +99,7 @@ export default function Renungan() {
       {/* HERO */}
       <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 w-full h-full z-0"
           style={{
             backgroundImage: `url('https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/07/23/2269233148.jpg')`,
             backgroundSize: "cover",
@@ -149,20 +149,21 @@ export default function Renungan() {
       </header>
 
       {/* LIST */}
-      <main className="px-15">
-        <section className="divide-y divide-gray-100 rounded">
+      <main className="px-15 pb-15">
+        <section className="divide-y divide-gray-100 rounded"
+        children=
           {paginatedData.length === 0 && (
             <section className="flex w-full items-center justify-center">
               <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
                 Katekese belum di inputkan atau judul yang anda cari tidak ada.
               </span>
             </section>
-          )}
-          {paginatedData.map((item) => (
+          ),
+          paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="flex gap-6 p-6 md:p-8 bg-gray-100/50 hover:bg-slate-200/60 mb-1 rounded border border-gray-100 transition-colors cursor-pointer group relative overflow-hidden"
+              className="flex gap-6 p-6 md:p-8 bg-slate-300/50 hover:bg-slate-200/60 mb-1 rounded border border-stone-300 transition-colors cursor-pointer group relative overflow-hidden"
             >
               <section className="absolute top-0 right-0">
                 <span className="px-6 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-bl-2xl">
@@ -208,22 +209,22 @@ export default function Renungan() {
               </section>
             </section>
           ))}
+        >
         </section>
       </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+        <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
           <p className="text-xs text-gray-100">
-            Menampilkan{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {paginatedData.length}
-            </span>{" "}
-            dari{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {filteredData.length}
-            </span>{" "}
-            renungan
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={`Menampilkan ${paginatedData.length} dari`}
+            />
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={` ${filteredData.length} renungan`}
+            />
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -233,17 +234,17 @@ export default function Renungan() {
             >
               <ChevronLeft size={14} />
             </button>
-            <div className="flex gap-1">
-              {[...Array(totalPages)].map((_, i) => (
+            <div
+              className="flex gap-1"
+              children={[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
-                >
-                  {i + 1}
-                </button>
+                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                  children={i + 1}
+                />
               ))}
-            </div>
+            />
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}

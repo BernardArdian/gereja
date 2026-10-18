@@ -15,6 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import FormField from "../../formField";
+import Dropdown from "../../dropdown/dropdown";
 
 export default function KatekeseInput({
   isOpen,
@@ -27,6 +28,7 @@ export default function KatekeseInput({
 }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [topic, setTopic] = useState("");
 
   // Menangani pemilihan file
   const handleImageChange = (e) => {
@@ -161,18 +163,22 @@ export default function KatekeseInput({
                     label="Topik"
                     icon={<Type size={15} />}
                     children={
-                      <select
-                        id="topik"
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
-                      >
-                        <option value="" hidden>
-                          Topik Katekese...
-                        </option>
-                        <option value="orang kudus">Orang Kudus</option>
-                        <option value="renungan">Renungan</option>
-                        <option value="Devosi">Devosi</option>
-                        <option value="tradisi gereja">Tradisi Gereja</option>
-                      </select>
+                      <Dropdown
+                        name="topik"
+                        ariaLabel="Topik katekese"
+                        value={topic}
+                        onChange={setTopic}
+                        placeholder="Topik Katekese..."
+                        options={[
+                          { value: "orang kudus", label: "Orang Kudus" },
+                          { value: "renungan", label: "Renungan" },
+                          { value: "Devosi", label: "Devosi" },
+                          {
+                            value: "tradisi gereja",
+                            label: "Tradisi Gereja",
+                          },
+                        ]}
+                      />
                     }
                   />
                 </div>

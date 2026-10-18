@@ -1,120 +1,138 @@
-import { User, Save, Lock, ShieldCheck, UserPlus, Info } from "lucide-react";
+import { LockKeyhole, Save, ShieldCheck, UserRound } from "lucide-react";
+import Dropdown from "../../dropdown/dropdown";
+
+const inputClass =
+  "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 disabled:cursor-not-allowed disabled:bg-slate-100";
 
 export default function Input_Admin({
   formData,
   isSubmitting,
+  isEditing = false,
   validations,
   handlers,
 }) {
-  //const roles = ["super admin", "admin"];
   return (
-    <section className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-      {/* Header Info Singkat */}
-      <header className="flex items-start gap-4 bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 mb-8">
-        <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-sm">
-          <Info size={18} />
+    <form className="space-y-5" onSubmit={handlers.submit} noValidate>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+            <ShieldCheck size={19} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 className="text-sm font-semibold text-amber-950">
+              {isEditing ? "Perbarui administrator" : "Buat akun administrator"}
+            </h3>
+            <p className="mt-1 text-xs leading-5 text-amber-900/80">
+              {isEditing
+                ? "Perbarui nama atau hak akses. Biarkan sandi kosong jika tidak ingin mengubahnya."
+                : "Gunakan sandi minimal 8 karakter yang berisi huruf dan angka."}
+            </p>
+          </div>
         </div>
-        <div>
-          <h4 className="text-sm font-bold text-indigo-900">
-            Tambah Administrator Baru
-          </h4>
-          <p className="text-xs text-indigo-700/70 leading-relaxed">
-            Pastikan data yang dimasukkan benar. Password minimal terdiri dari 8
-            karakter gabungan huruf dan angka.
-          </p>
-        </div>
-      </header>
+      </section>
 
-      <main className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Kolom Nama */}
-          <div className="space-y-2">
-            <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-              Full Name
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
-                <User size={18} />
-              </div>
-              <input
-                name="nama"
-                type="text"
-                placeholder="Ex: Alexander Maria"
-                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
-                value={formData.nama}
-                onChange={handlers.input}
-                disabled={isSubmitting}
-              />
-            </div>
-          </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <label className="block min-w-0 space-y-1.5">
+          <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <UserRound size={16} aria-hidden="true" />
+            Nama lengkap <span className="text-rose-600">*</span>
+          </span>
+          <input
+            autoComplete="name"
+            name="nama"
+            type="text"
+            required
+            maxLength={100}
+            value={formData.nama}
+            onChange={handlers.input}
+            disabled={isSubmitting}
+            placeholder="Contoh: Alexander Maria"
+            className={inputClass}
+          />
+        </label>
 
-          {/* Kolom Role/Aturan */}
-          <div className="space-y-2">
-            <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-              Admin Role
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
-                <ShieldCheck size={18} />
-              </div>
-              <select
-                className="w-full pl-11 cursor-pointer pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium appearance-none"
-                name="role"
-                onChange={handlers.input}
-                value={formData.role}
-                disabled={isSubmitting}
-              >
-                <option value="" disabled>
-                  -- Select Role --
-                </option>
-                <option value="super_admin">Super Admin</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-          </div>
-        </section>
+        <label className="block min-w-0 space-y-1.5">
+          <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <ShieldCheck size={16} aria-hidden="true" />
+            Peran administrator <span className="text-rose-600">*</span>
+          </span>
+          <Dropdown
+            name="role"
+            ariaLabel="Peran administrator"
+            value={formData.role}
+            placeholder="Pilih peran"
+            required
+            disabled={isSubmitting}
+            onChange={(value) =>
+              handlers.input({ target: { name: "role", value } })
+            }
+            options={[
+              { value: "Super Admin", label: "Super Admin" },
+              { value: "Admin", label: "Admin" },
+              { value: "Sekretaris", label: "Sekretaris" },
+              { value: "Bendahara", label: "Bendahara" },
+            ]}
+            className={inputClass}
+          />
+        </label>
+      </div>
 
-        {/* Kolom Password */}
-        <section className="space-y-2">
-          <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-            Security Password
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-600 transition-colors">
-              <Lock size={18} />
-            </div>
-            <input
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50 transition-all text-sm font-medium"
-              value={formData.password}
-              onChange={handlers.input}
-              disabled={isSubmitting}
-            />
-          </div>
-        </section>
+      <label className="block space-y-1.5">
+        <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+          <LockKeyhole size={16} aria-hidden="true" />
+          {isEditing ? "Sandi baru" : "Sandi"}
+          {!isEditing && <span className="text-rose-600">*</span>}
+        </span>
+        <input
+          autoComplete="new-password"
+          name="password"
+          type="password"
+          required={!isEditing}
+          minLength={8}
+          value={formData.password}
+          onChange={handlers.input}
+          disabled={isSubmitting}
+          placeholder={
+            isEditing ? "Kosongkan jika tidak diubah" : "Minimal 8 karakter"
+          }
+          className={inputClass}
+        />
+        <span className="block text-xs text-slate-500">
+          Sandi harus memuat setidaknya satu huruf dan satu angka.
+        </span>
+      </label>
 
-        {/* Tombol Simpan */}
-        <footer className="flex w-full items-center justify-end gap-4 pt-4">
-          <button
-            className="w-[10dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-rose-500 hover:bg-rose-500/20 hover:text-rose-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
-            type="button"
-            disabled={!validations() || isSubmitting}
-            onClick={handlers.reset}
-          >
-            batal
-          </button>
-          <button
-            className="w-[12dvw] cursor-pointer flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white rounded-xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
-            type="button"
-            disabled={!validations() || isSubmitting}
-          >
-            <Save size={18} />
-            Simpan
-          </button>
-        </footer>
-      </main>
-    </section>
+      {handlers.error && (
+        <p
+          role="alert"
+          className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3 text-sm text-rose-800"
+        >
+          {handlers.error}
+        </p>
+      )}
+
+      <footer className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          disabled={isSubmitting}
+          onClick={handlers.cancel}
+          className="min-h-11 cursor-pointer rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Batal
+        </button>
+        <button
+          type="submit"
+          disabled={!validations() || isSubmitting}
+          className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Save size={16} aria-hidden="true" />
+          {isSubmitting
+            ? "Menyimpan..."
+            : isEditing
+              ? "Simpan perubahan"
+              : "Simpan administrator"}
+        </button>
+      </footer>
+    </form>
   );
 }

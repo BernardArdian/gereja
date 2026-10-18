@@ -1,118 +1,104 @@
 import { useState } from "react";
-import { BookOpen, Target, Compass, Edit3, Sparkles, Plus } from "lucide-react";
+import { Compass, Edit2, Sparkles, Target } from "lucide-react";
 import ContentEditorModal from "../../../component/dashboard/content_editor/ContentEditorModal";
+
+const initialData = {
+  visi: "Menjadi komunitas iman yang inklusif, misioner, dan berakar pada kasih Kristus untuk melayani sesama.",
+  misi: [
+    "Menyelenggarakan liturgi yang hidup dan partisipatif.",
+    "Meningkatkan kualitas pemberdayaan jemaat di tingkat stasi.",
+    "Membangun jejaring sosial yang berdampak nyata bagi masyarakat sekitar.",
+    "Mengembangkan pendidikan iman yang berkelanjutan bagi orang muda.",
+  ],
+};
 
 export default function VisiMisi() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Data Dummy (Asumsikan data diambil dari API/Database)
-  const data = {
-    visi: "Menjadi komunitas iman yang inklusif, misioner, dan berakar pada kasih Kristus untuk melayani sesama.",
-    misi: [
-      "Menyelenggarakan liturgi yang hidup dan partisipatif.",
-      "Meningkatkan kualitas pemberdayaan jemaat di tingkat stasi.",
-      "Membangun jejaring sosial yang berdampak nyata bagi masyarakat sekitar.",
-      "Mengembangkan pendidikan iman yang berkelanjutan bagi orang muda.",
-    ],
-  };
+  const [data, setData] = useState(initialData);
 
   return (
-    <section className="min-h-screen">
-      {/* HEADER */}
-      <header className="flex flex-row rounded-2xl items-center justify-between w-full bg-white px-8 py-5 sticky top-0 z-20">
+    <section className="mx-auto w-full max-w-6xl space-y-5">
+      <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div>
-          <h2 className="text-xl font-serif text-gray-900 tracking-tight">
-            Visi & Misi Paroki
+          <p className="text-sm font-semibold text-amber-800">
+            Identitas dasar gereja
+          </p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+            Visi & misi paroki
           </h2>
-          <p className="text-xs text-gray-900 font-serif uppercase tracking-widest mt-1">
-            Identitas Dasar Gereja
+          <p className="mt-1 text-sm text-slate-600">
+            Arah pelayanan dan komitmen bersama umat.
           </p>
         </div>
         <button
           type="button"
-          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 text-white text-sm font-black 
-          rounded-3xl transition-all active:scale-95"
           onClick={() => setIsModalOpen(true)}
+          className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-4 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
         >
-          <Plus size={18} />
-          Input Visi & Misi
+          <Edit2 size={17} aria-hidden="true" />
+          Edit visi & misi
         </button>
       </header>
-      <main className="max-w-6xl mx-auto p-8">
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* VISI CARD - Full Width on Top */}
-          <div className="lg:col-span-12">
-            <div className="bg-white rounded p-8 md:p-12 border border-gray-100 relative overflow-hidden group">
-              {/* Decorative Background */}
-              <div className="absolute top-0 right-0 p-8 text-indigo-50/50 group-hover:text-indigo-50 transition-colors">
-                <Sparkles size={120} />
-              </div>
 
-              <div className="relative z-10 flex flex-col items-center text-center">
-                <div className="h-16 w-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
-                  <Target size={32} />
-                </div>
-                <h3 className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-4">
-                  Visi Utama
-                </h3>
-                <p className="text-2xl md:text-3xl font-bold text-gray-800 leading-relaxed max-w-3xl italic">
-                  "{data.visi}"
-                </p>
-              </div>
-            </div>
+      <article className="visi-main-card relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-slate-50 p-6 sm:p-10">
+        <Sparkles
+          size={100}
+          className="visi-main-decoration pointer-events-none absolute -right-3 -top-3 text-amber-100 sm:right-4 sm:top-4"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
+          <span className="rounded-2xl bg-amber-100 p-3 text-amber-800">
+            <Target size={25} aria-hidden="true" />
+          </span>
+          <h3 className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">
+            Visi utama
+          </h3>
+          <p className="mt-4 text-lg font-semibold leading-8 text-slate-800 sm:text-2xl sm:leading-10">
+            “{data.visi}”
+          </p>
+        </div>
+      </article>
+
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <header className="flex items-center gap-3 border-b border-slate-200 p-4 sm:p-6">
+          <span className="rounded-xl bg-sky-50 p-2.5 text-sky-800">
+            <Compass size={20} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 className="font-semibold text-slate-900">Misi pelayanan</h3>
+            <p className="mt-1 text-xs text-slate-600">
+              {data.misi.length} komitmen untuk mewujudkan visi paroki.
+            </p>
           </div>
-
-          {/* MISI CARD - List with bullet points */}
-          <div className="lg:col-span-12">
-            <div className="bg-white rounded border border-gray-100  overflow-hidden flex flex-col md:flex-row">
-              {/* Left Side: Title */}
-              <div className="bg-[#B38728] p-10 md:w-1/3 flex flex-col justify-center text-white">
-                <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm">
-                  <Compass size={24} />
-                </div>
-                <h3 className="text-2xl font-black mb-2">Misi Kami</h3>
-                <p className="text-black text-sm leading-relaxed">
-                  Langkah-langkah strategis yang kami ambil untuk mewujudkan
-                  visi ilahi di tengah umat.
-                </p>
-              </div>
-
-              {/* Right Side: Mission Items */}
-              <div className="p-10 md:w-2/3">
-                <ul className="space-y-6">
-                  {data.misi.map((misi, index) => (
-                    <li key={index} className="flex gap-4 items-start group">
-                      <div className="flex-shrink-0 w-8 h-8 bg-gray-50 rounded-full flex items-center justify-center text-xs font-black text-indigo-400 group-hover:bg-[#B38728]/70 group-hover:text-white transition-all">
-                        {index + 1}
-                      </div>
-                      <p className="text-gray-600 font-medium leading-relaxed pt-1">
-                        {misi}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
+        </header>
+        <ol className="divide-y divide-slate-100">
+          {data.misi.map((misi, index) => (
+            <li
+              key={`${index}-${misi}`}
+              className="flex items-start gap-3 px-4 py-4 sm:gap-4 sm:px-6"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-50 text-sm font-bold text-amber-900">
+                {index + 1}
+              </span>
+              <p className="pt-1 text-sm leading-6 text-slate-700">{misi}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <ContentEditorModal
+        key={isModalOpen ? "visimisi-open" : "visimisi-closed"}
         isOpen={isModalOpen}
         mode="visimisi"
-        title="Input Panel Visi & Misi"
-        labelTitle="Visi Utama"
+        title="Edit visi & misi"
+        labelContent="Visi utama"
         handlers={{
           close: () => setIsModalOpen(false),
           confirm: (updated) => {
-            console.log("Misi Baru:", updated.items);
+            setData({ visi: updated.konten, misi: updated.items });
             setIsModalOpen(false);
           },
-          clear: () => {},
-          initialData: {
-            judul: data.visi,
-            items: data.misi,
-          },
+          initialData: { konten: data.visi, items: data.misi },
         }}
       />
     </section>

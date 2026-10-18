@@ -8,6 +8,7 @@ import {
   Building,
 } from "lucide-react";
 import { useRef } from "react";
+import Dropdown from "../../dropdown/dropdown";
 
 export default function InputDpp({
   isOpen,
@@ -111,34 +112,27 @@ export default function InputDpp({
                   <Building2 size={16} />
                 </div>
 
-                <select
+                <Dropdown
                   value={selectedDivisi}
-                  onChange={handlers.divisi}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-500 outline-none focus:bg-white appearance-none focus:ring-4 focus:ring-green-50 cursor-pointer bg-gray-50 focus:border-green-500 transition-all"
-                  onKeyDown={(i) => {
-                    handleEnter(i, divisiRef);
+                  placeholder="- Divisi -"
+                  ariaLabel="Divisi anggota DPP"
+                  buttonRef={divisiRef}
+                  onChange={(value) =>
+                    handlers.divisi({ target: { name: "divisi", value } })
+                  }
+                  onTriggerKeyDown={(event, isOpen) => {
+                    if (event.key === "Enter" && !isOpen) {
+                      handleEnter(event, divisiRef);
+                      return true;
+                    }
+                    return false;
                   }}
-                >
-                  <option
-                    className="font-semibold bg-green-600/30"
-                    value=""
-                    disabled
-                  >
-                    - Divisi -
-                  </option>
-                  <option
-                    className="font-semibold bg-gray-400/20 text-black"
-                    value="Dpph-Inti"
-                  >
-                    Dpph Inti
-                  </option>
-                  <option
-                    className="font-semibold bg-gray-600/30 text-black"
-                    value="Pleno"
-                  >
-                    Pleno
-                  </option>
-                </select>
+                  className="w-full pl-10 pr-4 text-sm font-semibold text-gray-600"
+                  options={[
+                    { value: "Dpph-Inti", label: "Dpph Inti" },
+                    { value: "Pleno", label: "Pleno" },
+                  ]}
+                />
               </section>
             </section>
           </section>
@@ -181,7 +175,7 @@ export default function InputDpp({
                   name="periode"
                   type="text"
                   placeholder="Periode"
-                  pattern="\d{4}-\d{4}"
+                  pattern="\d{4}\s*-\s*\d{4}"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-50 transition-all text-sm font-medium"
                   onKeyDown={(i) => {
                     blockSpecialCharsNumber(i);
@@ -196,17 +190,17 @@ export default function InputDpp({
 
           <div className="w-full flex items-center justify-end gap-4">
             <button
-              className="cursor-pointer w-[10dvw] flex items-center justify-center gap-2 py-3 bg-red-500 hover:bg-red-500/20 hover:text-red-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              className="min-w-24 cursor-pointer flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700 transition hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
               type="button"
-              disabled={!validations() || isSubmitting}
-              onClick={handlers.reset}
+              disabled={isSubmitting}
+              onClick={handlers.cancel}
             >
               Batal
             </button>
 
             <button
-              className="cursor-pointer w-[11dvw] flex items-center justify-center gap-2 py-3 bg-green-500 hover:bg-green-600/20 hover:text-green-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
-              type="button"
+              className="min-w-24 cursor-pointer flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              type="submit"
               disabled={!validations() || isSubmitting}
             >
               <Save size={16} />

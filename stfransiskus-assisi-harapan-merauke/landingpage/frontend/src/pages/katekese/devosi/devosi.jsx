@@ -99,13 +99,21 @@ export default function Devosi() {
       {/* HERO */}
       <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 w-full h-full z-0"
           style={{
             backgroundImage: `url('https://algonzcollectionshop.com/wp-content/uploads/2025/05/1-1.webp')`,
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "center 15%",
           }}
         />
+        {/* <img
+          className="absolute inset-0 w-full h-full z-0"
+          style={{
+            backgroundImage: `url('https://algonzcollectionshop.com/wp-content/uploads/2025/05/1-1.webp')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 20%",
+          }}
+        /> */}
         <div className="absolute inset-0 bg-black/60 z-10" />
         <section className="h-full flex flex-row justify-between">
           <section className="relative z-20 h-full flex flex-col justify-end p-8">
@@ -148,20 +156,21 @@ export default function Devosi() {
       </header>
 
       {/* GRID */}
-      <section className="px-15">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden">
+      <main className="px-15 pb-15">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden"
+        children=
           {paginatedData.length === 0 && (
             <section className="flex w-full items-center justify-center">
               <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
                 Katekese belum di inputkan atau judul yang anda cari tidak ada.
               </span>
             </section>
-          )}
-          {paginatedData.map((item) => (
-            <form
+          ),
+          paginatedData.map((item) => (
+            <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/60 hover:bg-slate-200/50 transition-colors cursor-pointer border border-gray-100 rounded flex flex-col group overflow-hidden"
+              className="bg-sky-900/60 hover:bg-sky-900/30 transition-colors cursor-pointer border border-gray-100 rounded flex flex-col group overflow-hidden"
             >
               <div className="relative h-40 overflow-hidden">
                 <img
@@ -174,15 +183,15 @@ export default function Devosi() {
                 </span>
               </div>
               <div className="p-6 flex-1 flex flex-col">
-                <h3 className="font-serif text-lg text-gray-900 leading-snug mb-4 group-hover:text-gray-500 transition-colors">
+                <h3 className="font-serif text-lg text-gray-900 leading-snug mb-4 transition-colors">
                   {item.title}
                 </h3>
                 <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                  <div className="flex items-center gap-2 text-xs text-gray-900 font-semibold">
                     <Clock size={11} className="flex-shrink-0" />{" "}
                     {item.schedule}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                  <div className="flex items-center gap-2 text-xs text-gray-900 font-semibold">
                     <Users size={11} className="flex-shrink-0" /> {item.members}
                   </div>
                 </div>
@@ -190,24 +199,24 @@ export default function Devosi() {
                   Detail Panduan →
                 </div>
               </div>
-            </form>
+            </section>
           ))}
+        >
         </section>
-      </section>
+      </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+        <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
           <p className="text-xs text-gray-100">
-            Menampilkan{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {paginatedData.length}
-            </span>{" "}
-            dari{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {filteredData.length}
-            </span>{" "}
-            devosi
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={`Menampilkan ${paginatedData.length} dari`}
+            />
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={` ${filteredData.length} devosi`}
+            />
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -217,17 +226,17 @@ export default function Devosi() {
             >
               <ChevronLeft size={14} />
             </button>
-            <div className="flex gap-1">
-              {[...Array(totalPages)].map((_, i) => (
+            <div
+              className="flex gap-1"
+              children={[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
-                >
-                  {i + 1}
-                </button>
+                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                  children={i + 1}
+                />
               ))}
-            </div>
+            ></div>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}

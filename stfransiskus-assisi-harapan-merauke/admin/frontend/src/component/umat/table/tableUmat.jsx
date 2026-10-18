@@ -1,33 +1,117 @@
-import { useState, useMemo } from "react";
-import {
-  Search,
-  MoreVertical,
-  MapPin,
-  Edit2,
-  Trash2,
-  Pencil,
-} from "lucide-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Search, MapPin, Plus, Trash2, Pencil } from "lucide-react";
 
-import AlertDialogModal from "../../../util/alertDialog.jsx";
+import DeleteModal from "../../alert/deleteModal.jsx";
+import PaginationFooter from "../../PaginationFooter";
+import Dropdown from "../../dropdown/dropdown";
+import UmatDetailModal from "./umatDetailModal";
 
-export default function TableUmat({ umatList, onEdit, onDelete }) {
+const PAGE_SIZE = 20;
+
+function isSacramentComplete(item, key) {
+  const family = item.rawData?.keluarga || {};
+  const candidates = [
+    item[key],
+    item.rawData?.[key],
+    item.rawData?.single?.[key],
+    item.rawData?.personal?.[key],
+    family.statusSakramentSuami?.[key],
+    family.statusSakramentIstri?.[key],
+    ...(family.anak || []).map((child) => child[key]),
+  ];
+
+  return candidates.some((value) =>
+    Array.isArray(value)
+      ? value.some((entry) => entry?.status === "sudah")
+      : value?.status === "sudah",
+  );
+}
+
+export default function TableUmat({
+  umatList = [],
+  onEdit,
+  onDelete,
+  onAdd,
+  loading = false,
+  deleteError = "",
+  currentPage = 1,
+  onPageChange = () => {},
+  highlightedUmatId = null,
+  onHighlightComplete,
+}) {
+  const tableRef = useRef(null);
   const [stasiFilter, setStasiFilter] = useState("");
   const [statusNikahFilter, setStatusNikahFilter] = useState("");
   const [sakramenFilter, setSakramenFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [activeEditStatus, setActiveEditStatus] = useState(null);
+  useEffect(() => {
+    if (!highlightedUmatId) return undefined;
+
+    tableRef.current
+      ?.querySelector(
+        `[data-umat-id="${CSS.escape(String(highlightedUmatId))}"]`,
+      )
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const timeoutId = window.setTimeout(() => {
+      onHighlightComplete?.();
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [highlightedUmatId, onHighlightComplete]);
 
   const filteredUmat = useMemo(() => {
-    return (umatList || []).filter(
-      (item) =>
-        item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.noKk?.includes(searchQuery),
-    );
-  }, [searchQuery, umatList]);
+    return (umatList || []).filter((item) => {
+      const query = searchQuery.trim().toLowerCase();
+      const status =
+        (item.statusNikah || item.status || "").toLowerCase() ===
+        "sudah menikah"
+          ? "menikah"
+          : (item.statusNikah || item.status || "").toLowerCase();
+      const stasi = item.stasiKeluarga || item.lingkungan || "Tanpa Stasi";
+      const matchesSearch =
+        !query ||
+        item.name?.toLowerCase().includes(query) ||
+        item.noKk?.toLowerCase().includes(query);
+      const matchesStatus =
+        !statusNikahFilter ||
+        status ===
+          (statusNikahFilter === "lajang"
+            ? "belum menikah"
+            : statusNikahFilter);
+      const matchesStasi = !stasiFilter || stasi === stasiFilter;
+      const matchesSacrament =
+        !sakramenFilter ||
+        (sakramenFilter === "Perkawinan"
+          ? status === "menikah"
+          : isSacramentComplete(
+              item,
+              sakramenFilter === "Komuni Pertama"
+                ? "komuni"
+                : sakramenFilter.toLowerCase(),
+            ));
+
+      return matchesSearch && matchesStatus && matchesStasi && matchesSacrament;
+    });
+  }, [searchQuery, statusNikahFilter, stasiFilter, sakramenFilter, umatList]);
+
+  const totalPages = Math.ceil(filteredUmat.length / PAGE_SIZE);
+  const activePage = Math.min(currentPage, Math.max(totalPages, 1));
+  const paginatedUmat = filteredUmat.slice(
+    (activePage - 1) * PAGE_SIZE,
+    activePage * PAGE_SIZE,
+  );
+  const stasiOptions = [
+    ...new Set(
+      umatList
+        .map((item) => item.stasiKeluarga || item.lingkungan)
+        .filter(Boolean),
+    ),
+  ].sort((a, b) => a.localeCompare(b, "id"));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedUmat, setSelectedUmat] = useState(null);
 
   const openDeleteModal = (id) => {
     setSelectedId(id);
@@ -35,78 +119,105 @@ export default function TableUmat({ umatList, onEdit, onDelete }) {
   };
 
   const confirmDelete = () => {
-    onDelete?.(selectedId);
-    setIsModalOpen(false);
+    return onDelete?.(selectedId);
   };
 
   return (
     <main className="w-full space-y-6 antialiased">
       {/* SEARCH BAR - Modern Floating Style */}
-      <header className="max-w-5xl mx-auto px-4 md:px-0">
-        <form className="flex flex-col md:flex-row gap-3 items-center">
-          <section className="relative flex-1 w-full">
+      <header className="mx-auto max-w-6xl">
+        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-base font-semibold text-slate-900">
+            Daftar umat{" "}
+            <span className="text-sm font-normal text-slate-500">
+              ({filteredUmat.length.toLocaleString("id-ID")})
+            </span>
+          </h2>
+          <button
+            type="button"
+            onClick={onAdd}
+            className="inline-flex min-h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-3.5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
+          >
+            <Plus size={16} aria-hidden="true" />
+            Tambah umat
+          </button>
+        </div>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <section className="relative min-w-0">
             <Search
               className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <input
               type="text"
+              aria-label="Cari nama atau nomor kartu keluarga"
               placeholder="Cari Nama atau No. KK..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                onPageChange(1);
+              }}
               className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-400 transition-all"
             />
           </section>
-          <section className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-            <select
-              className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
-              value={statusNikahFilter}
-              onChange={(i) => setStatusNikahFilter(i.target.value)}
-            >
-              <option value="" disabled hidden>
-                - Status Pernikahan
-              </option>
-              <option value="lajang">belum menikah</option>
-              <option value="menikah">sudah menikah</option>
-              <option value="janda">janda</option>
-              <option value="duda">duda</option>
-            </select>
-          </section>
-          <section className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-            <select
-              className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
-              value={stasiFilter}
-              onChange={(i) => setStasiFilter(i.target.value)}
-            >
-              <option value="" hidden>
-                - Stasi
-              </option>
-              <option value="Harapan">Stasi Harapan</option>
-              <option value="Kurik">Stasi Kurik</option>
-            </select>
+          <Dropdown
+            ariaLabel="Filter status pernikahan"
+            value={statusNikahFilter}
+            onChange={(value) => {
+              setStatusNikahFilter(value);
+              onPageChange(1);
+            }}
+            className="md:w-44"
+            options={[
+              { value: "", label: "Semua status pernikahan" },
+              { value: "lajang", label: "Belum menikah" },
+              { value: "menikah", label: "Sudah menikah" },
+              { value: "janda", label: "Janda" },
+              { value: "duda", label: "Duda" },
+            ]}
+          />
+          <Dropdown
+            ariaLabel="Filter stasi"
+            value={stasiFilter}
+            onChange={(value) => {
+              setStasiFilter(value);
+              onPageChange(1);
+            }}
+            className="md:w-44"
+            options={[
+              { value: "", label: "Semua stasi" },
+              ...stasiOptions.map((stasi) => ({
+                value: stasi,
+                label: stasi,
+              })),
+            ]}
+          />
 
-            <select
-              className="w-full md:w-44 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm text-slate-600 outline-none cursor-pointer hover:border-slate-300 transition-all appearance-none"
-              value={sakramenFilter}
-              onChange={(i) => {
-                setSakramenFilter(i.target.value);
-              }}
-            >
-              <option value="" disabled hidden>
-                - Sakramen
-              </option>
-              <option value="Baptis">Baptis</option>
-              <option value="Komuni Pertama">Komuni Pertama</option>
-              <option value="Krisma">Krisma</option>
-              <option value="Perkawinan">Perkawinan</option>
-            </select>
-          </section>
-        </form>
+          <Dropdown
+            ariaLabel="Filter sakramen"
+            value={sakramenFilter}
+            onChange={(value) => {
+              setSakramenFilter(value);
+              onPageChange(1);
+            }}
+            className="md:w-44"
+            options={[
+              { value: "", label: "Semua sakramen" },
+              { value: "Baptis", label: "Baptis" },
+              { value: "Komuni Pertama", label: "Komuni Pertama" },
+              { value: "Krisma", label: "Krisma" },
+              { value: "Perkawinan", label: "Perkawinan" },
+            ]}
+          />
+        </div>
       </header>
 
       {/* TABEL DATA  */}
-      <section className="bg-white rounded border border-gray-100 overflow-x-auto">
-        <table className="w-full text-left border-separate border-spacing-0 min-w-[600px] md:min-w-full">
+      <section
+        ref={tableRef}
+        className="bg-white rounded border border-gray-100 overflow-x-auto"
+      >
+        <table className="w-full text-left border-separate border-spacing-0 min-w-150 md:min-w-full">
           <thead>
             <tr className="text-gray-900 text-center font-serif">
               <th className="px-4 md:px-8 py-5 text-[11px] uppercase tracking-[0.15em] border-b border-gray-400">
@@ -125,181 +236,181 @@ export default function TableUmat({ umatList, onEdit, onDelete }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {filteredUmat.map((item, index) => (
-              <tr
-                key={item.id || index}
-                onClick={() => onEdit(item)}
-                className={`group cursor-pointer hover:bg-slate-50/80 transition-all duration-200 ${item.statusHidup === "meninggal" ? "bg-red-50/40" : ""}`}
-              >
-                {/* INFO UTAMA */}
-                <td className="px-4 md:px-8 py-5">
-                  <div className="flex flex-col items-center md:items-start">
-                    <span
-                      className={`text-center md:text-left text-base font-bold tracking-tight ${item.statusHidup === "meninggal" ? "text-red-600 italic" : "text-slate-800"}`}
-                    >
-                      {item.name} {item.statusHidup === "meninggal" && "†"}
-                    </span>
-                    <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 text-[11px] font-medium text-slate-600 mt-1 uppercase tracking-wide">
-                      <div className="flex items-center gap-1">
-                        <MapPin size={12} />
-                        {item.stasiKeluarga || "Tanpa Stasi"}
-                      </div>
-                      <span className="hidden sm:inline">•</span>
-                      <span>KK: {item.noKk || "-"}</span>
-                    </div>
-                  </div>
-                </td>
-
-                {/* STATUS NIKAH */}
+            {loading ? (
+              <tr>
                 <td
-                  className="px-4 md:px-6 py-4"
-                  onClick={(e) => e.stopPropagation()}
+                  colSpan={4}
+                  className="px-4 py-12 text-center text-sm text-slate-500"
                 >
-                  <section className="flex flex-col sm:flex-row items-center justify-center gap-2 relative">
-                    <span
-                      className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest border transition-all ${
-                        item.statusNikah === "menikah"
-                          ? "bg-indigo-50 border-indigo-100 text-indigo-600"
-                          : item.statusNikah === "janda" ||
-                              item.statusNikah === "duda"
-                            ? "bg-amber-50 border-amber-100 text-amber-600"
-                            : "bg-blue-50 border-slate-100 text-gray-900"
-                      }`}
-                    >
-                      {item.statusNikah || "belum menikah"}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveEditStatus(
-                          activeEditStatus === item.id ? null : item.id,
-                        );
-                      }}
-                      className="cursor-pointer p-1.5 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all"
-                    >
-                      <Edit2 size={18} />
-                    </button>
-                    {activeEditStatus === item.id && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-[125]"
-                          onClick={() => setActiveEditStatus(null)}
-                        ></div>
-
-                        <div
-                          className={`absolute left-1/2 -translate-x-1/2 z-[130] w-36 bg-white border border-slate-100 shadow-2xl rounded-2xl p-1.5 animate-in fade-in zoom-in duration-150
-      ${index >= filteredUmat.length - 2 ? "bottom-full mb-3" : "top-full mt-2"}
-    `}
-                        >
-                          <div className="px-3 py-2 mb-1 border-b border-slate-50">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.1em]">
-                              Ubah Status Nikah
-                            </p>
-                          </div>
-
-                          {["Menikah", "Duda", "Janda"].map((status) => (
-                            <button
-                              key={status}
-                              onClick={() => {
-                                console.log(`Update status ke: ${status}`);
-                                setActiveEditStatus(null);
-                              }}
-                              className={`cursor-pointer w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold transition-all duration-200 flex items-center gap-2
-            ${
-              item.statusNikah?.toLowerCase() === status.toLowerCase()
-                ? "bg-indigo-50 text-indigo-600"
-                : "text-slate-600 hover:bg-slate-50 hover:text-indigo-500"
-            }
-          `}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  item.statusNikah?.toLowerCase() ===
-                                  status.toLowerCase()
-                                    ? "bg-indigo-500"
-                                    : "bg-slate-200"
-                                }`}
-                              />
-                              {status}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </section>
-                </td>
-
-                {/* SAKRAMEN */}
-                <td className="px-4 md:px-6 py-4 text-center">
-                  <div className="flex justify-center gap-1.5">
-                    {["baptis", "komuni", "krisma"].map((s) => {
-                      const isDone = item[s]?.status === "sudah";
-                      return (
-                        <div
-                          key={s}
-                          className={`w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-bold uppercase transition-all border ${
-                            isDone
-                              ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                              : "bg-blue-300/50 border-slate-100 text-gray-800"
-                          }`}
-                        >
-                          {s.charAt(0)}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </td>
-
-                {/* AKSI */}
-                <td
-                  className="px-4 md:px-8 py-4 text-right relative"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <section className="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-2">
-                    <button
-                      className="w-full sm:w-auto flex items-center justify-center gap-1 cursor-pointer p-2 text-yellow-500 hover:text-amber-500 hover:bg-amber-100 rounded-xl transition-colors"
-                      title="Edit Data Umat"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEdit(item);
-                        setActiveMenu(activeMenu === item.id ? null : item.id);
-                      }}
-                    >
-                      <Pencil size={18} />
-                      <span className="text-[10px] font-bold uppercase md:hidden lg:inline">
-                        edit
-                      </span>
-                    </button>
-                    <button
-                      className="w-full sm:w-auto flex items-center justify-center gap-1 cursor-pointer p-2 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                      title="Hapus Data Umat"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openDeleteModal(item.id);
-                        setActiveMenu(activeMenu === item.id ? null : item.id);
-                      }}
-                    >
-                      <Trash2 size={18} />
-                      <span className="text-[10px] font-bold uppercase md:hidden lg:inline">
-                        hapus
-                      </span>
-                    </button>
-                  </section>
+                  Memuat data umat…
                 </td>
               </tr>
-            ))}
+            ) : paginatedUmat.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-4 py-12 text-center text-sm text-slate-500"
+                >
+                  Tidak ada data umat yang sesuai dengan pencarian atau filter.
+                </td>
+              </tr>
+            ) : (
+              paginatedUmat.map((item) => (
+                <tr
+                  key={item.id}
+                  data-umat-id={item.id}
+                  tabIndex={0}
+                  aria-label={`Lihat detail umat ${item.name}`}
+                  onClick={() => setSelectedUmat(item)}
+                  onKeyDown={(event) => {
+                    if (
+                      event.target === event.currentTarget &&
+                      (event.key === "Enter" || event.key === " ")
+                    ) {
+                      event.preventDefault();
+                      setSelectedUmat(item);
+                    }
+                  }}
+                  className={`group cursor-pointer transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600 ${
+                    item.id === highlightedUmatId
+                      ? "umat-row-highlight"
+                      : item.statusHidup === "meninggal"
+                        ? "bg-red-50/40"
+                        : ""
+                  }`}
+                >
+                  {/* INFO UTAMA */}
+                  <td className="px-4 md:px-8 py-5">
+                    <div className="flex flex-col items-center md:items-start">
+                      <span
+                        className={`text-center md:text-left text-base font-bold tracking-tight ${item.statusHidup === "meninggal" ? "text-red-600 italic" : "text-slate-800"}`}
+                      >
+                        {item.name} {item.statusHidup === "meninggal" && "†"}
+                      </span>
+                      <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 text-[11px] font-medium text-slate-600 mt-1 uppercase tracking-wide">
+                        <div className="flex items-center gap-1">
+                          <MapPin size={12} />
+                          {item.stasiKeluarga ||
+                            item.lingkungan ||
+                            "Tanpa Stasi"}
+                        </div>
+                        <span className="hidden sm:inline">•</span>
+                        <span>KK: {item.noKk || "-"}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* STATUS NIKAH */}
+                  <td
+                    className="px-4 md:px-6 py-4"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <section className="flex items-center justify-center gap-2">
+                      <span
+                        className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                          (item.statusNikah || item.status) === "menikah"
+                            ? "bg-indigo-50 border-indigo-100 text-indigo-600"
+                            : (item.statusNikah || item.status) === "janda" ||
+                                (item.statusNikah || item.status) === "duda"
+                              ? "bg-amber-50 border-amber-100 text-amber-600"
+                              : "bg-blue-50 border-slate-100 text-gray-900"
+                        }`}
+                      >
+                        {item.statusNikah || item.status || "belum menikah"}
+                      </span>
+                    </section>
+                  </td>
+
+                  {/* SAKRAMEN */}
+                  <td className="px-4 md:px-6 py-4 text-center">
+                    <div className="flex justify-center gap-1.5">
+                      {["baptis", "komuni", "krisma"].map((s) => {
+                        const isDone = isSacramentComplete(item, s);
+                        return (
+                          <div
+                            key={s}
+                            className={`w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-bold uppercase transition-all border ${
+                              isDone
+                                ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                : "bg-blue-300/50 border-slate-100 text-gray-800"
+                            }`}
+                          >
+                            {s.charAt(0)}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </td>
+
+                  {/* AKSI */}
+                  <td
+                    className="px-4 md:px-8 py-4 text-right relative"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <section className="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-2">
+                      <button
+                        type="button"
+                        aria-label={`Edit data ${item.name}`}
+                        className="flex w-full cursor-pointer items-center justify-center gap-1 rounded-xl p-2 text-amber-800 transition-colors hover:bg-amber-100 sm:w-auto"
+                        title="Edit Data Umat"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(item);
+                        }}
+                      >
+                        <Pencil size={18} />
+                        <span className="text-[10px] font-bold uppercase md:hidden lg:inline">
+                          edit
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Hapus data ${item.name}`}
+                        className="flex w-full cursor-pointer items-center justify-center gap-1 rounded-xl p-2 text-rose-700 transition-colors hover:bg-rose-50 sm:w-auto"
+                        title="Hapus Data Umat"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openDeleteModal(item.id);
+                        }}
+                      >
+                        <Trash2 size={18} />
+                        <span className="text-[10px] font-bold uppercase md:hidden lg:inline">
+                          hapus
+                        </span>
+                      </button>
+                    </section>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </section>
 
-      <AlertDialogModal
+      <PaginationFooter
+        currentPage={activePage}
+        pageSize={PAGE_SIZE}
+        totalItems={filteredUmat.length}
+        onPageChange={onPageChange}
+        itemLabel="umat"
+      />
+
+      <DeleteModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedId(null);
+        }}
         onConfirm={confirmDelete}
         title="Hapus Data Umat?"
-        description="Apakah Anda yakin? Data yang dihapus tidak dapat dikembalikan secara permanen."
-        confirmText="Ya, Hapus"
-        type="danger"
+        description="Data umat yang dihapus tidak dapat dipulihkan."
+        itemName={umatList.find((item) => item.id === selectedId)?.name}
+        confirmText="Ya, hapus data umat"
+        errorMessage={deleteError}
+      />
+      <UmatDetailModal
+        umat={selectedUmat}
+        onClose={() => setSelectedUmat(null)}
       />
     </main>
   );

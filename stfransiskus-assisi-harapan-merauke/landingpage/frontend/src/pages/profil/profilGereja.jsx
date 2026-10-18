@@ -25,8 +25,9 @@ export default function ProfilGereja() {
   return (
     <section className="w-full px-4">
       {/* HEADER */}
-      <header className="flex items-center justify-between  gap-4 py-4 border-b border-amber-500 mb-4">
+      <header className="flex items-center justify-between rounded-b-xl mt-1 bg-[#B38728]/60 gap-4 py-4 border-b border-amber-500 mb-4">
         <section
+          className="ml-1"
           children={
             <>
               <h2 className="font-serif text-1xl text-gray-900">

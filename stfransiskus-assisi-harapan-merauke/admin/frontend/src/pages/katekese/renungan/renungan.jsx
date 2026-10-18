@@ -4,22 +4,23 @@ import {
   Search,
   Calendar,
   BookOpen,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
   Trash2,
   Edit2,
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
+import PaginationFooter from "../../../component/PaginationFooter";
+import DeleteModal from "../../../component/alert/deleteModal";
 
 export default function Renungan() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const itemsPerPage = 5;
 
-  const [renunganList] = useState([
+  const [renunganList, setRenunganList] = useState([
     {
       id: 1,
       date: "03 Feb 2026",
@@ -96,7 +97,6 @@ export default function Renungan() {
     );
   }, [searchQuery, renunganList]);
 
-  const totalPages = Math.ceil(filteredRenungan.length / itemsPerPage);
   const paginatedData = filteredRenungan.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -104,21 +104,19 @@ export default function Renungan() {
 
   if (selectedItem) {
     return (
-      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
-        <Detail
-          formData={selectedItem}
-          handlers={{
-            onBack: () => setSelectedItem(null),
-          }}
-        />
-      </div>
+      <Detail
+        formData={selectedItem}
+        handlers={{
+          onBack: () => setSelectedItem(null),
+        }}
+      />
     );
   }
 
   return (
-    <section className="min-h-screen pb-20">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* HERO */}
-      <section className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <section className="relative w-full overflow-hidden rounded-2xl px-5 py-10 sm:px-8 sm:py-14">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -135,19 +133,19 @@ export default function Renungan() {
             <div className="flex items-center gap-2 text-indigo-300 font-bold text-[10px] uppercase tracking-widest mb-2">
               <BookOpen size={14} /> Santapan Rohani Harian
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
               Renungan
             </h1>
           </div>
         </div>
 
         <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
-          <Quote size={300} />
+          <Quote size={180} className="sm:h-[300px] sm:w-[300px]" />
         </div>
       </section>
 
       {/* SEARCH */}
-      <section className="sticky top-0 z-40 -mt-8 px-6">
+      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-8 sm:px-6">
         <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -171,7 +169,7 @@ export default function Renungan() {
       </section>
 
       {/* LIST */}
-      <main className="border border-gray-400 rounded overflow-hidden ml-15 mr-15 mt-10">
+      <main className="mx-auto mt-6 w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:mt-10">
         {paginatedData.length === 0 && (
           <p className="text-center text-gray-400 py-10">
             Tidak ada hasil ditemukan.
@@ -182,20 +180,20 @@ export default function Renungan() {
           <section
             key={item.id}
             onClick={() => setSelectedItem({ ...item, content: item.excerpt })}
-            className="group cursor-pointer bg-white border border-gray-100 p-6 md:p-8 hover:border-indigo-100 transition-all duration-300 relative overflow-hidden"
+            className="group relative cursor-pointer overflow-hidden border-b border-slate-100 bg-white p-4 transition hover:bg-slate-50 sm:p-6"
           >
             <section className="absolute top-0 right-0">
-              <span className="px-6 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-bl-2xl">
+              <span className="rounded-bl-xl bg-amber-50 px-3 py-1.5 text-[9px] font-bold uppercase text-amber-900 sm:px-5">
                 {item.category}
               </span>
             </section>
 
-            <section className="flex flex-col md:flex-row gap-6">
-              <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-2xl min-w-[100px] h-fit">
+            <section className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+              <div className="flex h-fit w-fit min-w-20 flex-row items-center gap-2 rounded-xl bg-slate-50 p-3 sm:min-w-24 sm:flex-col sm:gap-0 sm:p-4">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
                   {item.date.split(" ")[1]}
                 </span>
-                <span className="text-3xl font-black text-indigo-900 leading-none my-1">
+                <span className="text-2xl font-black leading-none text-amber-900 sm:my-1 sm:text-3xl">
                   {item.date.split(" ")[0]}
                 </span>
                 <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
@@ -203,33 +201,35 @@ export default function Renungan() {
                 </span>
               </div>
 
-              <div className="w-px bg-gray-100 flex-shrink-0" />
-
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <span className="flex items-center gap-2 text-indigo-500 font-semibold text-[10px] uppercase mb-2">
                   <BookOpen size={12} /> {item.verse}
                 </span>
-                <h3 className="text-xl md:text-2xl font-black text-gray-800 mb-3 group-hover:text-indigo-600 transition-colors">
+                <h3 className="mb-3 break-words text-lg font-bold text-slate-900 transition-colors group-hover:text-amber-800 sm:text-2xl">
                   {item.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 italic mb-6">
+                <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-slate-600 sm:mb-6">
                   "{item.excerpt}"
                 </p>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-gray-600">
                       {item.author}
                     </span>
                   </div>
-                  <div className="flex w-[23dvw] items-center justify-end gap-5">
-                    <button className="flex items-center cursor-pointer gap-1 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:gap-3 transition-all">
+                  <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto sm:justify-end sm:gap-4">
+                    <button
+                      type="button"
+                      className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-amber-800 transition hover:gap-2"
+                    >
                       Baca Selengkapnya <ArrowRight size={14} />
                     </button>
-                    <section className="flex items-center justify-end gap-3">
+                    <section className="flex items-center justify-end gap-1 sm:gap-2">
                       <button
-                        className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white
-                      transition-all active:scale-90"
+                        type="button"
+                        aria-label={`Edit ${item.title}`}
+                        className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:p-2.5"
                         onClick={(i) => {
                           i.stopPropagation();
                         }}
@@ -237,10 +237,12 @@ export default function Renungan() {
                       />
 
                       <button
-                        className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white
-                      transition-all active:scale-90"
+                        type="button"
+                        aria-label={`Hapus ${item.title}`}
+                        className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 sm:p-2.5"
                         onClick={(i) => {
                           i.stopPropagation();
+                          setItemToDelete(item);
                         }}
                         children={<Trash2 size={18} />}
                       />
@@ -253,54 +255,27 @@ export default function Renungan() {
         ))}
       </main>
 
-      {totalPages > 1 && (
-        <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
-          <p className="text-xs text-gray-600 font-medium">
-            Menampilkan{" "}
-            <span
-              className="text-gray-700 font-bold"
-              children={paginatedData.length}
-            />{" "}
-            dari{" "}
-            <span
-              className="text-gray-700 font-bold"
-              children={filteredRenungan.length}
-            />{" "}
-            renungan
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <div
-              className="flex gap-1"
-              children={[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
-                    currentPage === i + 1
-                      ? "bg-blue-500/30 text-black"
-                      : "bg-white text-gray-400 border border-gray-50"
-                  }`}
-                  children={i + 1}
-                />
-              ))}
-            />
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </footer>
-      )}
+      <PaginationFooter
+        currentPage={currentPage}
+        pageSize={itemsPerPage}
+        totalItems={filteredRenungan.length}
+        onPageChange={setCurrentPage}
+        itemLabel="renungan"
+      />
+      <DeleteModal
+        isOpen={Boolean(itemToDelete)}
+        onClose={() => setItemToDelete(null)}
+        onConfirm={() => {
+          setRenunganList((previous) =>
+            previous.filter((entry) => entry.id !== itemToDelete?.id),
+          );
+          setItemToDelete(null);
+        }}
+        title="Hapus renungan?"
+        description="Renungan yang dihapus tidak lagi tersedia di daftar."
+        itemName={itemToDelete?.title}
+        confirmText="Ya, hapus renungan"
+      />
     </section>
   );
 }

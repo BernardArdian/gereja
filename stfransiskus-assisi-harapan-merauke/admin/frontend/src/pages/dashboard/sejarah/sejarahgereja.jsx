@@ -1,180 +1,137 @@
 import { useState } from "react";
 import {
   History,
-  Plus,
-  Milestone,
-  Clock,
   Image as ImageIcon,
+  Milestone,
+  Pencil,
 } from "lucide-react";
 import ContentEditorModal from "../../../component/dashboard/content_editor/ContentEditorModal";
 
+const initialHistory = {
+  ringkasan:
+    "Berawal dari sebuah gubuk kecil di tahun 1950, komunitas ini tumbuh menjadi pusat iman yang kokoh bagi ribuan umat hingga saat ini.",
+  artikel: `Gereja ini didirikan pada tanggal 15 Agustus 1950 oleh Pastor Johannes van der Steur. Pada awalnya, jemaat hanya berjumlah 12 kepala keluarga yang berkumpul di rumah salah satu warga. Seiring berjalannya waktu, semangat gotong royong umat berhasil membangun gedung semi-permanen pertama pada tahun 1965.
+
+Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pusat pendidikan dan pelayanan sosial bagi masyarakat lintas agama di wilayah ini.`,
+  milestones: [
+    { tahun: "1950", event: "Peletakan batu pertama oleh Mgr. Soegijapranata." },
+    { tahun: "1975", event: "Peresmian gedung utama dengan arsitektur lokal." },
+    { tahun: "2005", event: "Renovasi besar dan penambahan aula paroki." },
+    { tahun: "2024", event: "Pencapaian 10.000 umat terdaftar." },
+  ],
+};
+
 export default function SejarahGereja() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Data Dummy Sejarah
-  const data = {
-    ringkasan:
-      "Berawal dari sebuah gubuk kecil di tahun 1950, komunitas ini tumbuh menjadi pusat iman yang kokoh bagi ribuan umat hingga saat ini.",
-    artikel: `Gereja ini didirikan pada tanggal 15 Agustus 1950 oleh Pastor Johannes van der Steur. Pada awalnya, jemaat hanya berjumlah 12 kepala keluarga yang berkumpul di rumah salah satu warga. Seiring berjalannya waktu, semangat gotong royong umat berhasil membangun gedung semi-permanen pertama pada tahun 1965. 
-    
-    Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pusat pendidikan dan pelayanan sosial bagi masyarakat lintas agama di wilayah ini.`,
-    milestones: [
-      {
-        tahun: "1950",
-        event: "Peletakan batu pertama oleh Mgr. Soegijapranata.",
-      },
-      {
-        tahun: "1975",
-        event: "Peresmian gedung utama dengan arsitektur lokal.",
-      },
-      { tahun: "2005", event: "Renovasi besar dan penambahan aula paroki." },
-      { tahun: "2024", event: "Pencapaian 10.000 umat terdaftar." },
-    ],
-  };
+  const [data, setData] = useState(initialHistory);
 
   return (
-    <section className="min-h-screen">
-      {/* HEADER */}
-      <header className="flex flex-row rounded-2xl items-center justify-between w-full bg-white px-8 py-5 sticky top-0 z-20">
+    <section className="mx-auto w-full max-w-6xl space-y-5">
+      <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div>
-          <h2 className="text-xl font-serif text-gray-900 tracking-tight">
-            Sejarah Gereja
+          <p className="text-sm font-semibold text-amber-800">
+            Arsip & rekam jejak pelayanan
+          </p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+            Sejarah gereja
           </h2>
-          <p className="text-xs text-gray-900 font-serif uppercase tracking-widest mt-1">
-            Arsip & Rekam Jejak Pelayanan
+          <p className="mt-1 text-sm text-slate-600">
+            Dokumentasi perjalanan iman dan tonggak penting paroki.
           </p>
         </div>
         <button
           type="button"
-          className="cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-blue-500 hover:bg-blue-500/20 hover:text-blue-600 text-white text-sm font-black 
-          rounded-3xl transition-all active:scale-95"
           onClick={() => setIsModalOpen(true)}
+          className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-4 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
         >
-          <Plus size={18} />
-          Input Sejarah
+          <Pencil size={17} aria-hidden="true" />
+          Edit sejarah
         </button>
       </header>
 
-      <main className="max-w-7xl mx-auto p-8">
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* SISI KIRI: Artikel Naratif */}
-          <section className="lg:col-span-8 space-y-8">
-            <section className="bg-white rounded text-justify p-8 md:p-12 border border-gray-100 shadow-sm">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="h-12 w-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                  <History size={24} />
-                </div>
-                <h3 className="text-2xl font-serif  text-gray-800 tracking-tight">
-                  Perjalanan Iman
-                </h3>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,0.8fr)]">
+        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+          <header className="mb-5 flex items-center gap-3">
+            <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+              <History size={20} aria-hidden="true" />
+            </span>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Perjalanan iman
+            </h3>
+          </header>
+          <blockquote className="border-l-4 border-amber-600 pl-4 text-base font-semibold leading-7 text-slate-800 sm:text-lg">
+            {data.ringkasan}
+          </blockquote>
+          <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">
+            {data.artikel}
+          </p>
+
+          <section className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {["Foto masa lalu", "Foto saat ini"].map((label) => (
+              <div
+                key={label}
+                className="flex aspect-video flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-slate-500"
+              >
+                <ImageIcon size={25} aria-hidden="true" />
+                <span className="mt-2 text-xs font-medium">{label}</span>
+                <span className="mt-1 text-[11px]">Belum ada foto</span>
               </div>
-
-              <section className="prose prose-indigo max-w-none">
-                <p
-                  className="text-xl font-bold text-gray-700 leading-relaxed mb-6 italic border-l-4 border-indigo-500 pl-6"
-                  children={data.ringkasan}
-                />
-                <span
-                  className="text-gray-600 leading-[1.8] font-medium space-y-4 whitespace-pre-line"
-                  children={data.artikel}
-                />
-              </section>
-
-              {/* Placeholder Foto Sejarah */}
-              <section className="mt-12 grid grid-cols-2 gap-2">
-                <div className="aspect-video bg-gray-100 rounded flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                  <ImageIcon size={32} className="mb-2" />
-                  <h4 className="text-[10px] font-black uppercase">
-                    Foto Masa Lalu
-                  </h4>
-                </div>
-                <div className="aspect-video bg-gray-100 rounded flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                  <ImageIcon size={32} className="mb-2" />
-                  <h4 className="text-[10px] font-black uppercase">
-                    Foto Saat Ini
-                  </h4>
-                </div>
-              </section>
-            </section>
+            ))}
           </section>
+        </article>
 
-          {/* SISI KANAN: Timeline / Milestones */}
-          <section className="lg:col-span-4 space-y-6">
-            <section className="bg-[#B38728] rounded p-8 text-white shadow-indigo-200">
-              <section className="flex items-center gap-3 mb-8">
-                <Milestone className="text-white" size={24} />
-                <h3 className="text-lg font-black tracking-tight">
-                  Garis Waktu
-                </h3>
-              </section>
-
-              <section className="space-y-8 relative">
-                {/* Garis Vertikal Timeline */}
-                <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-indigo-700/50"></div>
-
-                {data.milestones.map((item, index) => (
-                  <section key={index} className="relative pl-10 group">
-                    {/* Dot */}
-                    <div className="absolute left-0 top-1.5 h-6 w-6 rounded-full bg-slate-300 border-4 border-indigo-400 group-hover:border-white transition-all z-10" />
-
-                    <div className="flex flex-col">
-                      <span
-                        className="text-black font-black text-sm tracking-widest mb-1 group-hover:text-white"
-                        children={item.tahun}
-                      />
-
-                      <p
-                        className="text-sm font-medium text-indigo-100/80 leading-relaxed group-hover:text-white transition-colors"
-                        children={item.event}
-                      />
-                    </div>
-                  </section>
-                ))}
-              </section>
-
-              <footer className="text-center mt-10 pt-6 border-t border-gray-100">
-                <p className="text-[10px] text-gray-900 uppercase tracking-widest mb-1">
-                  Update Terakhir
-                </p>
-                <p className="text-sm font-serif text-gray-800">
-                  Februari 2026
-                </p>
-              </footer>
-            </section>
-          </section>
+        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
+          <header className="mb-6 flex items-center gap-3">
+            <span className="rounded-xl bg-white p-2.5 text-amber-800">
+              <Milestone size={20} aria-hidden="true" />
+            </span>
+            <div>
+              <h3 className="font-semibold text-slate-900">Garis waktu</h3>
+              <p className="mt-1 text-xs text-slate-600">
+                {data.milestones.length} tonggak perjalanan.
+              </p>
+            </div>
+          </header>
+          {data.milestones.length > 0 ? (
+            <ol className="relative space-y-5 before:absolute before:bottom-2 before:left-[9px] before:top-2 before:w-px before:bg-amber-300">
+              {data.milestones.map((item, index) => (
+                <li key={`${item.tahun}-${index}`} className="relative pl-8">
+                  <span className="absolute left-0 top-1.5 h-5 w-5 rounded-full border-4 border-amber-200 bg-amber-700" />
+                  <p className="text-sm font-bold text-amber-900">
+                    {item.tahun}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-slate-700">
+                    {item.event}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="text-sm text-slate-600">
+              Belum ada peristiwa yang dicatat.
+            </p>
+          )}
         </section>
-      </main>
-
-      {/* <ContentEditorModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        mode="history"
-        title="Panel Konten Sejarah & Timeline"
-        labelTitle="Ringkasan Pendek"
-        initialData={{
-          judul: data.ringkasan,
-          items: data.milestones, // DATA TIMELINE KIRIM KE SINI
-        }}
-        onConfirm={(updated) => {
-          console.log("Timeline Baru:", updated.items);
-          // Masukkan logika setState kamu di sini
-          handleModalOpens;
-        }}
-      /> */}
+      </div>
 
       <ContentEditorModal
+        key={isModalOpen ? "history-open" : "history-closed"}
         isOpen={isModalOpen}
         mode="history"
-        title="Input Panel Sejarah & Timeline"
-        labelTitle="Ringkasan Pendek"
+        title="Edit sejarah & garis waktu"
+        labelContent="Ringkasan sejarah"
         handlers={{
           close: () => setIsModalOpen(false),
           confirm: (updated) => {
-            console.log("Sejarah baru dan timeline baru:", updated.items);
+            setData((previous) => ({
+              ...previous,
+              ringkasan: updated.konten,
+              milestones: updated.items,
+            }));
             setIsModalOpen(false);
           },
           initialData: {
-            judul: data.ringkasan,
+            konten: data.ringkasan,
             items: data.milestones,
           },
         }}

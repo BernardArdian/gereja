@@ -1,301 +1,368 @@
-import { useState, useMemo } from "react";
-import {
-  Search,
-  PlusCircle,
-  MoreVertical,
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  Users,
-  Download,
-  Filter,
-  CheckCircle2,
-  Trash2,
-  Edit2,
-} from "lucide-react";
+import { useMemo, useState } from "react";
+import { Edit2, FileText, Plus, Search, Trash2, Users } from "lucide-react";
 
-import Input_Administratif from "../../component/administratif/input_administratif";
-import Paginations from "../../component/paginatin";
+import InputAdministratif from "../../component/administratif/input_administratif";
+import PaginationFooter from "../../component/PaginationFooter";
+import DeleteModal from "../../component/alert/deleteModal";
+import Dropdown from "../../component/dropdown/dropdown";
 
-export default function AdministraifGereja() {
+const initialDocuments = [
+  {
+    id: 1,
+    name: "Struktur DPP 2024-2027",
+    category: "Organisasi",
+    date: "02 Feb 2026",
+    status: "Aktif",
+    pic: "Sekretariat",
+  },
+  {
+    id: 2,
+    name: "Data Umat Lingkungan St. Maria",
+    category: "Kependudukan",
+    date: "01 Feb 2026",
+    status: "Update",
+    pic: "Ketua Lingkungan",
+  },
+  {
+    id: 3,
+    name: "Laporan Keuangan Tahunan",
+    category: "Keuangan",
+    date: "28 Jan 2026",
+    status: "Final",
+    pic: "Bendahara",
+  },
+  {
+    id: 4,
+    name: "SOP Penggunaan Aula",
+    category: "Prosedur",
+    date: "25 Jan 2026",
+    status: "Aktif",
+    pic: "Pastoral",
+  },
+  {
+    id: 5,
+    name: "Jadwal Petugas Liturgi Feb",
+    category: "Liturgi",
+    date: "24 Jan 2026",
+    status: "Draft",
+    pic: "Koor. Liturgi",
+  },
+  {
+    id: 6,
+    name: "Akta Notaris Yayasan",
+    category: "Legal",
+    date: "20 Jan 2026",
+    status: "Arsip",
+    pic: "Sekretariat",
+  },
+  {
+    id: 7,
+    name: "Database Inventaris Paroki",
+    category: "Aset",
+    date: "15 Jan 2026",
+    status: "Aktif",
+    pic: "Sarpras",
+  },
+  {
+    id: 8,
+    name: "MoU Kerjasama Vendor",
+    category: "Legal",
+    date: "10 Jan 2026",
+    status: "Arsip",
+    pic: "Sekretariat",
+  },
+];
+
+const PAGE_SIZE = 7;
+
+export default function AdministratifGereja() {
+  const [documents, setDocuments] = useState(initialDocuments);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingDocument, setEditingDocument] = useState(null);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
 
-  const [adminList] = useState([
-    {
-      id: 1,
-      name: "Struktur DPP 2024-2027",
-      category: "Organisasi",
-      date: "02 Feb 2026",
-      status: "Aktif",
-      pic: "Sekretariat",
-    },
-    {
-      id: 2,
-      name: "Data Umat Lingkungan St. Maria",
-      category: "Kependudukan",
-      date: "01 Feb 2026",
-      status: "Update",
-      pic: "Ketua Lingkungan",
-    },
-    {
-      id: 3,
-      name: "Laporan Keuangan Tahunan",
-      category: "Keuangan",
-      date: "28 Jan 2026",
-      status: "Final",
-      pic: "Bendahara",
-    },
-    {
-      id: 4,
-      name: "SOP Penggunaan Aula",
-      category: "Prosedur",
-      date: "25 Jan 2026",
-      status: "Aktif",
-      pic: "Pastoral",
-    },
-    {
-      id: 5,
-      name: "Jadwal Petugas Liturgi Feb",
-      category: "Liturgi",
-      date: "24 Jan 2026",
-      status: "Draft",
-      pic: "Koor. Liturgi",
-    },
-    {
-      id: 6,
-      name: "Akta Notaris Yayasan",
-      category: "Legal",
-      date: "20 Jan 2026",
-      status: "Arsip",
-      pic: "Sekretariat",
-    },
-    {
-      id: 7,
-      name: "Database Inventaris Paroki",
-      category: "Aset",
-      date: "15 Jan 2026",
-      status: "Aktif",
-      pic: "Sarpras",
-    },
-    {
-      id: 8,
-      name: "MoU Kerjasama Vendor",
-      category: "Legal",
-      date: "10 Jan 2026",
-      status: "Arsip",
-      pic: "Sekretariat",
-    },
-  ]);
+  const filteredDocuments = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return documents.filter((document) => {
+      const matchesSearch =
+        !query ||
+        document.name.toLowerCase().includes(query) ||
+        document.category.toLowerCase().includes(query) ||
+        document.pic.toLowerCase().includes(query);
+      return (
+        matchesSearch &&
+        (!categoryFilter || document.category === categoryFilter)
+      );
+    });
+  }, [categoryFilter, documents, searchQuery]);
 
-  const filteredData = useMemo(() => {
-    return adminList.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [searchQuery, adminList]);
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+  const pageCount = Math.ceil(filteredDocuments.length / PAGE_SIZE);
+  const page = Math.min(currentPage, Math.max(1, pageCount));
+  const paginatedDocuments = filteredDocuments.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
   );
 
+  const handleSave = (formData) => {
+    const date =
+      editingDocument?.date ||
+      new Intl.DateTimeFormat("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).format(new Date());
+
+    if (editingDocument) {
+      setDocuments((previous) =>
+        previous.map((document) =>
+          document.id === editingDocument.id
+            ? { ...document, ...formData, date }
+            : document,
+        ),
+      );
+    } else {
+      setDocuments((previous) => [
+        { ...formData, date, id: Date.now() },
+        ...previous,
+      ]);
+      setCurrentPage(1);
+    }
+    setEditingDocument(null);
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = () => {
+    if (!documentToDelete) return;
+    setDocuments((previous) =>
+      previous.filter((item) => item.id !== documentToDelete.id),
+    );
+    setDocumentToDelete(null);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingDocument(null);
+  };
+
   return (
-    <section className="w-full min-h-screen pl-0.5 pr-0.5">
-      <main className="max-w-5xl mx-auto">
-        <section className="bg-gray-500/30 h-full shadow-sm p-2">
-          <header className="relative z-20 max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-5">
-            <form className="flex items-center gap-4">
-              <div>
-                <h2 className="text-xl font-serif text-gray-900 tracking-tight">
-                  Administratif Paroki St.Fransiskus Assisi.
-                </h2>
-                <p className="text-[10px] font-serif text-gray-900 uppercase tracking-widest">
-                  Dokumen Administratif Gereja
-                </p>
-              </div>
-            </form>
+    <section className="min-h-full w-full bg-slate-50">
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-amber-700">
+              Arsip dan dokumen
+            </p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Administratif gereja
+            </h1>
+            <p className="mt-2 text-sm text-slate-600">
+              Kelola dokumen administratif Paroki St. Fransiskus Assisi.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingDocument(null);
+              setIsModalOpen(true);
+            }}
+            className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah dokumen
+          </button>
+        </header>
 
-            <button
-              className="flex cursor-pointer items-center text-white gap-2 px-6 py-3 text-indigo-900 
-              rounded-xl text-xs font-black bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 transition-all active:scale-95 w-fit"
-              onClick={(i) => {
-                i.stopPropagation();
-                setIsModalOpen("input");
-              }}
-            >
-              <PlusCircle size={18} /> Tambah Dokumen
-            </button>
-          </header>
-
-          <section className="w-full sticky top-0 z-30 max-w-full mb-10 overflow-hidden bg-black/5 rounded-2xl backdrop-blur-sm p-2">
-            <div className="max-w-5xl mx-auto">
-              <div className="bg-white p-2 rounded-2xl border border-gray-100 flex items-center">
-                <div className="relative flex-1">
-                  <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
-                    size={18}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Cari dokumen atau pengurus..."
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full pl-12 pr-4 py-2.5 bg-gray-50 rounded-xl text-sm focus:outline-none transition-all"
-                  />
-                </div>
-                <button className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-50 text-gray-500 rounded-xl text-xs font-bold hover:bg-gray-100 transition-all">
-                  <Filter size={16} /> Filter
-                </button>
-              </div>
+        <section className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative min-w-0 flex-1">
+              <Search
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                aria-label="Cari dokumen administratif"
+                placeholder="Cari nama dokumen, kategori, atau penanggung jawab"
+                value={searchQuery}
+                onChange={(event) => {
+                  setSearchQuery(event.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
+              />
             </div>
-          </section>
+            <Dropdown
+              value={categoryFilter}
+              onChange={(value) => {
+                setCategoryFilter(value);
+                setCurrentPage(1);
+              }}
+              ariaLabel="Filter kategori dokumen"
+              placeholder="Semua kategori"
+              className="sm:w-56"
+              options={[
+                { value: "", label: "Semua kategori" },
+                ...[...new Set(documents.map((item) => item.category))]
+                  .sort()
+                  .map((category) => ({ value: category, label: category })),
+              ]}
+            />
+          </div>
+        </section>
 
-          {/* TABLE CONTENT */}
-          <main className="max-w-6xl mx-auto px-6 mt-5">
-            <form className="border border-gray-100 rounded overflow-hidden ml-15 mr-15">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-50/50 font-serif text-center  text-gray-900 border-b border-gray-100">
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">
-                      Nama Dokumen
-                    </th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">
-                      Kategori
-                    </th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">
-                      PIC / Penanggung Jawab
-                    </th>
-                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">
-                      Kelola
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {paginatedData.map((item) => (
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="border-b border-slate-200 px-4 py-4 sm:px-6">
+            <h2 className="font-semibold text-slate-900">Daftar dokumen</h2>
+            <p className="mt-1 text-xs text-slate-500">
+              {filteredDocuments.length.toLocaleString("id-ID")} dokumen
+            </p>
+          </header>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-170 border-collapse text-left">
+              <thead className="bg-slate-50">
+                <tr className="border-b border-slate-200">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
+                    Nama dokumen
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
+                    Kategori
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
+                    Penanggung jawab
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
+                    Kelola
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {paginatedDocuments.length ? (
+                  paginatedDocuments.map((document) => (
                     <tr
-                      key={item.id}
-                      className="hover:bg-indigo-50/30 cursor-pointer transition-colors group"
+                      key={document.id}
+                      className="transition hover:bg-slate-50"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-4 sm:px-6">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-white transition-colors">
-                            <FileText size={18} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-gray-800 leading-none mb-1">
-                              {item.name}
+                          <span className="rounded-lg bg-amber-50 p-2 text-amber-800">
+                            <FileText size={17} aria-hidden="true" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="wrap-break-word text-sm font-semibold text-slate-900">
+                              {document.name}
                             </p>
-                            <p className="text-[10px] text-gray-400 font-medium">
-                              {item.date}
+                            <p className="mt-1 text-xs text-slate-500">
+                              {document.date}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="px-3 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded-lg uppercase tracking-wider">
-                          {item.category}
+                      <td className="px-4 py-4 sm:px-6">
+                        <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
+                          {document.category}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <Users size={14} className="text-gray-300" />
-                          <span className="text-xs text-gray-600 font-medium">
-                            {item.pic}
-                          </span>
+                      <td className="px-4 py-4 text-sm text-slate-600 sm:px-6">
+                        <span className="inline-flex items-center gap-2">
+                          <Users
+                            size={15}
+                            className="text-slate-400"
+                            aria-hidden="true"
+                          />
+                          {document.pic}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 sm:px-6">
+                        <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                          {document.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 sm:px-6">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            aria-label={`Edit ${document.name}`}
+                            onClick={() => {
+                              setEditingDocument(document);
+                              setIsModalOpen(true);
+                            }}
+                            className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+                          >
+                            <Edit2 size={17} aria-hidden="true" />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Hapus ${document.name}`}
+                            onClick={() => setDocumentToDelete(document)}
+                            className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+                          >
+                            <Trash2 size={17} aria-hidden="true" />
+                          </button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <section className="flex items-center justify-center gap-2">
-                          <button
-                            className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-75"
-                            onClick={(i) => {
-                              i.stopPropagation();
-                            }}
-                          >
-                            <Edit2 size={18} />
-                          </button>
-
-                          <button
-                            className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-75"
-                            onClick={(i) => {
-                              i.stopPropagation();
-                            }}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </section>
-                      </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </form>
-
-            {/* PAGINATION */}
-            {totalPages > 1 && (
-              <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
-                <p className="text-xs text-gray-600 font-medium">
-                  Menampilkan{" "}
-                  <span className="text-gray-700 font-bold">
-                    {paginatedData.length}
-                  </span>{" "}
-                  dari{" "}
-                  <span className="text-gray-700 font-bold">
-                    {filteredData.length}
-                  </span>{" "}
-                  dokumen
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="cursor-pointer p-2 rounded-xl border disabled:opacity-20 hover:bg-gray-50 transition-all"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <div className="flex gap-1">
-                    {[...Array(totalPages)].map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={`cursor-pointer w-9 h-9 rounded-xl text-[10px] font-black transition-all ${
-                          currentPage === i + 1
-                            ? "bg-[#B38728] text-white"
-                            : "bg-white text-gray-400 border border-gray-50"
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    disabled={currentPage === totalPages}
-                    className="cursor-pointer p-2 rounded-xl border disabled:opacity-20 hover:bg-gray-50 transition-all"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </footer>
-
-              // <Paginations totalPages={totalPages} />
-            )}
-          </main>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-6 py-12 text-center text-sm text-slate-500"
+                    >
+                      Tidak ada dokumen yang sesuai dengan pencarian.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
+
+        <PaginationFooter
+          currentPage={page}
+          pageSize={PAGE_SIZE}
+          totalItems={filteredDocuments.length}
+          onPageChange={setCurrentPage}
+          itemLabel="dokumen"
+        />
       </main>
-      {isModalOpen === "input" && (
-        <Input_Administratif onClose={setIsModalOpen(null)} />
+      {isModalOpen && (
+        <InputAdministratif
+          initialData={editingDocument}
+          onClose={closeModal}
+          onSubmit={handleSave}
+        />
       )}
+      <DeleteModal
+        isOpen={Boolean(documentToDelete)}
+        onClose={() => setDocumentToDelete(null)}
+        onConfirm={handleDelete}
+        title="Hapus dokumen administratif?"
+        description="Dokumen yang dihapus tidak dapat dipulihkan."
+        itemName={documentToDelete?.name}
+        confirmText="Ya, hapus dokumen"
+      />
     </section>
   );
 }

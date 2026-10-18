@@ -62,6 +62,61 @@ export default function OrangKudus() {
         "Martir gereja perdana yang menunjukkan keberanian iman yang luar biasa.",
       image: "https://picsum.photos/seed/saints6/400/400",
     },
+
+    {
+      id: 7,
+      name: "St. Fransiskus Asisi",
+      postDay: "04 Okt",
+      patronOf: "Hewan & Lingkungan",
+      summary:
+        "Dikenal karena cintanya pada kemiskinan dan persaudaraan dengan alam semesta.",
+      image: "https://picsum.photos/seed/saints1/400/400",
+    },
+    {
+      id: 8,
+      name: "St. Teresa dari Kalkuta",
+      postDay: "05 Sep",
+      patronOf: "Orang Miskin",
+      summary:
+        "Pendiri Misionaris Kasih yang melayani orang yang paling miskin di antara yang miskin.",
+      image: "https://picsum.photos/seed/saints2/400/400",
+    },
+    {
+      id: 9,
+      name: "St. Yohanes Paulus II",
+      postDay: "22 Okt",
+      patronOf: "Keluarga & Kaum Muda",
+      summary:
+        "Paus yang membawa gereja memasuki milenium baru dengan semangat dialog.",
+      image: "https://picsum.photos/seed/saints3/400/400",
+    },
+    {
+      id: 10,
+      name: "St. Antonius Padua",
+      postDay: "13 Jun",
+      patronOf: "Barang Hilang",
+      summary:
+        "Pujangga Gereja yang dikenal sebagai pengkhotbah ulung dan pembuat mukjizat.",
+      image: "https://picsum.photos/seed/saints4/400/400",
+    },
+    {
+      id: 11,
+      name: "St. Monika",
+      postDay: "27 Ags",
+      patronOf: "Ibu & Istri",
+      summary:
+        "Teladan kesabaran doa seorang ibu bagi pertobatan anaknya, St. Agustinus.",
+      image: "https://picsum.photos/seed/saints5/400/400",
+    },
+    {
+      id: 12,
+      name: "St. Sebastianus",
+      postDay: "20 Jan",
+      patronOf: "Olahragawan",
+      summary:
+        "Martir gereja perdana yang menunjukkan keberanian iman yang luar biasa.",
+      image: "https://picsum.photos/seed/saints6/400/400",
+    },
   ]);
 
   const filteredData = useMemo(
@@ -83,7 +138,7 @@ export default function OrangKudus() {
       {/* HERO */}
       <header className="relative w-full h-55 overflow-hidden rounded mb-8">
         <img
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 w-full h-full z-0"
           style={{
             backgroundImage: `url('https://t4.ftcdn.net/jpg/09/49/96/61/360_F_949966181_f3ALgQU8qGS9vemZ8kg3MY4wCCBBqsXg.jpg')`,
             backgroundSize: "cover",
@@ -122,20 +177,21 @@ export default function OrangKudus() {
       </header>
 
       {/* LIST */}
-      <main className="px-15">
-        <section className="divide-y divide-gray-100 overflow-hidden">
+      <main className="px-15 pb-15">
+        <section className="divide-y divide-gray-100 overflow-hidden"
+        children=
           {paginatedData.length === 0 && (
             <section className="flex w-full items-center justify-center">
               <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
                 Katekese belum di inputkan atau judul yang anda cari tidak ada.
               </span>
             </section>
-          )}
-          {paginatedData.map((item) => (
+          ),
+          paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-100/50 hover:bg-slate-200/60 flex border border-gray-100 rounded items-center gap-6 p-6 transition-colors cursor-pointer group mb-1"
+              className="bg-gray-200 hover:bg-slate-300/80 flex border border-stone-300 rounded items-center gap-6 p-6 transition-colors cursor-pointer group mb-1"
             >
               <form className="size-30 w-25 items-center rounded overflow-hidden flex-shrink-0">
                 <img
@@ -147,19 +203,23 @@ export default function OrangKudus() {
 
               <section className="flex-1 min-w-0">
                 <form className="flex items-center gap-3 mb-1">
-                  <h3 className="font-serif text-base text-gray-900 truncate group-hover:text-gray-500 transition-colors">
-                    {item.name}
-                  </h3>
-                  <span className="text-[10px] text-gray-800 border border-gray-100 px-2 py-0.5 rounded flex-shrink-0">
-                    {item.postDay}
-                  </span>
+                  <h3
+                    className="font-serif text-base text-gray-900 truncate group-hover:text-gray-500 transition-colors"
+                    children={item.name}
+                  />
+                  <span
+                    className="text-[10px] text-gray-800 border border-gray-100 px-2 py-0.5 rounded flex-shrink-0"
+                    children={item.postDay}
+                  />
                 </form>
-                <p className="text-[10px] text-gray-800 uppercase tracking-widest mb-1">
-                  Pelindung {item.patronOf}
-                </p>
-                <p className="text-xs text-white font-light line-clamp-1 group-hover:text-gray-500">
-                  {item.summary}
-                </p>
+                <p
+                  className="text-[10px] text-gray-800 uppercase tracking-widest mb-1"
+                  children={`Pelindung ${item.patronOf}`}
+                />
+                <p
+                  className="text-xs text-white font-light line-clamp-1 group-hover:text-gray-500"
+                  children={item.summary}
+                />
               </section>
 
               {/* <div className="text-gray-300 group-hover:text-gray-500 transition-colors text-sm flex-shrink-0">
@@ -167,22 +227,21 @@ export default function OrangKudus() {
               </div> */}
             </section>
           ))}
-        </section>
+        />
       </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+        <footer className="flex p-5 rounded-xl bg-gray-300 items-center justify-between border-t border-gray-100 ">
           <p className="text-xs text-gray-100">
-            Menampilkan{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {paginatedData.length}
-            </span>{" "}
-            dari{" "}
-            <span className="text-gray-700 font-serif font-medium">
-              {filteredData.length}
-            </span>{" "}
-            orang Kudus
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={`Menampilkan ${paginatedData.length} dari`}
+            />
+            <span
+              className="text-gray-700 font-serif font-medium"
+              children={` ${filteredData.length} orang kudus`}
+            />
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -192,17 +251,17 @@ export default function OrangKudus() {
             >
               <ChevronLeft size={14} />
             </button>
-            <div className="flex gap-1">
-              {[...Array(totalPages)].map((_, i) => (
+            <div
+              className="flex gap-1"
+              children={[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
-                >
-                  {i + 1}
-                </button>
+                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                  children={i + 1}
+                />
               ))}
-            </div>
+            />
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}

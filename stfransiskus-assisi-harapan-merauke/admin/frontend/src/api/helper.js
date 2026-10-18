@@ -4,7 +4,11 @@ export const handleRequest = async (promise) => {
 
     return [data, null];
   } catch (error) {
-    const errorMsg = error.response?.data?.message || "Kesalahan Server";
+    const errorMsg =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Kesalahan Server";
     return [null, errorMsg];
   }
 };

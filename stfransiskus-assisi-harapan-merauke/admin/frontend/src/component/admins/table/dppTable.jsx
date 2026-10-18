@@ -1,46 +1,52 @@
 import { Edit2, Trash2 } from "lucide-react";
+import { useState } from "react";
+import DeleteModal from "../../alert/deleteModal";
 
 export default function DppTable({ data, handlers }) {
-  const handleDelete = () => {
-    if (window.confirm(`Hapus ${data.nama} dari daftar?`)) {
-      handlers.delete(data);
-    }
-  };
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
-    <tr className="text-center border-b border-gray-50 hover:bg-gray-50/60 transition-colors cursor-pointer">
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+    <tr className="transition-colors hover:bg-slate-50">
+      <td className="px-4 py-4 text-sm font-semibold text-slate-900 sm:px-6">
         {data.nama}
       </td>
-      <td className="px-6 py-4">
-        <span className="text-xs font-semibold text-indigo-900 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-1">
+      <td className="px-4 py-4 sm:px-6">
+        <span className="inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">
           {data.jabatan}
         </span>
       </td>
-      <td className="px-6 py-4 text-sm text-gray-900">{data.periode}</td>
-      <td className="px-6 py-4">
-        <section className="flex items-center justify-center gap-2">
-          <button
-            className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
-            onClick={(i) => {
-              i.stopPropagation();
-              handlers.edit(data);
-            }}
-          >
-            <Edit2 size={18} />
-          </button>
-
-          <button
-            className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
-            onClick={(i) => {
-              i.stopPropagation();
-              handleDelete();
-            }}
-          >
-            <Trash2 size={18} />
-          </button>
-        </section>
+      <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-600 sm:px-6">
+        {data.periode}
       </td>
+      <td className="px-4 py-4">
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            aria-label={`Edit ${data.nama}`}
+            className="cursor-pointer rounded-lg p-2.5 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            onClick={() => handlers.edit(data)}
+          >
+            <Edit2 size={17} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            aria-label={`Hapus ${data.nama}`}
+            className="cursor-pointer rounded-lg p-2.5 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+            onClick={() => setIsDeleteModalOpen(true)}
+          >
+            <Trash2 size={17} aria-hidden="true" />
+          </button>
+        </div>
+      </td>
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => handlers.delete(data)}
+        title="Hapus anggota DPP?"
+        description="Anggota ini akan dihapus dari daftar Dewan Pastoral Paroki."
+        itemName={data.nama}
+        confirmText="Ya, hapus anggota"
+      />
     </tr>
   );
 }

@@ -1,4 +1,4 @@
-import { Bell, Church, Edit, User, X } from "lucide-react";
+import { Church, Users, UserRound } from "lucide-react";
 import { useState } from "react";
 
 import AdminPages from "../../component/admins/admin_page";
@@ -13,11 +13,61 @@ export default function Admin() {
   const [isDppModalOpen, setIsDppModaOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModaOpen] = useState(false);
   const [selectedDivisi, setSelectedDivisi] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingStasi, setEditingStasi] = useState(null);
+  const [editingDpp, setEditingDpp] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
+
+    if (isStasiModalOpen) {
+      if (
+        !formData.stasi ||
+        !formData.namaGereja ||
+        !formData.desa ||
+        !formData.alamat ||
+        !formData.jumlahUmat
+      ) {
+        return;
+      }
+
+      const updatedStasi = {
+        ...formData,
+        jumlahUmat: Number(formData.jumlahUmat),
+      };
+      setStasiList((prev) =>
+        editingStasi
+          ? prev.map((item) => (item === editingStasi ? updatedStasi : item))
+          : [...prev, updatedStasi],
+      );
+      setIsStasiModalOpen(false);
+      resetForm();
+      setEditingStasi(null);
+      return;
+    }
+
+    if (
+      !isDppModalOpen ||
+      (!selectedDivisi && !editingDpp) ||
+      !dppFormData.nama ||
+      !dppFormData.jabatan ||
+      !dppFormData.periode
+    ) {
+      return;
+    }
+
+    const updatedDpp = {
+      ...dppFormData,
+      divisi: selectedDivisi || editingDpp?.divisi || "",
+    };
+    setDppList((prev) =>
+      editingDpp
+        ? prev.map((item) => (item === editingDpp ? updatedDpp : item))
+        : [...prev, updatedDpp],
+    );
+    setIsDppModaOpen(false);
+    dppResetForm();
+    setSelectedDivisi("");
+    setEditingDpp(null);
   };
 
   const handleDivisiChange = (e) => {
@@ -82,77 +132,101 @@ export default function Admin() {
   const handleDeleteDpp = (data) =>
     setDppList((prev) => prev.filter((item) => item.nama !== data.nama));
   const handleDeleteStasi = (stasi) =>
-    setStasiList((prev) => prev.filter((item) => item.nama !== stasi.nama));
-  const handleInputChange = (setter) => async (e) => {
+    setStasiList((prev) => prev.filter((item) => item.stasi !== stasi.stasi));
+  const handleInputChange = (setter) => (e) => {
     const { name, value } = e.target;
     setter((prev) => ({ ...prev, [name]: value }));
   };
+  const totalUmat = stasiList.reduce(
+    (total, stasi) => total + Number(stasi.jumlahUmat || 0),
+    0,
+  );
 
   return (
-    <section className="w-full min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-2 px-4 h-16 bg-slate-700/40 border-b border-white/30 backdrop-blur-sm">
-        {/* Judul */}
-        <div className="min-w-0">
-          <h2 className="text-sm sm:text-xl font-serif text-gray-900 tracking-tight truncate">
-            Admin Paroki St.Fransiskus Assisi.
-          </h2>
-          <p className="text-[9px] sm:text-[10px] font-serif text-gray-900 uppercase tracking-widest truncate">
-            Admin, Stasi & Anggota Dewan Pastoral
-          </p>
-        </div>
-
-        {/* Aksi kanan */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button className="cursor-pointer p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:bg-gray-50 transition-all">
-            <Bell size={18} color="black" />
-          </button>
+    <section className="min-h-full w-full bg-slate-50">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
+              Panel Pengelolaan
+            </p>
+            <h1 className="truncate text-sm font-semibold text-slate-900 sm:text-base">
+              Paroki St. Fransiskus Assisi
+            </h1>
+          </div>
           <button
             onClick={() => setIsAdminModaOpen(true)}
-            className="cursor-pointer flex items-center gap-2 bg-white border border-gray-200 p-1.5 pr-3 rounded-2xl"
+            type="button"
+            aria-label="Buka pengaturan administrator"
+            className="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white py-1.5 pl-1.5 pr-3 transition hover:border-amber-300 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
-            <p className="h-7 w-7 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-700 text-xs font-bold text-white">
               AD
-            </p>
-            <span className="text-xs sm:text-sm font-bold text-gray-700 hidden xs:block sm:block">
+            </span>
+            <span className="hidden text-sm font-medium text-slate-700 sm:block">
               Administrator
             </span>
           </button>
         </div>
       </header>
 
-      {/* Konten */}
-      <main className="max-w-6xl mx-auto space-y-5 p-3 sm:p-4">
-        {/* Stats Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <main className="mx-auto max-w-7xl space-y-7 px-4 py-6 sm:px-6 sm:py-8">
+        <section className="flex flex-col gap-2">
+          <p className="text-sm font-semibold text-amber-700">
+            Administrasi paroki
+          </p>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Kelola komunitas paroki
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              Pantau data stasi dan anggota Dewan Pastoral Paroki dalam satu
+              tempat.
+            </p>
+          </div>
+        </section>
+
+        <section
+          aria-label="Ringkasan data paroki"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
+        >
           <StasiDanDppCard
-            title="Anggota Dpp"
-            value="12"
-            icon={<User size={20} />}
-            color="bg-green-500"
+            title="Anggota DPP"
+            value={dppList.length}
+            icon={<UserRound size={20} />}
+            color="bg-sky-700"
+            actionLabel="Tambah anggota"
             onInputClick={() => setIsDppModaOpen(true)}
           />
           <StasiDanDppCard
             title="Total Stasi"
-            value="08"
+            value={stasiList.length}
             icon={<Church size={20} />}
-            color="bg-amber-500"
+            color="bg-amber-700"
+            actionLabel="Tambah stasi"
             onInputClick={() => setIsStasiModalOpen(true)}
+          />
+          <StasiDanDppCard
+            title="Total Umat"
+            value={totalUmat.toLocaleString("id-ID")}
+            icon={<Users size={20} />}
+            color="bg-emerald-700"
+            description="Tersebar di seluruh stasi"
           />
         </section>
 
-        {/* List Grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <section className="space-y-5" aria-label="Data komunitas paroki">
           <ListAnggotaDpp
             data={dppList}
             handlers={{
               edit: (data) => {
+                setEditingDpp(data);
                 setDppFormData({
                   nama: data.nama,
                   jabatan: data.jabatan,
                   periode: data.periode,
                 });
-                setSelectedDivisi(data.jabatan);
+                setSelectedDivisi(data.divisi || "");
                 setIsDppModaOpen(true);
               },
               delete: handleDeleteDpp,
@@ -162,6 +236,7 @@ export default function Admin() {
             data={stasiList}
             handlers={{
               edit: (stasi) => {
+                setEditingStasi(stasi);
                 setFormData({
                   stasi: stasi.stasi,
                   jumlahUmat: stasi.jumlahUmat,
@@ -187,7 +262,7 @@ export default function Admin() {
 
       <InputStasi
         isOpen={isStasiModalOpen}
-        isSubmitting={isSubmitting}
+        isSubmitting={false}
         formdata={formData}
         validations={() =>
           !!(
@@ -202,8 +277,12 @@ export default function Admin() {
           cancel: () => {
             setIsStasiModalOpen(false);
             resetForm();
+            setEditingStasi(null);
           },
-          reset: resetForm,
+          reset: () => {
+            resetForm();
+            setEditingStasi(null);
+          },
           submit: handleSubmit,
           input: handleInputChange(setFormData),
         }}
@@ -211,12 +290,12 @@ export default function Admin() {
 
       <InputDpp
         isOpen={isDppModalOpen}
-        isSubmitting={isSubmitting}
+        isSubmitting={false}
         selectedDivisi={selectedDivisi}
         formData={dppFormData}
         validations={() =>
           !!(
-            selectedDivisi &&
+            (selectedDivisi || editingDpp) &&
             dppFormData?.nama &&
             dppFormData?.jabatan &&
             dppFormData?.periode
@@ -227,10 +306,12 @@ export default function Admin() {
             setIsDppModaOpen(false);
             dppResetForm();
             setSelectedDivisi("");
+            setEditingDpp(null);
           },
           reset: () => {
             dppResetForm();
             setSelectedDivisi("");
+            setEditingDpp(null);
           },
           divisi: handleDivisiChange,
           submit: handleSubmit,

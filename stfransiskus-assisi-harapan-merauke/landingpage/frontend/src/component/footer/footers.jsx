@@ -51,46 +51,44 @@ export default function Footers() {
 
             <section
               className="flex flex-col items-center justify-center"
-              children={
-                <>
-                  <p className="text-[0.81em] font-serif underline font-medium tracking-[0.18em] text-amber-400 uppercase mb-3">
-                    Kontak Person
-                  </p>
+              children={[
+                <p className="text-[0.81em] font-serif underline font-medium tracking-[0.18em] text-amber-400 uppercase mb-3">
+                  Kontak Person
+                </p>,
 
-                  <a
-                    href={`https://wa.me/`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs sm:text-sm text-gray-300 hover:text-green-400 hover:underline transition-colors leading-relaxed font-poppins inline-flex items-center gap-2 justify-center lg:justify-start"
+                <a
+                  href={`https://wa.me/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs sm:text-sm text-gray-300 hover:text-green-400 hover:underline transition-colors leading-relaxed font-poppins inline-flex items-center gap-2 justify-center lg:justify-start"
+                >
+                  <svg
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="26"
                   >
-                    <svg
-                      viewBox="0 0 100 100"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="26"
-                    >
-                      <path
-                        d="M50 10C27.9 10 10 27.9 10 50c0 7.2 2 14 5.4 19.8L10 90l20.8-5.3C36.4 87.9 43 90 50 90c22.1 0 40-17.9 40-40S72.1 10 50 10z"
-                        fill="none"
-                        stroke="#25D366"
-                        stroke-width="6"
-                      />
-
-                      <g transform="translate(52 60) scale(1.6) translate(-52 -60)">
-                        <path
-                          d="M63.5 57.2l-5.2-1.4c-.8-.2-1.6.1-2.1.7l-2.3 2.8c-4.1-1.9-7.4-5.2-9.3-9.3l2.8-2.3c.6-.5.9-1.3.7-2.1L46.7 40c-.3-1-.8-1.7-2-1.7h-4.8C38.6 38.3 37 40 37 42c0 13.3 10.7 24 24 24 2 0 3.7-1.6 3.7-3.9v-4.8c0-1.1-.9-1.8-1.2-2.1z"
-                          fill="#25D366"
-                        />
-                      </g>
-                    </svg>
-
-                    <span
-                      className="break-all sm:break-normal"
-                      children={"+62 846-9012-8891"}
+                    <path
+                      d="M50 10C27.9 10 10 27.9 10 50c0 7.2 2 14 5.4 19.8L10 90l20.8-5.3C36.4 87.9 43 90 50 90c22.1 0 40-17.9 40-40S72.1 10 50 10z"
+                      fill="none"
+                      stroke="#25D366"
+                      stroke-width="6"
                     />
-                  </a>
-                </>
-              }
+
+                    <g transform="translate(52 60) scale(1.6) translate(-52 -60)">
+                      <path
+                        d="M63.5 57.2l-5.2-1.4c-.8-.2-1.6.1-2.1.7l-2.3 2.8c-4.1-1.9-7.4-5.2-9.3-9.3l2.8-2.3c.6-.5.9-1.3.7-2.1L46.7 40c-.3-1-.8-1.7-2-1.7h-4.8C38.6 38.3 37 40 37 42c0 13.3 10.7 24 24 24 2 0 3.7-1.6 3.7-3.9v-4.8c0-1.1-.9-1.8-1.2-2.1z"
+                        fill="#25D366"
+                      />
+                    </g>
+                  </svg>
+
+                  <span
+                    className="break-all sm:break-normal"
+                    children={"+62 846-9012-8891"}
+                  />
+                </a>,
+              ]}
             />
 
             <form className="flex flex-col items-center justify-center">
@@ -135,15 +133,13 @@ export default function Footers() {
                 ) : (
                   <section
                     className="w-full h-full flex flex-col items-center justify-center gap-2 bg-gray-50"
-                    children={
-                      <>
-                        <MapIcon size={18} className="text-gray-400" />
-                        <p
-                          className="text-[10px] text-gray-900 uppercase tracking-widest"
-                          children={"Peta belum tersedia"}
-                        />
-                      </>
-                    }
+                    children={[
+                      <MapIcon size={18} className="text-gray-400" />,
+                      <p
+                        className="text-[10px] text-gray-900 uppercase tracking-widest"
+                        children={"Peta belum tersedia"}
+                      />,
+                    ]}
                   />
                 )
               }

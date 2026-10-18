@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import {
   Routes,
   Route,
@@ -6,14 +7,16 @@ import {
   //useNavigate,
 } from "react-router-dom";
 import Layout from "./component/menu/sidebar";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Umat from "./pages/umat/umat";
-import Berita from "./pages/berita/berita";
-import Admin from "./pages/admin/admin";
-import Katekese from "./pages/katekese/katekese";
-import AdministraifGereja from "./pages/administratif_gereja/administratifGereja";
-import Login from "./pages/authentication/login";
 //import { useEffect, useState } from "react";
+
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Umat = lazy(() => import("./pages/umat/umat"));
+const Berita = lazy(() => import("./pages/berita/berita"));
+const Admin = lazy(() => import("./pages/admin/admin"));
+const Katekese = lazy(() => import("./pages/katekese/katekese"));
+const AdministraifGereja = lazy(
+  () => import("./pages/administratif_gereja/administratifGereja"),
+);
 
 function App() {
   // const location = useLocation();
@@ -57,19 +60,31 @@ function App() {
   return (
     <Layout
       children={
-        <Routes>
-          {/* <Route path="*" element={token ? <Navigate to="/" replace /> : <Login />} /> */}
+        <Suspense
+          fallback={
+            <div
+              className="flex min-h-64 items-center justify-center p-6 text-sm text-slate-600"
+              role="status"
+              aria-live="polite"
+            >
+              Memuat halaman…
+            </div>
+          }
+        >
+          <Routes>
+            {/* <Route path="*" element={token ? <Navigate to="/" replace /> : <Login />} /> */}
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          <Route path="/dashboard/:tab?" element={<Dashboard />} />
-          <Route path="/umat/:tab?" element={<Umat />} />
-          <Route path="/berita" element={<Berita />} />
-          <Route path="/katekese/:tab?" element={<Katekese />} />
+            <Route path="/dashboard/:tab?" element={<Dashboard />} />
+            <Route path="/umat/:tab?" element={<Umat />} />
+            <Route path="/berita" element={<Berita />} />
+            <Route path="/katekese/:tab?" element={<Katekese />} />
 
-          <Route path="/administratif" element={<AdministraifGereja />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
+            <Route path="/administratif" element={<AdministraifGereja />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </Suspense>
       }
     />
   );

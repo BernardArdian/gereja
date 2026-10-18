@@ -2,45 +2,58 @@ import DppTable from "../table/dppTable";
 
 export default function ListAnggotaDpp({ data, handlers }) {
   return (
-    <section className="lg:col-span-2 bg-green-500/50 border border-gray-100 rounded-xl overflow-hidden mb-3">
-      <header className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h3 className="text-sm font-serif text-gray-700">
-          Anggota Dewan Pastoral Paroki ST.Fransiskus Assisi Harapan Makmur
-        </h3>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
+        <div>
+          <h3 className="text-base font-semibold text-slate-900">
+            Anggota Dewan Pastoral Paroki
+          </h3>
+          <p className="mt-1 text-xs text-slate-500">
+            St. Fransiskus Assisi Harapan Makmur
+          </p>
+        </div>
+        <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">
+          {data.length} anggota
+        </span>
       </header>
-      <section className="p-0">
-        <table className="w-full text-left border-collapse">
-          <thead className="flext items-center justify-center sticky top-0">
-            <tr className="text-center border-b border-gray-100">
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] border-collapse text-left">
+          <thead className="bg-slate-50">
+            <tr className="border-b border-slate-200 text-left">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Nama
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Jabatan
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Periode
               </th>
-              <th className="px-6 py-3.5 text-[10px] font-serif text-gray-900 uppercase tracking-widest">
+              <th scope="col" className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Kelola
               </th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <DppTable key={index} data={item} handlers={handlers} />
-            ))}
-            {/* <DppTable
-              data={handlers.nama}
-              jabatan="Anggota"
-              periode="2022 - 2025"
-            />
-            <DppTable nama="mawar" jabatan="Anggota" periode="2022 - 2025" />
-            <DppTable nama="irwan" jabatan="Anggota" periode="2022 - 2025" />
-            <DppTable nama="linda" jabatan="Anggota" periode="2022 - 2025" /> */}
+          <tbody className="divide-y divide-slate-100">
+            {data.length ? (
+              data.map((item, index) => (
+                <DppTable
+                  key={`${item.nama}-${index}`}
+                  data={item}
+                  handlers={handlers}
+                />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-500">
+                  Belum ada anggota DPP. Tambahkan anggota untuk mulai mengelola
+                  data.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
-      </section>
+      </div>
     </section>
   );
 }

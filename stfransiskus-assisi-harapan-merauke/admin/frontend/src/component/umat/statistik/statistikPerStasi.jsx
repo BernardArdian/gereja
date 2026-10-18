@@ -1,94 +1,121 @@
 import { PieChart } from "lucide-react";
 
-export default function StatistikPerStasi({ stasiDistribusi }) {
+const columns = [
+  { key: "total", label: "Total", className: "font-semibold text-slate-900" },
+  { key: "baptis", label: "Baptis" },
+  { key: "komuni", label: "Komuni" },
+  { key: "krisma", label: "Krisma" },
+  { key: "menikah", label: "Menikah" },
+  { key: "belumNikah", label: "Belum menikah" },
+  { key: "duda", label: "Duda" },
+  { key: "janda", label: "Janda" },
+  { key: "hidup", label: "Hidup" },
+  { key: "meninggal", label: "Meninggal" },
+];
+
+export default function StatistikPerStasi({ stasiDistribusi = [] }) {
   return (
-    <section className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-      <h3 className="font-black text-gray-900 uppercase tracking-tighter mb-6 flex items-center gap-2">
-        <PieChart size={20} className="text-indigo-600" /> Statistik Per Stasi
-      </h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th className="p-3 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                Nama Stasi
-              </th>
-              <th className="p-3 text-[10px] font-black text-gray-500 uppercase tracking-widest text-center">
-                Total
-              </th>
-              <th className="p-3 text-[10px] font-black text-blue-600 uppercase tracking-widest text-center">
-                Baptis
-              </th>
-              <th className="p-3 text-[10px] font-black text-emerald-600 uppercase tracking-widest text-center">
-                Komuni
-              </th>
-              <th className="p-3 text-[10px] font-black text-rose-600 uppercase tracking-widest text-center">
-                Krisma
-              </th>
-              <th className="p-3 text-[10px] font-black text-rose-800 uppercase tracking-widest text-center">
-                Menikah
-              </th>
-              <th className="p-3 text-[10px] font-black text-rose-800 uppercase tracking-widest text-center">
-                Belum Menikah
-              </th>
-              <th className="p-3 text-[10px] font-black text-rose-800 uppercase tracking-widest text-center">
-                Duda
-              </th>
-              <th className="p-3 text-[10px] font-black text-rose-800 uppercase tracking-widest text-center">
-                Janda
-              </th>
-              <th className="p-3 text-[10px] font-black text-blue-500 uppercase tracking-widest text-center">
-                Hidup
-              </th>
-              <th className="p-3 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
-                Meninggal
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {stasiDistribusi.length > 0 ? (
-              stasiDistribusi.map((w, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors font-black uppercase"
-                >
-                  <td className="p-3 text-[11px] text-gray-800">{w.n}</td>
-                  <td className="p-3 text-[11px] text-gray-900 text-center bg-indigo-50/30">
-                    {w.total}
-                  </td>
-                  <td className="p-3 text-[11px] text-blue-600 text-center">
-                    {w.b}
-                  </td>
-                  <td className="p-3 text-[11px] text-emerald-600 text-center">
-                    {w.nikah}
-                  </td>
-                  <td className="p-3 text-[11px] text-rose-600 text-center">
-                    {w.janda}
-                  </td>
-                  <td className="p-3 text-[11px] text-rose-800 text-center">
-                    {w.duda}
-                  </td>
-                  <td className="p-3 text-[11px] text-blue-500 text-center">
-                    {w.h}
-                  </td>
-                  <td className="p-3 text-[11px] text-gray-400 text-center">
-                    {w.m}
-                  </td>
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <header className="border-b border-slate-200 px-4 py-4 sm:px-6">
+        <div className="flex items-center gap-3">
+          <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+            <PieChart size={18} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 className="font-semibold text-slate-900">
+              Statistik per stasi
+            </h3>
+            <p className="mt-1 text-xs text-slate-600">
+              Perbandingan data umat berdasarkan status dan sakramen.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {stasiDistribusi.length === 0 ? (
+        <p className="px-4 py-12 text-center text-sm text-slate-500 sm:px-6">
+          Belum ada data umat untuk ditampilkan.
+        </p>
+      ) : (
+        <>
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full min-w-262.5 border-collapse text-left">
+              <thead className="bg-slate-50">
+                <tr className="border-b border-slate-200">
+                  <th
+                    scope="col"
+                    className="sticky left-0 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600 sm:px-6"
+                  >
+                    Nama stasi
+                  </th>
+                  {columns.map((column) => (
+                    <th
+                      key={column.key}
+                      scope="col"
+                      className="whitespace-nowrap px-3 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-600"
+                    >
+                      {column.label}
+                    </th>
+                  ))}
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="11"
-                  className="bg-rose-100 w-full p-10 text-center text-xs text-gray-400 italic uppercase font-black"
-                >
-                  Data Kosong
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {stasiDistribusi.map((stasi) => (
+                  <tr key={stasi.n} className="hover:bg-slate-50">
+                    <th
+                      scope="row"
+                      className="sticky left-0 bg-white px-4 py-3 text-sm font-semibold text-slate-800 sm:px-6"
+                    >
+                      {stasi.n}
+                    </th>
+                    {columns.map((column) => (
+                      <td
+                        key={column.key}
+                        className={`px-3 py-3 text-center text-sm tabular-nums text-slate-700 ${column.className || ""}`}
+                      >
+                        {stasi[column.key].toLocaleString("id-ID")}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="space-y-3 p-3 md:hidden">
+            {stasiDistribusi.map((stasi) => (
+              <article
+                key={stasi.n}
+                className="rounded-xl border border-slate-200 bg-white p-4"
+              >
+                <header className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                  <h4 className="min-w-0 wrap-break-word text-sm font-semibold text-slate-900">
+                    {stasi.n}
+                  </h4>
+                  <span className="shrink-0 rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-900">
+                    Total {stasi.total.toLocaleString("id-ID")}
+                  </span>
+                </header>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
+                  {columns
+                    .filter((column) => column.key !== "total")
+                    .map((column) => (
+                      <div
+                        key={column.key}
+                        className="flex items-center justify-between gap-2 text-xs"
+                      >
+                        <dt className="text-slate-600">{column.label}</dt>
+                        <dd className="font-semibold tabular-nums text-slate-900">
+                          {stasi[column.key].toLocaleString("id-ID")}
+                        </dd>
+                      </div>
+                    ))}
+                </dl>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

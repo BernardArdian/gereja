@@ -75,7 +75,7 @@ export default function InputStasi({
                   name="stasi"
                   type="text"
                   placeholder="Nama Stasi"
-                  pattern="[A-Za-z\s]*"
+                  pattern="[A-Za-z\s.]*"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 transition-all text-sm font-medium"
                   onKeyDown={(i) => {
                     blockSpecialChars(i);
@@ -98,7 +98,7 @@ export default function InputStasi({
                 </div>
                 <input
                   ref={totalumatRef}
-                  name="jumlahumat"
+                  name="jumlahUmat"
                   type="number"
                   placeholder="0"
                   pattern="1234567890"
@@ -123,7 +123,7 @@ export default function InputStasi({
                 </div>
                 <input
                   ref={gerejaRef}
-                  name="gereja"
+                  name="namaGereja"
                   type="text"
                   placeholder="Nama Gereja"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-50 transition-all text-sm font-medium"
@@ -195,16 +195,16 @@ export default function InputStasi({
           {/* Submit Button - Lebih compact */}
           <footer className="w-full flex items-center justify-end gap-4">
             <button
-              className="cursor-pointer w-[10dvw] flex items-center justify-center gap-2 py-3 bg-red-500 hover:bg-red-500/20 hover:text-red-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              className="min-w-24 cursor-pointer flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700 transition hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
               type="button"
-              disabled={!validations() || isSubmitting}
-              onClick={handlers.reset}
+              disabled={isSubmitting}
+              onClick={handlers.cancel}
             >
               Batal
             </button>
             <button
-              className="cursor-pointer w-[11dvw] flex items-center justify-center gap-2 py-3 bg-amber-500 hover:bg-amber-500/20 hover:text-amber-600 text-white rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
-              type="button"
+              className="min-w-24 cursor-pointer flex items-center justify-center gap-2 rounded-xl bg-amber-700 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-amber-800 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none"
+              type="submit"
               disabled={!validations() || isSubmitting}
             >
               <Save size={16} />

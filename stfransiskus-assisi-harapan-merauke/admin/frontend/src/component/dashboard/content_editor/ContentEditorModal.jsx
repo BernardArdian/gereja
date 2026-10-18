@@ -1,259 +1,305 @@
 import { useState } from "react";
-import { X, Save, FileText, Type, Tag, Plus, Trash2 } from "lucide-react";
 import { createPortal } from "react-dom";
+import { FileText, Plus, Save, Tag, Trash2, Type, X } from "lucide-react";
+import DeleteModal from "../../alert/deleteModal";
+import Dropdown from "../../dropdown/dropdown";
+
+const fieldClass =
+  "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
 export default function ContentEditorModal({
   isOpen,
   handlers = {},
-  title = "Edit Konten",
+  title = "Edit konten",
   icon,
   labelTitle = "Judul",
-  labelContent = "Konten Narasi",
+  labelContent = "Konten narasi",
   showCategory = false,
   categories = [],
   mode = "default",
 }) {
-  const [judul, setJudul] = useState(handlers.initialData?.judul || "");
-  const [konten, setKonten] = useState(handlers.initialData?.konten || "");
-  const [category, setCategory] = useState(
-    handlers.initialData?.category ||
-      (categories.length > 0
-        ? categories[0] !== "Semua"
-          ? categories[0]
-          : categories[1]
-        : ""),
-  );
+  const initialData = handlers.initialData || {};
+  const [judul, setJudul] = useState(initialData.judul || "");
+  const [konten, setKonten] = useState(initialData.konten || "");
+  const [category, setCategory] = useState(initialData.category || "");
   const [items, setItems] = useState(
-    Array.isArray(handlers.initialData?.items)
-      ? [...handlers.initialData.items]
-      : [],
+    Array.isArray(initialData.items) ? initialData.items : [],
   );
-
-  const isValid = () => {
-    if (mode === "visimisi")
-      return (
-        konten.trim() !== "" &&
-        items.length > 0 &&
-        items.every((item) => item.trim() !== "")
-      );
-    if (mode === "history")
-      return (
-        konten.trim() !== "" &&
-        items.length > 0 &&
-        items.every(
-          (item) => item.tahun.trim() !== "" && item.event.trim() !== "",
-        )
-      );
-    return judul.trim() !== "" && konten.trim() !== "";
-  };
-
-  const resetForm = () => {
-    setJudul(handlers.initialData?.judul || "");
-    setKonten(handlers.initialData?.konten || "");
-    setCategory(handlers.initialData?.category || "");
-    setItems([]);
-  };
-
-  const addItem = (e) => {
-    e.preventDefault();
-    const newItem = mode === "history" ? { tahun: "", event: "" } : "";
-    setItems((prev) => [...prev, newItem]);
-  };
-
-  const removeItem = (e, index) => {
-    e.preventDefault();
-    setItems((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateItem = (index, value, field) => {
-    setItems((prev) => {
-      const newItems = [...prev];
-      if (mode === "history") {
-        newItems[index] = { ...newItems[index], [field]: value };
-      } else {
-        newItems[index] = value;
-      }
-      return newItems;
-    });
-  };
-
-  const getDynamicLabelContent = () => {
-    if (mode === "history") return "Sejarah";
-    if (mode === "visimisi") return "Visi Utama";
-    return labelContent;
-  };
-
-  if (!isOpen) return null;
+  const [itemIndexToDelete, setItemIndexToDelete] = useState(null);
   const IconComponent = icon || FileText;
 
-  return createPortal(
-    <section className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-md"
-        onClick={handlers.close}
-      />
+  const isValid =
+    mode === "visimisi"
+      ? konten.trim() !== "" &&
+        items.length > 0 &&
+        items.every((item) => typeof item === "string" && item.trim())
+      : mode === "history"
+        ? konten.trim() !== "" &&
+          items.length > 0 &&
+          items.every(
+            (item) => item.tahun?.trim() && item.event?.trim(),
+          )
+        : judul.trim() !== "" &&
+          konten.trim() !== "" &&
+          (!showCategory || Boolean(category));
 
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-white shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <IconComponent size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+  if (!isOpen) return null;
+
+  const contentLabel =
+    mode === "history"
+      ? labelContent
+      : mode === "visimisi"
+        ? "Visi utama"
+        : labelContent;
+
+  const updateItem = (index, value, field) => {
+    setItems((previous) =>
+      previous.map((item, itemIndex) => {
+        if (itemIndex !== index) return item;
+        return mode === "history" ? { ...item, [field]: value } : value;
+      }),
+    );
+  };
+
+  const addItem = () => {
+    setItems((previous) => [
+      ...previous,
+      mode === "history" ? { tahun: "", event: "" } : "",
+    ]);
+  };
+
+  const removeItem = () => {
+    if (itemIndexToDelete === null) return;
+    setItems((previous) =>
+      previous.filter((_, itemIndex) => itemIndex !== itemIndexToDelete),
+    );
+    setItemIndexToDelete(null);
+  };
+
+  return (
+    <>
+      {createPortal(
+    <section
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) handlers.close?.();
+      }}
+    >
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="content-editor-title"
+        className="relative flex max-h-[min(92dvh,900px)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+              <IconComponent size={19} aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+              <h2
+                id="content-editor-title"
+                className="truncate font-semibold text-slate-900"
+              >
+                {title}
+              </h2>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Perubahan ditampilkan setelah disimpan.
+              </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={handlers.close}
-            className="cursor-pointer p-2 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all text-red-600"
+            aria-label="Tutup formulir"
+            className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
-            <X size={20} />
+            <X size={19} aria-hidden="true" />
           </button>
-        </div>
+        </header>
 
-        {/* BODY */}
-        <div className="p-6 overflow-y-auto space-y-6 bg-gray-50/30">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto bg-slate-50/70 p-4 sm:space-y-6 sm:p-6">
           {showCategory && (
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Tag size={16} /> Kategori / Topik
-              </label>
-              <select
+            <label className="block space-y-2">
+              <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <Tag size={16} aria-hidden="true" />
+                Kategori / topik
+              </span>
+              <Dropdown
+                ariaLabel="Kategori atau topik"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500"
-              >
-                {categories
-                  .filter((c) => c !== "Semua")
-                  .map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-              </select>
-            </div>
+                onChange={setCategory}
+                placeholder="Pilih kategori"
+                required
+                className={fieldClass}
+                options={categories
+                  .filter((item) => item !== "Semua")
+                  .map((item) => ({ value: item, label: item }))}
+              />
+            </label>
           )}
 
           {mode === "default" && (
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Type size={16} /> {labelTitle}
-              </label>
+            <label className="block space-y-2">
+              <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <Type size={16} aria-hidden="true" />
+                {labelTitle}
+              </span>
               <input
                 type="text"
                 value={judul}
-                onChange={(e) => setJudul(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500"
+                onChange={(event) => setJudul(event.target.value)}
+                className={fieldClass}
+                placeholder={`Masukkan ${labelTitle.toLowerCase()}`}
               />
-            </div>
+            </label>
           )}
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <FileText size={16} /> {getDynamicLabelContent()}
-            </label>
+          <label className="block space-y-2">
+            <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <FileText size={16} aria-hidden="true" />
+              {contentLabel}
+            </span>
             <textarea
-              rows={mode === "default" ? 8 : 12}
+              rows={mode === "default" ? 7 : 9}
               value={konten}
-              onChange={(e) => setKonten(e.target.value)}
-              placeholder={`Tuliskan ${getDynamicLabelContent()} di sini...`}
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-amber-500 resize-none leading-relaxed"
+              onChange={(event) => setKonten(event.target.value)}
+              placeholder={`Tuliskan ${contentLabel.toLowerCase()} di sini...`}
+              className={`${fieldClass} min-h-36 resize-y leading-6`}
             />
-          </div>
+          </label>
 
           {(mode === "history" || mode === "visimisi") && (
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <label className="text-sm font-semibold text-gray-700">
-                  {mode === "history"
-                    ? "Garis Waktu (Timeline)"
-                    : "Daftar Misi"}
-                </label>
+            <section className="space-y-3">
+              <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="text-sm font-semibold text-slate-800">
+                  {mode === "history" ? "Garis waktu" : "Daftar misi"}
+                </h3>
                 <button
                   type="button"
                   onClick={addItem}
-                  className="px-3 py-1.5 cursor-pointer text-xs font-bold text-white bg-blue-500 rounded-lg flex items-center gap-1 hover:bg-blue-500/20 hover:text-blue-500 transition-colors transition-all active:scale-95"
+                  className="inline-flex min-h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 text-xs font-semibold text-amber-900 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
                 >
-                  <Plus size={14} /> Tambah time line
+                  <Plus size={15} aria-hidden="true" />
+                  {mode === "history" ? "Tambah peristiwa" : "Tambah misi"}
                 </button>
-              </div>
-              <div className="space-y-3">
-                {items.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex gap-2 items-start bg-white p-3 rounded-xl border border-gray-200 shadow-sm"
-                  >
-                    {mode === "history" ? (
-                      <>
-                        <input
-                          placeholder="Tahun"
-                          value={item.tahun || ""}
-                          onChange={(e) =>
-                            updateItem(idx, e.target.value, "tahun")
-                          }
-                          className="w-24 px-2 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 outline-none"
-                        />
-                        <textarea
-                          placeholder="Peristiwa penting..."
-                          value={item.event || ""}
-                          onChange={(e) =>
-                            updateItem(idx, e.target.value, "event")
-                          }
-                          className="flex-1 px-2 py-2 border rounded-lg text-sm resize-none focus:ring-2 focus:ring-indigo-400 outline-none leading-relaxed"
-                          rows={3}
-                        />
-                      </>
-                    ) : (
-                      <textarea
-                        placeholder={`Misi ke-${idx + 1}`}
-                        value={item || ""}
-                        onChange={(e) => updateItem(idx, e.target.value)}
-                        className="flex-1 px-2 py-2 border rounded-lg text-sm resize-none focus:ring-2 focus:ring-indigo-400 outline-none leading-relaxed"
-                        rows={3}
-                      />
-                    )}
-                    <button
-                      type="button"
-                      onClick={(e) => removeItem(e, idx)}
-                      className="text-red-500 p-2 cursor-pointer hover:bg-red-50 rounded-lg transition-colors transition-all active:scale-95"
+              </header>
+
+              {items.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-500">
+                  Belum ada item. Tambahkan {mode === "history" ? "peristiwa" : "misi"} untuk melanjutkan.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {items.map((item, index) => (
+                    <article
+                      key={`${mode}-${index}`}
+                      className="space-y-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-4"
                     >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-                {items.length === 0 && (
-                  <div className="py-8 border-2 border-dashed rounded-xl flex items-center justify-center text-gray-400 text-xs italic">
-                    Belum ada item ditambahkan.
-                  </div>
-                )}
-              </div>
-            </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-xs font-semibold text-slate-600">
+                          {mode === "history"
+                            ? `Peristiwa ${index + 1}`
+                            : `Misi ${index + 1}`}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setItemIndexToDelete(index)}
+                          aria-label={`Hapus ${mode === "history" ? "peristiwa" : "misi"} ${index + 1}`}
+                          className="inline-flex min-h-9 cursor-pointer items-center gap-1 rounded-lg px-2 text-xs font-medium text-rose-700 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+                        >
+                          <Trash2 size={15} aria-hidden="true" />
+                          Hapus
+                        </button>
+                      </div>
+                      {mode === "history" ? (
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[8rem_minmax(0,1fr)]">
+                          <label className="block space-y-1.5">
+                            <span className="text-xs font-medium text-slate-600">
+                              Tahun
+                            </span>
+                            <input
+                              inputMode="numeric"
+                              value={item.tahun || ""}
+                              onChange={(event) =>
+                                updateItem(index, event.target.value, "tahun")
+                              }
+                              className={fieldClass}
+                              placeholder="1950"
+                            />
+                          </label>
+                          <label className="block space-y-1.5">
+                            <span className="text-xs font-medium text-slate-600">
+                              Peristiwa penting
+                            </span>
+                            <textarea
+                              rows={2}
+                              value={item.event || ""}
+                              onChange={(event) =>
+                                updateItem(index, event.target.value, "event")
+                              }
+                              className={`${fieldClass} min-h-20 resize-y`}
+                              placeholder="Jelaskan peristiwa penting"
+                            />
+                          </label>
+                        </div>
+                      ) : (
+                        <label className="block space-y-1.5">
+                          <span className="text-xs font-medium text-slate-600">
+                            Isi misi
+                          </span>
+                          <textarea
+                            rows={2}
+                            value={item || ""}
+                            onChange={(event) =>
+                              updateItem(index, event.target.value)
+                            }
+                            className={`${fieldClass} min-h-20 resize-y`}
+                            placeholder="Tuliskan langkah misi"
+                          />
+                        </label>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
           )}
         </div>
 
-        {/* FOOTER */}
-        <footer className="px-6 py-4 border-t bg-white flex justify-end gap-3 shrink-0">
+        <footer className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-200 bg-white p-4 sm:flex-row sm:justify-end sm:px-6">
           <button
-            className="cursor-pointer w-full sm:w-auto px-6 bg-red-600 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-600 transition-colors
-             disabled:opacity-40"
             type="button"
-            disabled={!isValid()}
-            onClick={resetForm}
+            onClick={handlers.close}
+            className="min-h-11 cursor-pointer rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
             Batal
           </button>
           <button
-            className="flex items-center gap-2 justify-center bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 cursor-pointer text-white px-8 py-2.5 rounded-lg font-bold transition-all active:scale-95  disabled:opacity-40 disabled:cursor-not-allowed"
             type="button"
-            disabled={!isValid()}
-            onClick={() => handlers.confirm({ judul, konten, category, items })}
+            disabled={!isValid}
+            onClick={() => handlers.confirm?.({ judul, konten, category, items })}
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Save size={16} /> Simpan
+            <Save size={16} aria-hidden="true" />
+            Simpan perubahan
           </button>
         </footer>
-      </div>
+      </section>
     </section>,
-    document.body,
+      document.body,
+      )}
+      <DeleteModal
+        isOpen={itemIndexToDelete !== null}
+        onClose={() => setItemIndexToDelete(null)}
+        onConfirm={removeItem}
+        title={`Hapus ${mode === "history" ? "peristiwa" : "misi"}?`}
+        description="Item akan dihapus dari formulir. Simpan perubahan untuk menerapkannya."
+        itemName={`${mode === "history" ? "Peristiwa" : "Misi"} ${(itemIndexToDelete ?? 0) + 1}`}
+        confirmText="Hapus dari formulir"
+      />
+    </>
   );
 }

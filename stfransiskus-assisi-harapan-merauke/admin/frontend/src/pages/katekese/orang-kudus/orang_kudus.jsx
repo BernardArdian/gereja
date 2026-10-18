@@ -2,8 +2,6 @@ import { useState, useMemo } from "react";
 import {
   Search,
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
   Star,
   ShieldCheck,
   ArrowRight,
@@ -13,15 +11,18 @@ import {
 } from "lucide-react";
 
 import Detail from "../../../component/detail";
+import PaginationFooter from "../../../component/PaginationFooter";
+import DeleteModal from "../../../component/alert/deleteModal";
 
 export default function OrangKudus() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const itemsPerPage = 6;
 
-  const [saintsList] = useState([
+  const [saintsList, setSaintsList] = useState([
     {
       id: 1,
       name: "St. Fransiskus Asisi",
@@ -76,6 +77,61 @@ export default function OrangKudus() {
         "Martir gereja perdana yang menunjukkan keberanian iman yang luar biasa.",
       image: "https://picsum.photos/seed/saints6/400/400",
     },
+
+    {
+      id: 7,
+      name: "St. Fransiskus Asisi",
+      feastDay: "04 Okt",
+      patronOf: "Hewan & Lingkungan",
+      summary:
+        "Dikenal karena cintanya pada kemiskinan dan persaudaraan dengan alam semesta.",
+      image: "https://picsum.photos/seed/saints1/400/400",
+    },
+    {
+      id: 8,
+      name: "St. Teresa dari Kalkuta",
+      feastDay: "05 Sep",
+      patronOf: "Orang Miskin",
+      summary:
+        "Pendiri Misionaris Kasih yang melayani orang yang paling miskin di antara yang miskin.",
+      image: "https://picsum.photos/seed/saints2/400/400",
+    },
+    {
+      id: 9,
+      name: "St. Yohanes Paulus II",
+      feastDay: "22 Okt",
+      patronOf: "Keluarga & Kaum Muda",
+      summary:
+        "Paus yang membawa gereja memasuki milenium baru dengan semangat dialog.",
+      image: "https://picsum.photos/seed/saints3/400/400",
+    },
+    {
+      id: 10,
+      name: "St. Antonius Padua",
+      feastDay: "13 Jun",
+      patronOf: "Barang Hilang",
+      summary:
+        "Pujangga Gereja yang dikenal sebagai pengkhotbah ulung dan pembuat mukjizat.",
+      image: "https://picsum.photos/seed/saints4/400/400",
+    },
+    {
+      id: 11,
+      name: "St. Monika",
+      feastDay: "27 Ags",
+      patronOf: "Ibu & Istri",
+      summary:
+        "Teladan kesabaran doa seorang ibu bagi pertobatan anaknya, St. Agustinus.",
+      image: "https://picsum.photos/seed/saints5/400/400",
+    },
+    {
+      id: 12,
+      name: "St. Sebastianus",
+      feastDay: "20 Jan",
+      patronOf: "Olahragawan",
+      summary:
+        "Martir gereja perdana yang menunjukkan keberanian iman yang luar biasa.",
+      image: "https://picsum.photos/seed/saints6/400/400",
+    },
   ]);
 
   const filteredSaints = useMemo(() => {
@@ -84,7 +140,6 @@ export default function OrangKudus() {
     );
   }, [searchQuery, saintsList]);
 
-  const totalPages = Math.ceil(filteredSaints.length / itemsPerPage);
   const paginatedData = filteredSaints.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
@@ -92,21 +147,19 @@ export default function OrangKudus() {
 
   if (selectedItem) {
     return (
-      <div className="absolute inset-0 left-[80px] overflow-y-auto bg-white z-50 min-h-screen">
-        <Detail
-          formData={selectedItem}
-          handlers={{
-            onBack: () => setSelectedItem(null),
-          }}
-        />
-      </div>
+      <Detail
+        formData={selectedItem}
+        handlers={{
+          onBack: () => setSelectedItem(null),
+        }}
+      />
     );
   }
 
   return (
-    <section className="min-h-screen pb-20">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* HERO */}
-      <header className="relative w-full pt-16 pb-24 px-8 overflow-hidden rounded-2xl">
+      <header className="relative w-full overflow-hidden rounded-2xl px-5 py-10 sm:px-8 sm:py-14">
         <div
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -123,18 +176,18 @@ export default function OrangKudus() {
             <div className="flex items-center gap-2 text-indigo-300 font-bold text-[10px] uppercase tracking-widest mb-2">
               <ShieldCheck size={14} /> Arsip Digital
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight">
+            <h1 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-5xl">
               Orang Kudus
             </h1>
           </div>
         </div>
         <div className="absolute top-0 right-0 opacity-20 text-amber-500 transform translate-x-10 -translate-y-5 pointer-events-none z-10">
-          <Users2 size={300} />
+          <Users2 size={180} className="sm:h-75 sm:w-75" />
         </div>
       </header>
 
       {/* SEARCH */}
-      <section className="sticky top-0 z-40 -mt-7 px-6">
+      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-7 sm:px-6">
         <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -159,7 +212,7 @@ export default function OrangKudus() {
       </section>
 
       {/* LIST */}
-      <main className="border border-gray-400 rounded overflow-hidden ml-15 mr-15 mt-10">
+      <main className="mx-auto mt-6 w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:mt-10">
         {paginatedData.length === 0 && (
           <p className="text-center text-gray-400 py-10">
             Tidak ada hasil ditemukan.
@@ -176,9 +229,9 @@ export default function OrangKudus() {
                 content: item.summary,
               })
             }
-            className="group cursor-pointer bg-white border border-gray-100 p-4 hover:shadow-lg hover:border-indigo-100 transition-all duration-300 flex items-center"
+            className="group flex cursor-pointer items-center gap-3 border-b border-slate-100 bg-white p-3 transition hover:bg-slate-50 sm:gap-5 sm:p-5"
           >
-            <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 sm:h-24 sm:w-24">
               <img
                 src={item.image}
                 alt={item.name}
@@ -186,15 +239,15 @@ export default function OrangKudus() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1">
-                <h3 className="text-lg font-bold text-gray-800 truncate">
+              <div className="mb-1 flex flex-wrap items-center gap-2 sm:gap-3">
+                <h3 className="min-w-0 text-sm font-bold text-slate-900 sm:text-lg">
                   {item.name}
                 </h3>
-                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-md">
+                <span className="shrink-0 rounded-md bg-amber-50 px-2 py-0.5 text-[9px] font-bold uppercase text-amber-800">
                   {item.feastDay}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
+              <div className="mb-1 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500 sm:mb-2 sm:text-[10px]">
                 <Star
                   size={10}
                   className="text-amber-400"
@@ -202,17 +255,35 @@ export default function OrangKudus() {
                 />
                 Pelindung {item.patronOf}
               </div>
-              <p className="text-xs text-gray-500 line-clamp-1 leading-relaxed italic">
+              <p className="line-clamp-2 text-[11px] leading-relaxed text-slate-600 sm:text-xs">
                 {item.summary}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="hidden md:flex items-center gap-1.5 px-4 py-2 text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 rounded-lg transition-all">
-                Detail <ArrowRight size={14} />
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+              <button
+                type="button"
+                aria-label={`Lihat detail ${item.name}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setSelectedItem({
+                    ...item,
+                    title: item.name,
+                    content: item.summary,
+                  });
+                }}
+                className="rounded-lg p-2 text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:px-3 sm:py-2"
+              >
+                <span className="hidden text-xs font-semibold sm:inline">
+                  Detail
+                </span>
+                <ArrowRight size={16} className="sm:hidden" />
+                <ArrowRight size={14} className="hidden sm:inline" />
               </button>
-              <section className="flex items-center justify-end gap-3">
+              <section className="flex items-center justify-end gap-1 sm:gap-2">
                 <button
-                  className="cursor-pointer p-3 bg-slate-200 rounded text-yellow-700 hover:bg-amber-600 hover:text-white transition-all active:scale-90"
+                  type="button"
+                  aria-label={`Edit ${item.name}`}
+                  className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:p-2.5"
                   onClick={(i) => {
                     i.stopPropagation();
                   }}
@@ -220,9 +291,12 @@ export default function OrangKudus() {
                 />
 
                 <button
-                  className="cursor-pointer p-3 bg-slate-200 rounded text-rose-400 hover:bg-red-600 hover:text-white transition-all active:scale-90"
+                  type="button"
+                  aria-label={`Hapus ${item.name}`}
+                  className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 sm:p-2.5"
                   onClick={(i) => {
                     i.stopPropagation();
+                    setItemToDelete(item);
                   }}
                   children={<Trash2 size={18} />}
                 />
@@ -230,58 +304,28 @@ export default function OrangKudus() {
             </div>
           </section>
         ))}
-
-        {totalPages > 1 && (
-          <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">
-            <p className="text-xs text-gray-600 font-medium">
-              Menampilkan{" "}
-              <span
-                className="text-gray-700 font-bold"
-                children={paginatedData.length}
-              />{" "}
-              dari{" "}
-              <span
-                className="text-gray-700 font-bold"
-                children={filteredSaints.length}
-              />{" "}
-              orang kudus
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <div
-                className="flex gap-1"
-                children={[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`cursor-pointer w-9 h-9 rounded-xl text-[16px] font-black transition-all ${
-                      currentPage === i + 1
-                        ? "bg-blue-500/30 text-black"
-                        : "bg-white text-gray-400 border border-gray-50"
-                    }`}
-                    children={i + 1}
-                  />
-                ))}
-              />
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="cursor-pointer p-2 rounded-xl border border-blue-500 disabled:opacity-20 hover:bg-blue-400 text-white hover:text-black transition-all"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </footer>
-        )}
       </main>
+      <PaginationFooter
+        currentPage={currentPage}
+        pageSize={itemsPerPage}
+        totalItems={filteredSaints.length}
+        onPageChange={setCurrentPage}
+        itemLabel="orang kudus"
+      />
+      <DeleteModal
+        isOpen={Boolean(itemToDelete)}
+        onClose={() => setItemToDelete(null)}
+        onConfirm={() => {
+          setSaintsList((previous) =>
+            previous.filter((entry) => entry.id !== itemToDelete?.id),
+          );
+          setItemToDelete(null);
+        }}
+        title="Hapus orang kudus?"
+        description="Profil yang dihapus tidak lagi tersedia di daftar orang kudus."
+        itemName={itemToDelete?.name}
+        confirmText="Ya, hapus profil"
+      />
     </section>
   );
 }

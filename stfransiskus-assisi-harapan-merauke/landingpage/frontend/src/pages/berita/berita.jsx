@@ -11,6 +11,7 @@ import {
 
 import DetailBerita from "../../component/detail/detailBerita";
 import { Form } from "react-router-dom";
+import ListBerita from "../../component/berita/lsitBerita";
 
 export default function Berita() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -132,18 +133,18 @@ export default function Berita() {
   return (
     <section className="w-full min-h-screen px-4">
       {/* HEADER */}
-      <header className="py-4 border-b border-amber-500 mb-4">
-        <section className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <form>
+      <header className="py-4 border-b border-amber-500 mb-4 rounded-b-xl mt-1 bg-[#B38728]/60 ">
+        <section className="max-w-5xl mx-auto ml-1 mr-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
             <h2 className="font-serif text-1xl text-gray-900">
               Berita Paroki St.Fransiskus Assisi
             </h2>
             <p className="text-[12px] font-smibold tracking-[0.18em] uppercase text-gray-800 mb-1">
               Arsip Berita Paroki
             </p>
-          </form>
+          </div>
 
-          <form className="relative w-full md:w-72">
+          <section className="relative w-full md:w-72">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
               size={14}
@@ -155,84 +156,43 @@ export default function Berita() {
               onChange={handleSearch}
               className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
             />
-          </form>
+          </section>
         </section>
       </header>
 
       {/* MAIN */}
       <main className="max-w-5xl mx-auto px-8 py-10">
-        <section className="px-15">
-          {paginatedData.length > 0 ? (
-            paginatedData.map((item) => (
-              <form
-                key={item.id}
-                className="flex flex-col md:flex-row gap-6 py-8 border border-gray-100  group cursor-pointer bg-gray-100/50 hover:bg-slate-200/60 rounded mb-1"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedNews(item);
-                }}
-              >
-                {/* IMAGE */}
-                <section className="md:w-48 h-32 md:h-auto flex-shrink-0 overflow-hidden rounded">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </section>
-
-                {/* CONTENT */}
-                <section className="flex-1 flex flex-col justify-between">
-                  <form>
-                    <div className="flex items-center gap-4 text-[0.7em] font-sm text-gray-800 uppercase tracking-widest mb-3">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={11} /> {item.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <User size={11} /> {item.author}
-                      </span>
-                    </div>
-                    <h3 className="font-serif text-xl text-gray-900 leading-snug transition-colors">
-                      {item.title}
-                    </h3>
-                  </form>
-                  <form className="mt-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedNews(item);
-                      }}
-                      className="text-[10px] text-gray-800 uppercase tracking-widest flex items-center gap-1 hover:text-gray-700 transition-colors"
-                    >
-                      Baca selengkapnya <ExternalLink size={11} />
-                    </button>
-                  </form>
-                </section>
-              </form>
-            ))
-          ) : (
-            <div className="text-center py-24 text-gray-300">
-              <Newspaper size={36} className="mx-auto mb-4" />
-              <p className="text-xs uppercase tracking-widest">
-                Berita tidak ditemukan
-              </p>
-            </div>
-          )}
-        </section>
+        <section
+          className="px-15 pb-15"
+          children={
+            paginatedData.length > 0 ? (
+              <ListBerita
+                data={newsList.slice(0, 3)}
+                handler={{ showDetail: (item) => setSelectedNews(item) }}
+              />
+            ) : (
+              <div className="text-center py-24 text-gray-300">
+                <Newspaper size={36} className="mx-auto mb-4" />
+                <p className="text-xs uppercase tracking-widest">
+                  Berita tidak ditemukan
+                </p>
+              </div>
+            )
+          }
+        />
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+          <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
             <p className="text-xs text-gray-100">
-              Menampilkan{" "}
-              <span className="text-gray-700 font-serif font-medium">
-                {paginatedData.length}
-              </span>{" "}
-              dari{" "}
-              <span className="text-gray-700 font-serif font-medium">
-                {filteredData.length}
-              </span>{" "}
-              berita
+              <span
+                className="text-gray-700 font-serif font-medium"
+                children={`Menanpilkan ${paginatedData.length} dari`}
+              />
+              <span
+                className="text-gray-700 font-serif font-medium"
+                children={` ${filteredData.length} berita`}
+              />
             </p>
             <div className="flex items-center gap-1">
               <button
@@ -242,17 +202,17 @@ export default function Berita() {
               >
                 <ChevronLeft size={14} />
               </button>
-              <div className="flex gap-1">
-                {[...Array(totalPages)].map((_, i) => (
+              <div
+                className="flex gap-1"
+                children={[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
-                  >
-                    {i + 1}
-                  </button>
+                    className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                    children={i + 1}
+                  />
                 ))}
-              </div>
+              />
               <button
                 onClick={() =>
                   setCurrentPage((p) => Math.min(totalPages, p + 1))

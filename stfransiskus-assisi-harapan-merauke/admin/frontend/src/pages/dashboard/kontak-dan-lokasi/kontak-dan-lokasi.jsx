@@ -1,112 +1,203 @@
-import { useState } from "react";
-import { Phone, MapPin, Globe, Map as MapIcon, Save } from "lucide-react";
+import { createElement, useState } from "react";
+import { Globe, Map as MapIcon, MapPin, Phone, Save } from "lucide-react";
+
+const fieldClass =
+  "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
+
+function ContactField({ id, label, icon, ...inputProps }) {
+  return (
+    <label htmlFor={id} className="block space-y-2">
+      <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+        {createElement(icon, {
+          size: 16,
+          className: "text-amber-800",
+          "aria-hidden": true,
+        })}
+        {label}
+      </span>
+      <input id={id} className={fieldClass} {...inputProps} />
+    </label>
+  );
+}
+
+function isGoogleMapsEmbedUrl(value) {
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === "https:" &&
+      (url.hostname === "google.com" ||
+        url.hostname.endsWith(".google.com") ||
+        url.hostname === "maps.google.com")
+    );
+  } catch {
+    return false;
+  }
+}
 
 export default function KontakDanLokasi() {
-  const [mapUrl, setMapUrl] = useState("");
+  const [contact, setContact] = useState({
+    phone: "",
+    address: "",
+    mapUrl: "",
+  });
+  const [savedContact, setSavedContact] = useState(contact);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  const isMapUrlValid = !contact.mapUrl || isGoogleMapsEmbedUrl(contact.mapUrl);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!isMapUrlValid) {
+      setStatusMessage("Gunakan URL sematan Google Maps yang valid.");
+      return;
+    }
+    setSavedContact(contact);
+    setStatusMessage("Perubahan kontak dan lokasi tersimpan pada sesi ini.");
+  };
+
+  const handleReset = () => {
+    setContact(savedContact);
+    setStatusMessage("");
+  };
 
   return (
-    <section className="w-full bg-gray-300 p-6 rounded-xl">
-      <main className="max-w-4xl mx-auto space-y-8">
-        {/* GRID UNTUK INPUT KONTAK & ALAMAT */}
-        <section className="grid gap-6 grid-cols-1 md:grid-cols-2">
-          <form className="space-y-2">
-            <label
-              htmlFor="kontak"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-700"
-            >
-              <Phone size={16} className="text-indigo-600" />
-              Nomor Telepon / WhatsApp
-            </label>
-            <input
-              name="kontak"
-              className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
-              type="number"
-              id="kontak"
-              placeholder="Contoh: 08123456789"
-            />
-          </form>
+    <section className="mx-auto w-full max-w-5xl space-y-5">
+      <header>
+        <p className="text-sm font-semibold text-amber-800">Informasi paroki</p>
+        <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          Alamat, kontak & lokasi
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Perbarui cara umat menghubungi dan menemukan gereja.
+        </p>
+      </header>
 
-          <form className="space-y-2">
-            <label
-              htmlFor="alamat"
-              className="flex items-center gap-2 text-sm font-semibold text-gray-700"
-            >
-              <MapPin size={16} className="text-indigo-600" />
-              Alamat Lengkap
-            </label>
-            <input
-              name="alamat"
-              className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
-              type="text"
-              id="alamat"
-              placeholder="Jl. Nama Jalan No. XX"
-            />
-          </form>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
+      >
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <ContactField
+            id="kontak"
+            label="Nomor telepon / WhatsApp"
+            icon={Phone}
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="Contoh: +62 812 3456 789"
+            value={contact.phone}
+            onChange={(event) => {
+              setContact((previous) => ({
+                ...previous,
+                phone: event.target.value,
+              }));
+              setStatusMessage("");
+            }}
+          />
+          <ContactField
+            id="alamat"
+            label="Alamat lengkap"
+            icon={MapPin}
+            name="address"
+            autoComplete="street-address"
+            placeholder="Nama jalan, kelurahan, kota"
+            value={contact.address}
+            onChange={(event) => {
+              setContact((previous) => ({
+                ...previous,
+                address: event.target.value,
+              }));
+              setStatusMessage("");
+            }}
+          />
         </section>
 
-        {/* INTEGRASI GOOGLE MAPS */}
         <section className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-            <Globe size={16} className="text-indigo-600" />
-            URL Embed Google Maps
+          <label htmlFor="map" className="block space-y-2">
+            <span className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <Globe size={16} className="text-amber-800" aria-hidden="true" />
+              URL sematan Google Maps
+            </span>
+            <input
+              name="mapUrl"
+              id="map"
+              type="url"
+              className={fieldClass}
+              placeholder="https://www.google.com/maps/embed?..."
+              value={contact.mapUrl}
+              aria-invalid={!isMapUrlValid}
+              aria-describedby="map-help map-error"
+              onChange={(event) => {
+                setContact((previous) => ({
+                  ...previous,
+                  mapUrl: event.target.value,
+                }));
+                setStatusMessage("");
+              }}
+            />
           </label>
-          <input
-            name="map"
-            id="map"
-            className="w-full bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2.5 outline-none transition-all"
-            type="text"
-            placeholder="Tempelkan link src dari embed Google Maps..."
-            value={mapUrl}
-            onChange={(e) => setMapUrl(e.target.value)}
-          />
+          <p id="map-help" className="text-xs leading-5 text-slate-500">
+            Dari Google Maps, pilih <strong>Bagikan → Sematkan peta</strong>,
+            lalu salin URL yang ada pada atribut src.
+          </p>
+          {!isMapUrlValid && (
+            <p id="map-error" role="alert" className="text-sm text-rose-700">
+              URL harus berasal dari domain Google Maps yang aman (HTTPS).
+            </p>
+          )}
 
-          <form className="w-full h-[400px] rounded-xl overflow-hidden border border-dashed border-gray-300 bg-gray-50 relative flex items-center justify-center">
-            {mapUrl ? (
+          <div className="flex min-h-56 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 sm:min-h-80">
+            {contact.mapUrl && isMapUrlValid ? (
               <iframe
-                title="Google Maps"
-                src={mapUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
+                title="Pratinjau lokasi Google Maps"
+                src={contact.mapUrl}
+                className="h-56 w-full border-0 sm:h-80"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="animate-in fade-in duration-500"
-              ></iframe>
+                allowFullScreen
+              />
             ) : (
-              <section className="text-center space-y-2 p-6">
-                <form className="bg-white p-4 rounded-full shadow-sm inline-block mb-2">
-                  <MapIcon size={32} className="text-gray-400" />
-                </form>
-                <p className="text-gray-500 font-medium">
-                  Pratinjau Peta Belum Tersedia
+              <div className="space-y-2 p-6 text-center">
+                <MapIcon
+                  size={30}
+                  className="mx-auto text-slate-400"
+                  aria-hidden="true"
+                />
+                <p className="text-sm font-semibold text-slate-700">
+                  Pratinjau peta belum tersedia
                 </p>
-                <p className="text-sm text-gray-400 max-w-[250px]">
-                  Silakan masukkan URL embed Google Maps pada kolom di atas.
+                <p className="mx-auto max-w-sm text-xs leading-5 text-slate-500">
+                  Masukkan URL sematan Google Maps untuk melihat pratinjau di
+                  sini.
                 </p>
-              </section>
+              </div>
             )}
-          </form>
+          </div>
+        </section>
 
-          <p className="text-xs text-gray-500 italic">
-            *Tips: Buka Google Maps {">"} Bagikan {">"} Sematkan peta {">"}{" "}
-            Salin link yang ada di dalam <strong>src="..."</strong>
+        <footer className="flex flex-col-reverse gap-2 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p role="status" className="text-sm text-emerald-800">
+            {statusMessage}
           </p>
-        </section>
-
-        {/* Tombol Simpan */}
-        <section className="pt-4 border-t border-gray-100 flex justify-end">
-          <button
-            className="flex items-center gap-2 justify-center bg-blue-500 hover:bg-blue-500/20 hover:text-blue-500 cursor-pointer text-white px-8 py-2.5 rounded-lg font-bold transition-all active:scale-95"
-            onClick={(i) => {
-              i.stopPropagation();
-            }}
-          >
-            <Save size={20} />
-            Simpan
-          </button>
-        </section>
-      </main>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="min-h-11 cursor-pointer rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+            >
+              Batalkan perubahan
+            </button>
+            <button
+              type="submit"
+              className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
+            >
+              <Save size={17} aria-hidden="true" />
+              Simpan
+            </button>
+          </div>
+        </footer>
+      </form>
     </section>
   );
 }

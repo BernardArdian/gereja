@@ -9,13 +9,15 @@ Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pu
   return (
     <section className="w-full min-h-screen px-4">
       {/* HEADER */}
-      <header className="py-4 border-b border-amber-500 mb-4">
-        <h2 className="font-serif text-1xl text-gray-900">
-          Pedoman Pastoral Paroki St.Fransiskus Assisi
-        </h2>
-        <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
-          Arsip Dokumen Pedoman Pastoral
-        </p>
+      <header className="py-4 border-b border-amber-500 rounded-b-xl mt-1 bg-[#B38728]/60 mb-4">
+        <div className="ml-1">
+          <h2 className="font-serif text-1xl text-gray-900">
+            Pedoman Pastoral Paroki St.Fransiskus Assisi
+          </h2>
+          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
+            Arsip Dokumen Pedoman Pastoral
+          </p>
+        </div>
       </header>
       <main className="max-w-5xl mx-auto px-8 py-10">
         <section className="px-15">

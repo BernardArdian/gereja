@@ -1,49 +1,92 @@
-function ValidateDataMember(data) {
-  const requiredFields = [
-    "nama",
-    "stasi",
-    "birth_place",
-    "birth_date",
-    "riwayat",
-    "gender",
-    "status"
-  ];
-  for (const field of requiredFields) {
-     const value = data[field];
+const allowedMaritalStatuses = new Set([
+  "belum menikah",
+  "sudah menikah",
+  "duda",
+  "janda",
+]);
 
-    if (field === "birth_date") {
-      if (!value || isNaN(new Date(value))) {
-        throw Object.assign(new Error(`Field ${field} harus berupa tanggal yang valid.`), {
-          statusCode: 400,
-        });
-      }
-    } else {
-      if (typeof value !== "string" || !value.trim()) {
-        throw Object.assign(new Error(`Field ${field} harus diisi.`), {
-          statusCode: 400,
-        });
-      }
-    }
+function fail(message) {
+  throw Object.assign(new Error(message), { statusCode: 400 });
+}
+
+function validatePerson(person, label) {
+  if (
+    !person ||
+    typeof person !== "object" ||
+    typeof person.nama !== "string" ||
+    !person.nama.trim()
+  ) {
+    fail(`Nama ${label} harus diisi.`);
   }
 
-  // Optional fields: validasi hanya jika ada isinya
-  const optionalStringFields = ["baptise_place", "status", "partner_name"];
-  for (const field of optionalStringFields) {
-    if (data[field] && (typeof data[field] !== "string" || !data[field].trim())) {
-      throw Object.assign(new Error(`Field ${field} harus berupa string tidak kosong jika diisi.`), {
-        statusCode: 400,
-      });
-    }
-  }
-
-  const optionalDateFields = ["baptise_date", "married_date"];
-  for (const field of optionalDateFields) {
-    if (data[field] && isNaN(new Date(data[field]))) {
-      throw Object.assign(new Error(`Field ${field} harus berupa tanggal valid jika diisi.`), {
-        statusCode: 400,
-      });
+  for (const key of ["baptis", "komuni", "krisma"]) {
+    const sacraments = person[key] ?? [];
+    if (
+      !Array.isArray(sacraments) ||
+      sacraments.some(
+        (item) =>
+          !item ||
+          item.status !== "sudah" ||
+          typeof item.tempat !== "string" ||
+          typeof item.tanggal !== "string" ||
+          typeof item.stasi !== "string",
+      )
+    ) {
+      fail(`Data sakramen ${label} tidak valid.`);
     }
   }
 }
 
-module.exports = ValidateDataMember
+function ValidateDataMember(data) {
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    fail("Data umat tidak valid.");
+  }
+
+  if (!allowedMaritalStatuses.has(data.statusNikah)) {
+    fail("Status pernikahan tidak valid.");
+  }
+
+  const stasiKeluarga =
+    typeof data.stasiKeluarga === "string"
+      ? data.stasiKeluarga
+      : data.stasiKeluarga?.nama_stasi || data.stasiKeluarga?.nama || "";
+  if (typeof stasiKeluarga !== "string" || !stasiKeluarga.trim()) {
+    fail("Stasi keluarga harus diisi.");
+  }
+
+  if (data.statusNikah === "belum menikah") {
+    validatePerson(data.single, "umat");
+    if (data.keluarga) {
+      fail("Data individu tidak boleh berisi data keluarga.");
+    }
+    return;
+  }
+
+  if (data.noKk && typeof data.noKk !== "string") {
+    fail("Nomor kartu keluarga tidak valid.");
+  }
+  if (!data.noKk?.trim()) {
+    fail("Nomor kartu keluarga harus diisi untuk data keluarga.");
+  }
+
+  const family = data.keluarga;
+  if (!family || typeof family !== "object") {
+    fail("Data suami dan istri harus diisi.");
+  }
+  validatePerson(
+    { nama: family.namaSuami, ...(family.statusSakramentSuami || {}) },
+    "suami",
+  );
+  validatePerson(
+    { nama: family.namaIstri, ...(family.statusSakramentIstri || {}) },
+    "istri",
+  );
+
+  const children = family.anak ?? [];
+  if (!Array.isArray(children)) {
+    fail("Data anak tidak valid.");
+  }
+  children.forEach((child, index) => validatePerson(child, `anak ke-${index + 1}`));
+}
+
+module.exports = ValidateDataMember;

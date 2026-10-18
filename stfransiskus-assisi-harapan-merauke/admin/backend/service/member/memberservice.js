@@ -1,114 +1,143 @@
+const mongoose = require("mongoose");
 const validatedatamember = require("../../helper/validatedatamember");
-
 const Umat = require("../../model/member/umat");
 
-class memberservice {
+function normalizeMemberData(data) {
+  const normalized = { ...data };
+
+  if (normalized.statusNikah === "menikah") {
+    normalized.statusNikah = "sudah menikah";
+  }
+  if (!normalized.single && normalized.personal) {
+    normalized.single = normalized.personal;
+  }
+  if (!normalized.single && normalized.individu) {
+    normalized.single = normalized.individu;
+  }
+  delete normalized.personal;
+  delete normalized.individu;
+
+  if (
+    normalized.stasiKeluarga &&
+    typeof normalized.stasiKeluarga === "object"
+  ) {
+    normalized.stasiKeluarga =
+      normalized.stasiKeluarga.nama_stasi ||
+      normalized.stasiKeluarga.nama ||
+      normalized.stasiKeluarga.stasi ||
+      "";
+  }
+
+  delete normalized._id;
+  delete normalized.id;
+  delete normalized.__v;
+  return normalized;
+}
+
+function throwDatabaseError(error, action) {
+  if (error.code === 11000) {
+    throw Object.assign(
+      new Error("Nomor kartu keluarga tersebut sudah terdaftar."),
+      { statusCode: 409 },
+    );
+  }
+  if (error.name === "ValidationError" || error.name === "CastError") {
+    throw Object.assign(new Error(error.message), { statusCode: 400 });
+  }
+  throw Object.assign(new Error(`${action}: ${error.message}`), {
+    statusCode: 500,
+  });
+}
+
+class MemberService {
   static async createMember(data) {
+    const memberData = normalizeMemberData(data);
+    validatedatamember(memberData);
+
     try {
-      validatedatamember(data);
-
-      const sanitizedId = data.id?.trim() || `MEM-${Date.now()}`;
-      const nama = data.nama.trim();
-      const existingMember = await Umat.findOne({ nama });
-
-      if (existingMember) {
-        throw Object.assign(new Error("data sudah ada"), { statusCode: 409 });
-      }
-
-      const cleanedData = Object.fromEntries(
-        Object.entries(data).filter(
-          ([_, value]) => value != null && value !== "",
-        ),
-      );
-
-      return new Umat({
-        ...cleanedData,
-        id: sanitizedId,
-        nama,
-      }).save();
+      return await new Umat(memberData).save();
     } catch (error) {
-      if (error.code === 11000) {
-        throw Object.assign(new Error("Data sudah ada (duplikat)."), {
-          statusCode: 409,
-        });
-      }
-      throw Object.assign(new Error(`Terjadi kesalahan : ${error.message}`), {
-        statusCode: 500,
-      });
+      throwDatabaseError(error, "Gagal menyimpan data umat");
     }
   }
 
   static async getAllMember() {
     try {
-      const semuaUmat = await Umat.find({});
-      return semuaUmat;
+      return await Umat.find({}).sort({ createdAt: -1 }).lean();
     } catch (error) {
-      throw Object.assign(new Error("Gagal mengambil data member"), {
-        statusCode: 500,
-      });
+      throwDatabaseError(error, "Gagal mengambil data umat");
     }
   }
 
   static async getAllMemberById(id) {
-    const umatById = this.umat.findIndex((e) => e.id === parseInt(id));
-
-    if (!umatById) {
-      throw new Error("data umat yang di cari tidak di temukan");
-    }
-
-    return umatById;
-  }
-
-  static async updateMember(id, updateData) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw Object.assign(new Error("ID member tidak valid"), {
+      throw Object.assign(new Error("ID umat tidak valid."), {
         statusCode: 400,
       });
     }
 
-    const cleanedData = Object.fromEntries(
-      Object.entries(updateData).filter(([_, val]) => val !== ""),
-    );
-
     try {
-      const updatedMember = await Umat.findByIdAndUpdate(id, cleanedData, {
-        new: true,
-        runValidators: true,
-      });
-
-      if (!updatedMember) {
-        throw Object.assign(new Error("Member tidak ditemukan"), {
+      const member = await Umat.findById(id).lean();
+      if (!member) {
+        throw Object.assign(new Error("Data umat tidak ditemukan."), {
           statusCode: 404,
         });
       }
+      return member;
+    } catch (error) {
+      if (error.statusCode) throw error;
+      throwDatabaseError(error, "Gagal mengambil data umat");
+    }
+  }
 
+  static async updateMember(id, updateData) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw Object.assign(new Error("ID umat tidak valid."), {
+        statusCode: 400,
+      });
+    }
+
+    const memberData = normalizeMemberData(updateData);
+    validatedatamember(memberData);
+
+    try {
+      const updatedMember = await Umat.findByIdAndUpdate(
+        id,
+        { $set: memberData },
+        { new: true, runValidators: true, context: "query" },
+      );
+      if (!updatedMember) {
+        throw Object.assign(new Error("Data umat tidak ditemukan."), {
+          statusCode: 404,
+        });
+      }
       return updatedMember;
     } catch (error) {
-      throw Object.assign(
-        new Error("Gagal memperbarui data member: " + error.message),
-        {
-          statusCode: error.statusCode || 500,
-        },
-      );
+      if (error.statusCode) throw error;
+      throwDatabaseError(error, "Gagal memperbarui data umat");
     }
   }
 
   static async deleteMember(id) {
-    try {
-      const umat = await Umat.findByIdAndDelete(id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw Object.assign(new Error("ID umat tidak valid."), {
+        statusCode: 400,
+      });
+    }
 
-      if (!umat) {
-        throw Object.assign(new Error("umat tidak ditemukan"), {
+    try {
+      const member = await Umat.findByIdAndDelete(id);
+      if (!member) {
+        throw Object.assign(new Error("Data umat tidak ditemukan."), {
           statusCode: 404,
         });
       }
-      return umat;
+      return member;
     } catch (error) {
-      throw Object.assign(new Error("Gagal menghapus data member"), {
-        statusCode: 500,
-      });
+      if (error.statusCode) throw error;
+      throwDatabaseError(error, "Gagal menghapus data umat");
     }
   }
 }
 
-module.exports = memberservice;
+module.exports = MemberService;

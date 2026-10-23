@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   CalendarDays,
-  ChevronLeft,
-  ChevronRight,
   Filter,
   Images,
   MapPin,
@@ -10,7 +8,8 @@ import {
   Search,
   X,
 } from "lucide-react";
-import CustomDropdown from "../../component/option/dropdown";
+import CustomDropdown from "../../component/common/CustomDropdown";
+import Pagination from "../../component/common/Pagination";
 
 const galleryItems = [
   {
@@ -138,6 +137,7 @@ export default function GalleryGereja() {
               />
               <CustomDropdown
                 value={stasiFilter}
+                ariaLabel="Filter berdasarkan stasi"
                 onChange={(value) => {
                   setStasiFilter(value);
                   setCurrentPage(1);
@@ -214,50 +214,14 @@ export default function GalleryGereja() {
         )}
 
         {totalPages > 1 && (
-          <footer className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-slate-600">
-              Menampilkan {paginatedData.length} dari {filteredData.length} foto
-            </p>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setCurrentPage((current) => Math.max(1, current - 1))}
-                disabled={page === 1}
-                aria-label="Halaman sebelumnya"
-                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft size={15} />
-              </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-                (pageNumber) => (
-                  <button
-                    key={pageNumber}
-                    type="button"
-                    onClick={() => setCurrentPage(pageNumber)}
-                    aria-current={page === pageNumber ? "page" : undefined}
-                    className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${
-                      page === pageNumber
-                        ? "bg-amber-700 text-white"
-                        : "border border-slate-200 text-slate-700 hover:bg-slate-50"
-                    }`}
-                  >
-                    {pageNumber}
-                  </button>
-                ),
-              )}
-              <button
-                type="button"
-                onClick={() =>
-                  setCurrentPage((current) => Math.min(totalPages, current + 1))
-                }
-                disabled={page === totalPages}
-                aria-label="Halaman berikutnya"
-                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronRight size={15} />
-              </button>
-            </div>
-          </footer>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemCount={paginatedData.length}
+            totalCount={filteredData.length}
+            itemLabel="foto"
+          />
         )}
       </main>
 

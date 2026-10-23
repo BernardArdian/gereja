@@ -2,12 +2,11 @@ import { useState, useMemo } from "react";
 import {
   Search,
   Newspaper,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
 import DetailBerita from "../../component/detail/detailBerita";
 import ListBerita from "../../component/berita/lsitBerita";
+import Pagination from "../../component/common/Pagination";
 
 export default function Berita() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -171,43 +170,14 @@ export default function Berita() {
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <footer className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-slate-600">
-              Menampilkan {paginatedData.length} dari {filteredData.length} berita
-            </p>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                aria-label="Halaman sebelumnya"
-                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              <div
-                className="flex gap-1"
-                children={[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    aria-current={currentPage === i + 1 ? "page" : undefined}
-                    className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
-                    children={i + 1}
-                  />
-                ))}
-              />
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
-                aria-label="Halaman berikutnya"
-                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </footer>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemCount={paginatedData.length}
+            totalCount={filteredData.length}
+            itemLabel="berita"
+          />
         )}
       </main>
     </section>

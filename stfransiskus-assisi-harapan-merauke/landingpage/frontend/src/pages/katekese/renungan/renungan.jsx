@@ -1,16 +1,16 @@
 import { useState, useMemo } from "react";
 import {
   Search,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
   BookOpen,
 } from "lucide-react";
+import Pagination from "../../../component/common/Pagination";
+import DetailBerita from "../../../component/detail/detailBerita";
 
 export default function Renungan() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const itemsPerPage = 5;
 
   const [renunganList] = useState([
@@ -90,6 +90,16 @@ export default function Renungan() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
+  if (selectedItem) {
+    return (
+      <DetailBerita
+        item={selectedItem}
+        type="renungan"
+        onBack={() => setSelectedItem(null)}
+      />
+    );
+  }
 
   return (
     <section className="w-full min-w-0 pb-8 sm:pb-12">
@@ -201,57 +211,16 @@ export default function Renungan() {
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="mt-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-600">
-            Menampilkan {paginatedData.length} dari {filteredData.length} renungan
-          </p>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              aria-label="Halaman sebelumnya"
-              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <div
-              className="flex gap-1"
-              children={[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  aria-current={currentPage === i + 1 ? "page" : undefined}
-                  className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
-                  children={i + 1}
-                />
-              ))}
-            />
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              aria-label="Halaman berikutnya"
-              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <ChevronRight size={14} />
-            </button>
-          </div>
-        </footer>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          itemCount={paginatedData.length}
+          totalCount={filteredData.length}
+          itemLabel="renungan"
+          className="mt-4"
+        />
       )}
     </section>
   );
 }
-
-//   if (selectedItem) {
-//     return (
-//       <div className="fixed top-0 bottom-0 right-0 left-[80px] overflow-y-auto">
-//         <Detail
-//           title={selectedItem.title}
-//           content={selectedItem.excerpt}
-//           image={selectedItem.image}
-//           date={selectedItem.date}
-//           author={selectedItem.author}
-//           onBack={() => setSelectedItem(null)}
-//         />
-//       </div>
-//     );
-//   }

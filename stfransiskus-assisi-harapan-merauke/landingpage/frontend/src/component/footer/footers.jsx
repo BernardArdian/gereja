@@ -13,7 +13,9 @@ export default function Footers({ theme, onToggleTheme }) {
   return (
     <footer
       className={`w-full border-t border-amber-600 transition-colors ${
-        isDark ? "bg-slate-950 text-slate-100" : "bg-gray-700/70 text-white"
+        isDark
+          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
+          : "bg-gradient-to-br from-slate-800 via-slate-800 to-slate-950 text-white"
       }`}
     >
       <section className="mx-auto max-w-7xl px-6 py-5">
@@ -93,8 +95,8 @@ export default function Footers({ theme, onToggleTheme }) {
             <div
               className={`flex h-44 w-full flex-col items-center justify-center gap-2 overflow-hidden rounded border ${
                 isDark
-                  ? "border-slate-700 bg-slate-900 text-slate-400"
-                  : "border-gray-100 bg-gray-50 text-gray-500"
+                  ? "border-white/10 bg-white/5 text-slate-400"
+                  : "border-white/15 bg-white/5 text-slate-300"
               }`}
             >
               <MapIcon size={18} aria-hidden="true" />
@@ -106,7 +108,8 @@ export default function Footers({ theme, onToggleTheme }) {
         </section>
 
         <div className="mt-5 h-px bg-amber-500" />
-        <section className="relative flex min-h-14 items-center justify-center px-2 pt-3">
+        <section className="grid min-h-14 grid-cols-3 items-center pt-3">
+          <span aria-hidden="true" />
           <p className="text-center font-serif text-[11px] leading-5 tracking-wide text-slate-300 sm:text-xs">
             © {new Date().getFullYear()} Paroki St. Fransiskus Assisi Harapan
             Makmur — All Rights Reserved
@@ -116,7 +119,7 @@ export default function Footers({ theme, onToggleTheme }) {
             onClick={onToggleTheme}
             aria-label={`Aktifkan tema ${isDark ? "terang" : "gelap"}`}
             aria-pressed={isDark}
-            className="absolute right-2 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/20 bg-white/5 p-2.5 text-xs font-semibold text-slate-100 transition hover:border-amber-300/60 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 sm:right-10"
+            className="inline-flex justify-self-end cursor-pointer items-center gap-2 rounded-xl border border-white/20 bg-white/5 p-2.5 text-xs font-semibold text-slate-100 transition hover:border-amber-300/60 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
           >
             {isDark ? (
               <Sun size={16} aria-hidden="true" />

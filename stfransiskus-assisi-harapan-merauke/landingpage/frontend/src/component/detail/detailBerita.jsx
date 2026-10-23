@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, User, Share2, X } from "lucide-react";
+import { ArrowLeft, Calendar, Share2, User } from "lucide-react";
 import ListBerita from "../../component/berita/lsitBerita";
 
 const newsList = [
@@ -35,141 +35,219 @@ const newsList = [
   },
 ];
 
+function getDetail(item, type) {
+  if (type === "orang-kudus") {
+    return {
+      title: item.name,
+      content: item.content || item.summary,
+      image: item.image,
+      date: item.postDay,
+      dateLabel: "Hari peringatan",
+      author: "Orang Kudus",
+      metadata: item.patronOf ? [{ label: "Pelindung", value: item.patronOf }] : [],
+      tags: ["Orang Kudus"],
+    };
+  }
+
+  if (type === "renungan") {
+    return {
+      title: item.title,
+      content: item.content || item.excerpt,
+      image: item.image,
+      date: item.date,
+      author: item.author,
+      metadata: [
+        item.verse && { label: "Bacaan Kitab Suci", value: item.verse },
+        item.category && { label: "Kategori", value: item.category },
+      ].filter(Boolean),
+      tags: ["Renungan"],
+    };
+  }
+
+  if (type === "devosi") {
+    return {
+      title: item.title,
+      content: item.content || item.description,
+      image: item.image,
+      author: "Panduan Devosi",
+      metadata: [
+        item.category && { label: "Jenis devosi", value: item.category },
+        item.schedule && { label: "Jadwal", value: item.schedule },
+        item.location && { label: "Lokasi", value: item.location },
+        item.members && { label: "Peserta", value: item.members },
+      ].filter(Boolean),
+      tags: ["Devosi"],
+    };
+  }
+
+  if (type === "tradisi") {
+    return {
+      title: item.title,
+      content: item.content || item.description,
+      image: item.image,
+      author: "Tradisi Gereja",
+      metadata: [
+        item.category && { label: "Kategori", value: item.category },
+        item.period && { label: "Waktu", value: item.period },
+        item.location && { label: "Lokasi", value: item.location },
+      ].filter(Boolean),
+      tags: ["Tradisi Gereja"],
+    };
+  }
+
+  return {
+    title: item.title,
+    content: item.content || item.excerpt,
+    image: item.image,
+    date: item.date,
+    author: item.author,
+    metadata: [],
+    tags: item.tags || ["Berita"],
+  };
+}
+
 export default function DetailBerita({
+  item,
+  type = "berita",
   title = "Judul Konten Detail",
   date = "02 Feb 2026",
   author = "Admin Paroki",
-  image = "https://picsum.photos/seed/detail/1200/600",
+  image,
   content = "Isi konten utama akan tampil di sini...",
   tags = ["Berita"],
   onBack = () => window.history.back(),
 }) {
-  // State untuk navigasi ke berita lain dari footer
-  const [currentTitle, setCurrentTitle] = useState(title);
-  const [currentDate, setCurrentDate] = useState(date);
-  const [currentAuthor, setCurrentAuthor] = useState(author);
-  const [currentImage, setCurrentImage] = useState(image);
-  const [currentContent, setCurrentContent] = useState(content);
+  const initialItem = item || { title, date, author, image, content, tags };
+  const [activeItem, setActiveItem] = useState(initialItem);
+  const detail = getDetail(activeItem, type);
+  const otherNews =
+    type === "berita"
+      ? newsList.filter((news) => news.title !== detail.title).slice(0, 3)
+      : [];
 
-  const handleShowOtherNews = (item) => {
-    setCurrentTitle(item.title);
-    setCurrentDate(item.date);
-    setCurrentAuthor(item.author);
-    setCurrentImage(item.image);
-    setCurrentContent(item.content || item.excerpt);
+  const handleShowOtherNews = (news) => {
+    setActiveItem(news);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Filter berita lain (exclude yang sedang ditampilkan)
-  const otherNews = newsList
-    .filter((item) => item.title !== currentTitle)
-    .slice(0, 3);
-
   return (
-    <section className="min-h-screen w-full bg-[#f5f5f5] -mt-17.5 relative z-50">
-      {/* ACTION BAR */}
-      <nav className="top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+    <section className="detail-content fixed inset-0 z-[100] h-dvh w-full overflow-y-auto overscroll-contain bg-slate-50">
+      <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-4xl items-center justify-between">
           <button
+            type="button"
             onClick={onBack}
-            className="cursor-pointer group flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-red-600 transition-colors"
+            className="group inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
-            <div className="p-2 rounded-xl group-hover:bg-red-100 transition-colors">
-              <X size={20} />
-            </div>
-            Tutup Portal
+            <ArrowLeft size={18} aria-hidden="true" />
+            Kembali
           </button>
-
-          <button className="cursor-pointer group flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">
-            <div className="p-2 rounded-xl group-hover:bg-blue-100 transition-colors">
-              <Share2 size={20} />
-            </div>
-            Share
+          <button
+            type="button"
+            className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+          >
+            <Share2 size={17} aria-hidden="true" />
+            Bagikan
           </button>
         </div>
       </nav>
 
-      {/* ARTICLE HEADER */}
-      <header className="max-w-4xl mx-auto px-6 pt-12 pb-8">
-        <h1
-          className="text-3xl md:text-5xl font-black font-serif text-gray-900 leading-tight mb-8 tracking-tight"
-          children={currentTitle}
-        />
+      <header className="mx-auto max-w-4xl px-5 pb-7 pt-9 sm:px-6 sm:pt-12">
+        <div className="mb-4 flex flex-wrap gap-2">
+          {detail.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+        <h1 className="mb-7 font-serif text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+          {detail.title}
+        </h1>
 
-        <div className="flex flex-wrap items-center gap-6 py-6 border-y border-gray-100 text-gray-400">
-          <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-              <User size={20} />
+        <div className="flex flex-wrap items-center gap-x-7 gap-y-4 border-y border-slate-200 py-5 text-slate-600">
+          {detail.author && (
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <User size={19} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  {type === "berita" || type === "renungan" ? "Penulis" : "Kategori"}
+                </p>
+                <p className="text-sm font-semibold text-slate-800">
+                  {detail.author}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[0.5em] font-black uppercase tracking-tighter text-gray-800 leading-none mb-1">
-                Penulis
-              </p>
-              <p
-                className="text-[0.9em] font-bold text-gray-800"
-                children={currentAuthor}
-              />
+          )}
+          {detail.date && (
+            <div className="flex items-center gap-3">
+              <span className="rounded-lg bg-slate-100 p-2.5 text-slate-500">
+                <Calendar size={17} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                  {detail.dateLabel || "Tanggal"}
+                </p>
+                <p className="text-sm font-semibold text-slate-800">
+                  {detail.date}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gray-50 rounded-lg">
-              <Calendar size={18} />
-            </div>
-            <div>
-              <p className="text-[0.5em] font-black uppercase tracking-tighter text-gray-800 leading-none mb-1">
-                Tanggal
-              </p>
-              <p
-                className="text-[0.9em] font-bold text-gray-800"
-                children={currentDate}
-              />
-            </div>
-          </div>
+          )}
         </div>
       </header>
 
-      {/* HERO IMAGE */}
-      <section className="max-w-5xl mx-auto px-6 mb-12">
-        <div
-          className="rounded-[1rem] border overflow-hidden"
-          children={
+      {detail.image && (
+        <div className="mx-auto mb-9 max-w-5xl px-4 sm:px-6">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
             <img
-              src={currentImage}
-              alt={currentTitle}
-              className="w-full h-auto object-cover aspect-video"
+              src={detail.image}
+              alt={detail.title}
+              className="aspect-video h-auto w-full object-cover"
             />
-          }
-        />
-      </section>
+          </div>
+        </div>
+      )}
 
-      {/* ARTICLE BODY */}
-      <article className="max-w-3xl mx-auto px-6 pb-32">
-        <div
-          className="prose prose-lg prose-indigo max-w-none"
-          children={[
-            <p
-              className="text-xl text-gray-800 leading-relaxed font-medium mb-8"
-              children={`${currentContent.substring(0, 150)} ...`}
-            />,
-            <div
-              className="text-gray-800 leading-[1.8] space-y-6 whitespace-pre-line"
-              children={currentContent}
-            />,
-          ]}
-        />
+      <article className="mx-auto max-w-3xl px-5 pb-16 sm:px-6 sm:pb-24">
+        {detail.metadata.length > 0 && (
+          <dl className="mb-8 grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:grid-cols-2 sm:p-5">
+            {detail.metadata.map((entry) => (
+              <div key={entry.label} className="min-w-0">
+                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {entry.label}
+                </dt>
+                <dd className="mt-1 break-words text-sm font-medium text-slate-800">
+                  {entry.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {detail.content && (
+          <div className="space-y-5 whitespace-pre-line text-base leading-8 text-slate-700 sm:text-lg">
+            {detail.content}
+          </div>
+        )}
       </article>
 
-      {/* FOOTER - BERITA LAINNYA */}
-      <footer className="border-t border-gray-900">
-        <section className="px-15 py-5">
-          <span className="font-serif text-[0.90em]">- berita lainnya -</span>
-          <ListBerita
-            data={otherNews}
-            handler={{ showDetail: handleShowOtherNews }}
-          />
-        </section>
-      </footer>
+      {otherNews.length > 0 && (
+        <footer className="border-t border-slate-200 bg-white">
+          <section className="mx-auto max-w-5xl space-y-4 px-4 py-8 sm:px-6">
+            <h2 className="font-serif text-lg font-semibold text-slate-800">
+              Berita lainnya
+            </h2>
+            <ListBerita
+              data={otherNews}
+              handler={{ showDetail: handleShowOtherNews }}
+            />
+          </section>
+        </footer>
+      )}
     </section>
   );
 }

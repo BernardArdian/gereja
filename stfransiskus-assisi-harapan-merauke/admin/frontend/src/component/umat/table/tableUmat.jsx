@@ -1,12 +1,35 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, MapPin, Plus, Trash2, Pencil } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Plus,
+  Trash2,
+  Pencil,
+  RotateCcw,
+  Printer,
+} from "lucide-react";
 
 import DeleteModal from "../../alert/deleteModal.jsx";
 import PaginationFooter from "../../PaginationFooter";
 import Dropdown from "../../dropdown/dropdown";
 import UmatDetailModal from "./umatDetailModal";
+import UmatPrintPreview from "../print/umatPrintPreview";
 
 const PAGE_SIZE = 20;
+const PRINT_ROWS_PER_PAGE = 14;
+const PRINT_STATUS_GROUPS = [
+  { key: "belum menikah", label: "Belum menikah" },
+  { key: "menikah", label: "Sudah menikah" },
+  { key: "duda", label: "Duda" },
+  { key: "janda", label: "Janda" },
+];
+
+function normalizeMaritalStatus(item) {
+  const status = (item.statusNikah || item.status || "belum menikah")
+    .toLowerCase()
+    .replaceAll("_", " ");
+  return status === "sudah menikah" ? "menikah" : status;
+}
 
 function isSacramentComplete(item, key) {
   const family = item.rawData?.keluarga || {};
@@ -44,6 +67,16 @@ export default function TableUmat({
   const [statusNikahFilter, setStatusNikahFilter] = useState("");
   const [sakramenFilter, setSakramenFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const hasDropdownFilter = Boolean(
+    stasiFilter || statusNikahFilter || sakramenFilter,
+  );
+  const clearFilters = () => {
+    setSearchQuery("");
+    setStatusNikahFilter("");
+    setStasiFilter("");
+    setSakramenFilter("");
+    onPageChange(1);
+  };
   useEffect(() => {
     if (!highlightedUmatId) return undefined;
 
@@ -63,11 +96,7 @@ export default function TableUmat({
   const filteredUmat = useMemo(() => {
     return (umatList || []).filter((item) => {
       const query = searchQuery.trim().toLowerCase();
-      const status =
-        (item.statusNikah || item.status || "").toLowerCase() ===
-        "sudah menikah"
-          ? "menikah"
-          : (item.statusNikah || item.status || "").toLowerCase();
+      const status = normalizeMaritalStatus(item);
       const stasi = item.stasiKeluarga || item.lingkungan || "Tanpa Stasi";
       const matchesSearch =
         !query ||
@@ -112,6 +141,30 @@ export default function TableUmat({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedUmat, setSelectedUmat] = useState(null);
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+  const printPages = useMemo(
+    () =>
+      PRINT_STATUS_GROUPS.flatMap((group) => {
+        const rows = filteredUmat.filter(
+          (item) => normalizeMaritalStatus(item) === group.key,
+        );
+        const pageCount = Math.ceil(rows.length / PRINT_ROWS_PER_PAGE);
+        return Array.from({ length: pageCount }, (_, pageIndex) => ({
+          ...group,
+          rows: rows.slice(
+            pageIndex * PRINT_ROWS_PER_PAGE,
+            (pageIndex + 1) * PRINT_ROWS_PER_PAGE,
+          ),
+          pageIndex,
+          pageCount,
+          totalRows: rows.length,
+        }));
+      }),
+    [filteredUmat],
+  );
+  const reportDate = new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "long",
+  }).format(new Date());
 
   const openDeleteModal = (id) => {
     setSelectedId(id);
@@ -133,14 +186,25 @@ export default function TableUmat({
               ({filteredUmat.length.toLocaleString("id-ID")})
             </span>
           </h2>
-          <button
-            type="button"
-            onClick={onAdd}
-            className="inline-flex min-h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-3.5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
-          >
-            <Plus size={16} aria-hidden="true" />
-            Tambah umat
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsPrintPreviewOpen(true)}
+              disabled={loading || filteredUmat.length === 0}
+              className="inline-flex min-h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Printer size={16} aria-hidden="true" />
+              Cetak daftar
+            </button>
+            <button
+              type="button"
+              onClick={onAdd}
+              className="inline-flex min-h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-3.5 text-sm font-semibold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
+            >
+              <Plus size={16} aria-hidden="true" />
+              Tambah umat
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
           <section className="relative min-w-0">
@@ -210,6 +274,19 @@ export default function TableUmat({
             ]}
           />
         </div>
+        {hasDropdownFilter && (
+          <div className="mt-3 flex justify-end">
+            <button
+              type="button"
+              onClick={clearFilters}
+              aria-label="Hapus semua filter dan pencarian"
+              className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
+            >
+              <RotateCcw size={15} aria-hidden="true" />
+              Clear filter
+            </button>
+          </div>
+        )}
       </header>
 
       {/* TABEL DATA  */}

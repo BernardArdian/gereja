@@ -4,14 +4,13 @@ import {
   Calendar,
   Clock,
   Search,
-  ChevronLeft,
-  ChevronRight,
   Filter,
 } from "lucide-react";
 
 import DetailPengumuman from "../../component/detail/detailPengumuman";
 import ListPengumuman from "../../component/pengumuman/listPengumuman";
-import CustomDropdown from "../../component/option/dropdown";
+import CustomDropdown from "../../component/common/CustomDropdown";
+import Pagination from "../../component/common/Pagination";
 
 export default function Pengumuman() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -239,6 +238,7 @@ export default function Pengumuman() {
               />
               <CustomDropdown
                 value={stasiFilter}
+                ariaLabel="Filter berdasarkan stasi"
                 onChange={(val) => {
                   setStasiFilter(val);
                   setCurrentPage(1);
@@ -270,51 +270,13 @@ export default function Pengumuman() {
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <footer
-            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
-            children={[
-              <p className="text-sm text-slate-600">
-                Menampilkan {paginatedData.length} dari {filteredData.length} pengumuman
-              </p>,
-              <div
-                className="flex items-center gap-1"
-                children={[
-                  <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    aria-label="Halaman sebelumnya"
-                    className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                    children={<ChevronLeft size={14} />}
-                  />,
-                  <div
-                    className="flex gap-1"
-                    children={[...Array(totalPages)].map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        aria-current={currentPage === i + 1 ? "page" : undefined}
-                        className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${
-                          currentPage === i + 1
-                            ? "bg-amber-700 text-white"
-                            : "border border-slate-200 text-slate-700 hover:bg-slate-50"
-                        }`}
-                        children={i + 1}
-                      />
-                    ))}
-                  />,
-
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                    disabled={currentPage === totalPages}
-                    aria-label="Halaman berikutnya"
-                    className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                    children={<ChevronRight size={14} />}
-                  />,
-                ]}
-              />,
-            ]}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemCount={paginatedData.length}
+            totalCount={filteredData.length}
+            itemLabel="pengumuman"
           />
         )}
       </main>

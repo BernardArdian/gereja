@@ -259,15 +259,10 @@ export default function Pengumuman() {
     setIsModalOpen(true);
   };
 
-  const bgColor = (status) => {
-    if (status === "pernikahan") return "bg-rose-50 hover:bg-rose-100";
-    if (status === "misa") return "bg-sky-50 hover:bg-sky-100";
-    return "bg-white hover:bg-gray-50";
-  };
-
   const badgeColor = (status) => {
-    if (status === "pernikahan") return "border-red-500 text-red-600";
-    return "border-gray-300 text-gray-800";
+    if (status === "pernikahan") return "bg-rose-50 text-rose-700";
+    if (status === "misa") return "bg-sky-50 text-sky-700";
+    return "bg-amber-50 text-amber-800";
   };
 
   return (
@@ -350,93 +345,79 @@ export default function Pengumuman() {
             <section
               className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
               children={currentItems.map((item) => (
-                <div
+                <article
                   key={item.id}
                   onClick={() => handleShowDetail(item)}
-                  className={`group flex cursor-pointer flex-col rounded-2xl border border-slate-200 p-4 shadow-sm transition hover:shadow-md sm:p-5 ${bgColor(item.status)}`}
+                  className="group flex cursor-pointer flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-amber-200 hover:shadow-md sm:p-6"
                 >
-                  {/* KONTEN */}
-                  <section className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <span
-                        className={`self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded border mb-6 ${badgeColor(
-                          item.status,
-                        )}`}
-                        children={item.status}
-                      />
-
-                      {/* TOMBOL AKSI (EDIT & DELETE) - Gue balikin di sini */}
-                      <section className="flex gap-1">
-                        <button
-                          className="p-2 cursor-pointer bg-yellow-100 rounded text-yellow-700 hover:bg-amber-500 hover:text-white transition-all active:scale-75"
-                          type="button"
-                          aria-label={`Edit pengumuman ${item.judul || item.status}`}
-                          onClick={(i) => {
-                            i.stopPropagation();
-                            openEditAnnouncement(item);
-                          }}
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          className="p-2 cursor-pointer bg-rose-200 rounded text-red-500 hover:bg-red-600 hover:text-white transition-all active:scale-75"
-                          type="button"
-                          aria-label={`Hapus pengumuman ${item.judul || item.status}`}
-                          onClick={(i) => {
-                            i.stopPropagation();
-                            setItemToDelete(item);
-                          }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </section>
-                    </div>
-
-                    <section className="space-y-2">
-                      <h3
-                        className="text-base font-bold text-gray-800 leading-tight capitalize"
-                        children={
-                          item.judul ? (
-                            item.judul
-                          ) : item.status === "pernikahan" ? (
-                            <span className="block italic text-rose-600">
-                              {item.pernikahanData.namaPria} &{" "}
-                              {item.pernikahanData.namaWanita}
-                            </span>
-                          ) : (
-                            `Pengumuman ${item.status}`
-                          )
-                        }
-                      />
-                      <p
-                        className="text-xs text-gray-900 line-clamp-3 leading-relaxed font-medium"
-                        children={item.description}
-                      />
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <span
+                      className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold capitalize ${badgeColor(item.status)}`}
+                    >
+                      {item.status}
+                    </span>
+                    <section className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        aria-label={`Edit pengumuman ${item.judul || item.status}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openEditAnnouncement(item);
+                        }}
+                        className="cursor-pointer rounded-lg p-2 text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+                      >
+                        <Edit3 size={16} aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Hapus pengumuman ${item.judul || item.status}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setItemToDelete(item);
+                        }}
+                        className="cursor-pointer rounded-lg p-2 text-rose-700 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+                      >
+                        <Trash2 size={16} aria-hidden="true" />
+                      </button>
                     </section>
-                  </section>
-
-                  {/* FOOTER CARD */}
-                  <footer className="mt-6 pt-6 border-t border-gray-100 flex flex-col gap-2">
-                    <section className="flex items-center gap-2 text-[15px] font-semibold text-gray-900 uppercase tracking-widest">
-                      <MapPin size={16} />
-                      <span children={`Stasi ${item.stasi}`} />
-                    </section>
-                    <section className="flex justify-between text-[16px] font-semibold text-gray-900 uppercase tracking-widest">
-                      <section className="flex min-w-0 items-center gap-1.5">
-                        <Calendar size={14} aria-hidden="true" />
-                        <span>
-                          {item.status === "pernikahan"
-                            ? item.pernikahanData?.tanggalPernikahan
-                            : item.tanggal || "Tanggal belum ditentukan"}
+                  </div>
+                  <h2 className="mb-2 text-lg font-semibold leading-snug text-slate-900 transition group-hover:text-amber-900">
+                    {item.judul ||
+                      (item.status === "pernikahan" ? (
+                        <span className="italic">
+                          {item.pernikahanData?.namaPria} &{" "}
+                          {item.pernikahanData?.namaWanita}
                         </span>
-                      </section>
-                      <div className="flex items-center gap-1.5">
-                        <Clock size={16} />
+                      ) : (
+                        `Pengumuman ${item.status}`
+                      ))}
+                  </h2>
+                  <p className="flex-1 text-sm leading-6 text-slate-600">
+                    {item.description}
+                  </p>
+                  <footer className="mt-5 space-y-3 border-t border-slate-100 pt-4">
+                    <p className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <MapPin
+                        size={15}
+                        className="text-slate-400"
+                        aria-hidden="true"
+                      />
+                      Stasi {item.stasi}
+                    </p>
+                    <div className="flex flex-wrap justify-between gap-x-4 gap-y-2 text-xs text-slate-500">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Calendar size={14} aria-hidden="true" />
+                        {item.status === "pernikahan"
+                          ? item.pernikahanData?.tanggalPernikahan
+                          : item.tanggal || "Tanggal belum ditentukan"}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Clock size={14} aria-hidden="true" />
                         {item.waktu} WITA
-                      </div>
-                    </section>
+                      </span>
+                    </div>
                   </footer>
-                </div>
+                </article>
               ))}
             />
           ) : (

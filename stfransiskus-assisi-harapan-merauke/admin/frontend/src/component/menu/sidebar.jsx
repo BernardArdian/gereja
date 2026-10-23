@@ -101,7 +101,7 @@ export default function Layout({ children, onLogout }) {
         ),
         <aside
           aria-label="Navigasi utama"
-          className={`fixed left-0 top-0 z-50 flex h-dvh flex-col overflow-hidden border-r border-amber-300/50 bg-[#B38728] shadow-xl transition-all duration-300 ${
+          className={`fixed left-0 top-0 z-50 flex h-dvh flex-col overflow-hidden border-r border-amber-950/15 bg-[#B38728] shadow-2xl transition-all duration-300 ${
             isMobile
               ? isSidebarOpen
                 ? "w-72 max-w-[calc(100vw-2rem)]"
@@ -110,7 +110,7 @@ export default function Layout({ children, onLogout }) {
           }`}
           children={[
             <header
-              className="relative flex h-16 shrink-0 items-center border-b border-amber-300/50"
+              className="relative flex h-20 shrink-0 items-center border-b border-amber-950/15"
               children={[
                 <div
                   className="flex w-20 shrink-0 items-center justify-center"
@@ -120,10 +120,10 @@ export default function Layout({ children, onLogout }) {
                       aria-label={isSidebarOpen ? "Hide menu" : "Expand menu"}
                       aria-expanded={isSidebarOpen}
                       onClick={() => setIsSidebarOpen((open) => !open)}
-                      className="cursor-pointer rounded-full p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                      className="cursor-pointer rounded-full p-1 transition-transform duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
                       children={
                         <span
-                          className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/50 bg-white shadow-md"
+                          className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-amber-100 bg-white shadow-lg"
                           children={
                             <img
                               src={StFransis}
@@ -138,20 +138,20 @@ export default function Layout({ children, onLogout }) {
                 />,
 
                 isSidebarOpen && (
-                  <div className="flex min-w-0 flex-1 animate-in items-center justify-between pr-4 fade-in duration-300">
-                    <div>
-                      <p className="truncate font-serif text-[16px] font-bold text-amber-950">
+                  <div className="flex min-w-0 flex-1 animate-in items-center justify-between gap-2 pr-4 fade-in duration-300">
+                    <div className="min-w-0">
+                      <p className="truncate text-[13px] font-semibold leading-5 tracking-wide text-amber-950">
                         St.Fransiskus assisi
                       </p>
-                      <p className="font-serif text-[16px] font-bold text-amber-950">
-                        harapan makmur - merauke
+                      <p className="truncate text-[10px] font-medium uppercase leading-4 tracking-[0.12em] text-amber-950/70">
+                        Harapan Makmur · Merauke
                       </p>
                     </div>
                     <button
                       type="button"
                       aria-label="Hide menu"
                       onClick={() => setIsSidebarOpen(false)}
-                      className="cursor-pointer rounded-lg p-1.5 text-amber-950 transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                      className="cursor-pointer rounded-lg p-1.5 text-amber-950/70 transition-colors hover:bg-amber-950/10 hover:text-amber-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100"
                     >
                       <PanelLeftCloseIcon size={20} aria-hidden="true" />
                     </button>
@@ -162,7 +162,7 @@ export default function Layout({ children, onLogout }) {
 
             <nav
               aria-label="Menu utama"
-              className="sidebar-scroll-area min-h-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto py-3 font-serif"
+              className="sidebar-scroll-area min-h-0 flex-1 space-y-1 overflow-x-hidden overflow-y-auto py-5 font-sans"
               children={menuItems.map((item) => {
                 const isActive =
                   location.pathname === item.path ||
@@ -177,10 +177,10 @@ export default function Layout({ children, onLogout }) {
                       if (isMobile) setIsSidebarOpen(false);
                     }}
                     title={!isSidebarOpen ? item.text : undefined}
-                    className={`group relative flex h-12 w-full items-center border-r-4 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white ${
+                    className={`group relative flex h-12 w-full items-center border-l-4 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-300 ${
                       isActive
-                        ? "border-amber-950/70 bg-slate-950/15 font-bold text-amber-950 shadow-sm"
-                        : "border-transparent text-white hover:bg-slate-950/10"
+                        ? "border-amber-50 bg-amber-50/25 font-semibold text-amber-950 shadow-sm"
+                        : "border-transparent text-white/95 hover:bg-amber-950/10 hover:text-white"
                     }`}
                     children={[
                       <span
@@ -189,7 +189,7 @@ export default function Layout({ children, onLogout }) {
                         children={
                           <item.icon
                             size={22}
-                            strokeWidth={2.25}
+                            strokeWidth={isActive ? 2.5 : 2}
                             aria-hidden="true"
                           />
                         }
@@ -207,7 +207,7 @@ export default function Layout({ children, onLogout }) {
               })}
             />,
             <footer
-              className="shrink-0 space-y-1 border-t border-amber-300/50 py-3"
+              className="shrink-0 space-y-1 border-t border-amber-950/15 bg-amber-950/10 py-3"
               children={[
                 <button
                   type="button"
@@ -216,7 +216,7 @@ export default function Layout({ children, onLogout }) {
                   aria-label={`Tema: ${themeLabel}. Aktifkan untuk beralih tema.`}
                   title={themeLabel}
                   onClick={() => setIsDarkMode((dark) => !dark)}
-                  className="group flex min-h-11 w-full cursor-pointer items-center text-amber-950 transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white"
+                  className="group flex min-h-11 w-full cursor-pointer items-center text-amber-950 transition-colors hover:bg-amber-950/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-100"
                   children={[
                     <span
                       className="flex h-11 w-20 shrink-0 items-center justify-center"
@@ -230,19 +230,19 @@ export default function Layout({ children, onLogout }) {
                     />,
                     isSidebarOpen && (
                       <span
-                        className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-4 text-left text-sm font-medium"
+                        className="flex min-w-0 flex-1 items-center justify-between gap-3 pr-4 text-left text-xs font-medium"
                         children={
                           <>
                             {themeLabel}
                             <span
                               aria-hidden="true"
                               className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-                                isDarkMode ? "bg-slate-900" : "bg-amber-950/30"
+                                isDarkMode ? "bg-slate-900" : "bg-amber-950/35"
                               }`}
                               children={
                                 <span
                                   className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full shadow transition-[transform,background-color] ${
-                                    isDarkMode ? "bg-amber-500" : "bg-black"
+                                    isDarkMode ? "bg-amber-300" : "bg-amber-50"
                                   } ${isDarkMode ? "translate-x-5.5" : "translate-x-0.5"}`}
                                 />
                               }
@@ -257,7 +257,7 @@ export default function Layout({ children, onLogout }) {
                 <button
                   type="button"
                   onClick={() => setIsLogoutModalOpen(true)}
-                  className="group flex h-10 w-full cursor-pointer items-center text-rose-950 transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white"
+                  className="group flex h-10 w-full cursor-pointer items-center text-rose-200 transition-colors hover:bg-rose-400/10 hover:text-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-rose-200"
                   children={[
                     <span
                       className="flex h-full w-20 shrink-0 items-center justify-center"
@@ -270,7 +270,7 @@ export default function Layout({ children, onLogout }) {
                       }
                     />,
                     isSidebarOpen && (
-                      <span className="text-sm font-medium">Keluar</span>
+                      <span className="text-xs font-medium">Keluar</span>
                     ),
                   ]}
                 />,
@@ -280,14 +280,14 @@ export default function Layout({ children, onLogout }) {
         />,
         isMobile && (
           <header
-            className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center border-b border-amber-300/50 bg-[#B38728] px-4 shadow-md"
+            className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center border-b border-amber-950/15 bg-[#B38728] px-4 shadow-lg"
             children={[
               <button
                 type="button"
                 aria-label="Buka menu navigasi"
                 aria-expanded={isSidebarOpen}
                 onClick={() => setIsSidebarOpen(true)}
-                className="cursor-pointer rounded-lg p-2 text-amber-950 transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="cursor-pointer rounded-lg p-2 text-amber-950 transition-colors hover:bg-amber-950/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100"
                 children={<MenuIcon size={22} aria-hidden="true" />}
               />,
               <div
@@ -295,7 +295,7 @@ export default function Layout({ children, onLogout }) {
                 children={[
                   <span
                     key="img"
-                    className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-white/50 bg-white shadow-sm"
+                    className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border-2 border-amber-100 bg-white shadow-sm"
                     children={
                       <img
                         src={StFransis}
@@ -306,7 +306,7 @@ export default function Layout({ children, onLogout }) {
                   />,
                   <span
                     key="text"
-                    className="font-serif text-base font-bold text-amber-950"
+                    className="text-sm font-semibold tracking-wide text-amber-950"
                     children={"Gereja"}
                   />,
                 ]}

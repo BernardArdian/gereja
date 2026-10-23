@@ -1,13 +1,6 @@
 import { useState, useMemo } from "react";
-import { Users, ChevronLeft, ChevronRight, FileText } from "lucide-react";
-
-const statusStyles = {
-  Aktif: "bg-emerald-50 text-emerald-800",
-  Update: "bg-sky-50 text-sky-800",
-  Final: "bg-emerald-50 text-emerald-800",
-  Draft: "bg-amber-50 text-amber-800",
-  Arsip: "bg-slate-100 text-slate-600",
-};
+import { Users, FileText } from "lucide-react";
+import Pagination from "../../component/common/Pagination";
 
 export default function AdministratifGereja() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -179,7 +172,7 @@ export default function AdministratifGereja() {
             </p>
           </header>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[46rem] border-collapse text-left">
+            <table className="w-full min-w-170 border-collapse text-left">
               <thead className="bg-slate-50">
                 <tr className="border-b border-slate-200">
                   <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
@@ -203,12 +196,12 @@ export default function AdministratifGereja() {
                     className="transition hover:bg-slate-50"
                   >
                     <td className="px-4 py-4 sm:px-6">
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3">
                         <span className="rounded-lg bg-amber-50 p-2 text-amber-800">
                           <FileText size={17} aria-hidden="true" />
                         </span>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-900">
+                          <p className="wrap-break-word text-sm font-semibold text-slate-900">
                             {item.name}
                           </p>
                           <p className="mt-1 text-xs text-slate-500">
@@ -224,12 +217,16 @@ export default function AdministratifGereja() {
                     </td>
                     <td className="px-4 py-4 text-sm text-slate-600 sm:px-6">
                       <span className="inline-flex items-center gap-2">
-                        <Users size={15} className="text-slate-400" aria-hidden="true" />
+                        <Users
+                          size={15}
+                          className="text-slate-400"
+                          aria-hidden="true"
+                        />
                         {item.pic}
                       </span>
                     </td>
                     <td className="px-4 py-4 sm:px-6">
-                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyles[item.status] ?? "bg-slate-100 text-slate-700"}`}>
+                      <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
                         {item.status}
                       </span>
                     </td>
@@ -241,43 +238,14 @@ export default function AdministratifGereja() {
 
           {/* PAGINATION */}
           {totalPages > 1 && (
-            <footer className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-slate-600">
-                Menampilkan {paginatedData.length} dari {filteredData.length} dokumen
-              </p>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  aria-label="Halaman sebelumnya"
-                  className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <ChevronLeft size={14} />
-                </button>
-                <div
-                  className="flex gap-1"
-                  children={[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentPage(i + 1)}
-                      aria-current={currentPage === i + 1 ? "page" : undefined}
-                      className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
-                      children={i + 1}
-                    />
-                  ))}
-                />
-                <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  aria-label="Halaman berikutnya"
-                  className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-            </footer>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              itemCount={paginatedData.length}
+              totalCount={filteredData.length}
+              itemLabel="dokumen"
+            />
           )}
         </section>
       </main>

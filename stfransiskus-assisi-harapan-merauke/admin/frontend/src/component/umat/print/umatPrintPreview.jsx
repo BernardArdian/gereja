@@ -23,7 +23,7 @@ export default function UmatPrintPreview({
 
   return createPortal(
     <div
-      className="umat-print-preview fixed inset-0 z-[200] overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-sm sm:p-6"
+      className="umat-print-preview fixed inset-0 z-200 overflow-y-auto bg-slate-950/70 p-3 backdrop-blur-sm sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={title}

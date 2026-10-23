@@ -206,10 +206,9 @@ export default function Home() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-start min-h-screen overflow-y-auto no-scrollbar w-full">
-      {/* hero section */}
+    <section className="flex min-h-screen w-full flex-col items-center justify-start overflow-y-auto no-scrollbar">
       <header
-        className="relative w-full h-[76dvh] md:h-[86dvh] flex items-end justify-start bg-[#0c1a12]/90 group overflow-hidden"
+        className="group relative flex h-[68vh] min-h-[32rem] w-full items-end overflow-hidden bg-slate-950 sm:h-[76vh] lg:h-[82vh]"
         children={[
           images.map((img, index) => (
             <div
@@ -220,38 +219,73 @@ export default function Home() {
               children={
                 <img
                   src={img}
-                  alt={`slide-${index}`}
-                  className="w-full h-full object-cover cursor-pointer"
+                  alt={`Suasana gereja, slide ${index + 1}`}
+                  className="h-full w-full cursor-pointer object-cover"
                   onClick={() => openModal(img)}
                 />
               }
             />
           )),
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-slate-950/10"
+          />,
+          <section className="pointer-events-none relative z-20 mx-auto mb-20 w-full max-w-7xl px-5 sm:mb-24 sm:px-10 lg:px-16">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-amber-200 sm:text-sm">
+              Harapan Makmur · Merauke, Papua Selatan
+            </p>
+            <h1 className="max-w-3xl font-serif text-3xl font-bold leading-tight text-white drop-shadow sm:text-5xl lg:text-6xl">
+              Paroki St. Fransiskus Assisi
+            </h1>
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/85 sm:text-base sm:leading-7">
+              Bertumbuh dalam iman, berjalan bersama, dan melayani sesama dalam
+              kasih Kristus.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                navigate("/profil-gereja");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="pointer-events-auto mt-6 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            >
+              Kenali paroki <ArrowRight size={16} aria-hidden="true" />
+            </button>
+          </section>,
           <button
+            type="button"
+            aria-label="Slide sebelumnya"
             onClick={(e) => {
               e.stopPropagation();
               handlePrev();
             }}
-            className="cursor-pointer absolute bg-gray-300 rounded-full left-6 md:left-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:border-white/50 text-black"
+            className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-slate-950/35 text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-slate-950/70 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:left-8 sm:h-12 sm:w-12"
             children={<ChevronLeft size={18} />}
           />,
 
           <button
+            type="button"
+            aria-label="Slide berikutnya"
             onClick={(e) => {
               e.stopPropagation();
               handleNext();
             }}
-            className="cursor-pointer absolute right-6 bg-gray-300 rounded-full md:right-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:border-white/50 text-black"
+            className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-slate-950/35 text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-slate-950/70 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 sm:right-8 sm:h-12 sm:w-12"
             children={<ChevronRight size={18} />}
           />,
 
           <section
-            className="absolute justify-center bottom-5 h-10 w-full z-20 flex gap-2 items-center"
+            aria-label="Pilih slide"
+            className="absolute bottom-5 z-20 flex h-10 w-full items-center justify-center gap-2"
             children={images.map((_, i) => (
-              <div
+              <button
                 key={i}
-                className={`h-2 rounded-full transition-all border border-gray-900 duration-500 ${
-                  i === currentIndex ? "bg-white/90 h-4 w-4" : "bg-white/20 w-2"
+                type="button"
+                aria-label={`Tampilkan slide ${i + 1}`}
+                aria-current={i === currentIndex ? "true" : undefined}
+                onClick={() => setCurrentIndex(i)}
+                className={`h-2 cursor-pointer rounded-full border border-white/60 transition-all duration-300 ${
+                  i === currentIndex ? "w-7 bg-white" : "w-2 bg-white/40"
                 }`}
               />
             ))}
@@ -259,40 +293,41 @@ export default function Home() {
         ]}
       />
 
-      <main className="w-full max-w-6xl mx-auto px-8 md:px-16 py-20 flex flex-col gap-20">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-10 sm:gap-16 sm:px-6 sm:py-14 lg:px-10">
         {/* sejarah */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-1 border border-gray-100 rounded overflow-hidden">
+        <section className="grid grid-cols-1 gap-4 overflow-hidden rounded-2xl md:grid-cols-2">
           <section
-            className="p-10 md:p-14 border-b md:border-b-1 md:border bg-stone-400/40 border-stone-500"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10"
             children={[
-              <p className="text-[16px] font-serif font-medium tracking-[0.18em] uppercase text-gray-900 mb-6">
-                Perjalanan Iman
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">
+                Tentang paroki
               </p>,
               <h3
-                className="text-justify font-serif text-3xl text-gray-900 leading-snug mb-6"
+                className="mb-5 font-serif text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl"
                 children={data.ringkasan}
               />,
               <div
-                className="text-justify text-sm text-gray-900 leading-relaxed font-semibold whitespace-pre-line"
+                className="whitespace-pre-line text-sm leading-7 text-slate-600"
                 children={data.artikel}
               />,
             ]}
           />
 
           <section
-            className="grid grid-rows-2 gap-1"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1"
             children={["Foto Masa Lalu", "Foto Saat Ini"].map((label, i) => (
               <section
                 key={i}
-                className="flex flex-col bg-gray-300/50 items-center justify-center gap-3 border-b last:border-b-0 border-gray-100 p-10 cursor-pointer hover:bg-slate-500/30 transition-colors"
+                className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-100/70 p-8 text-slate-500 transition hover:border-amber-400 hover:bg-amber-50"
               >
-                <div className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center">
-                  <ImageIcon size={16} className="text-gray-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-amber-700">
+                  <ImageIcon size={20} aria-hidden="true" />
                 </div>
                 <span
-                  className="text-[11px] text-gray-400 tracking-wide"
+                  className="text-sm font-medium"
                   children={label}
                 />
+                <span className="text-xs text-slate-400">Dokumentasi paroki</span>
               </section>
             ))}
           />
@@ -300,18 +335,24 @@ export default function Home() {
 
         {/* pengumuman */}
         <section>
-          <section className="flex justify-between items-baseline mb-10">
-            <h2 className="font-serif text-2xl border-l-4 border-rose-500/50 pl-2  text-gray-900">
+          <section className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-800">
+                Informasi umat
+              </p>
+              <h2 className="mt-1 border-l-4 border-amber-600 pl-3 font-serif text-2xl font-semibold text-slate-900 sm:text-3xl">
               Pengumuman
-            </h2>
+              </h2>
+            </div>
             <button
+              type="button"
               onClick={() => {
                 navigate("/pengumuman");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="text-medium font-medium text-gray-900 hover:text-indigo-800 transition-colors cursor-pointer"
+              className="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
             >
-              Lihat semua →
+              Lihat semua <ArrowRight size={14} className="ml-1 inline" />
             </button>
           </section>
           <ListPengumuman
@@ -322,18 +363,24 @@ export default function Home() {
 
         {/* berita */}
         <section>
-          <section className="flex justify-between items-baseline mb-8">
-            <h2 className="font-serif text-2xl border-l-4 border-slate-500 pl-2 text-gray-900">
-              Berita Paroki
-            </h2>
+          <section className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-800">
+                Kabar paroki
+              </p>
+              <h2 className="mt-1 border-l-4 border-amber-600 pl-3 font-serif text-2xl font-semibold text-slate-900 sm:text-3xl">
+                Berita paroki
+              </h2>
+            </div>
             <button
+              type="button"
               onClick={() => {
                 navigate("/berita");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="text-medium font-medium text-gray-900 hover:text-indigo-800 transition-colors cursor-pointer"
+              className="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
             >
-              Lihat semua →
+              Lihat semua <ArrowRight size={14} className="ml-1 inline" />
             </button>
           </section>
 
@@ -348,14 +395,20 @@ export default function Home() {
         <section
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
           onClick={() => setIsOpen(false)}
+          role="presentation"
           children={[
             <button
-              className="absolute cursor-pointer top-8 right-8 text-white/50 hover:text-red-500 transition-colors"
+              type="button"
+              aria-label="Tutup foto"
+              onClick={() => setIsOpen(false)}
+              className="absolute right-5 top-5 cursor-pointer rounded-xl p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:right-8 sm:top-8"
               children={<XSquare size={35} />}
             />,
             <img
+              key="selected-gallery-image"
               src={selectedImg}
-              className="max-w-full max-h-[90dvh] object-contain"
+              onClick={(event) => event.stopPropagation()}
+              className="max-h-[90dvh] max-w-full object-contain"
               alt="Detail"
             />,
           ]}

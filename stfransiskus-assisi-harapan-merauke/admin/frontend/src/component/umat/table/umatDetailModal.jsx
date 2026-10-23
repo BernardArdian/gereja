@@ -131,7 +131,7 @@ export default function UmatDetailModal({ umat, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-120 flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-sm sm:p-5"
+      className="fixed inset-0 z-10 flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-sm sm:p-5"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -152,25 +152,30 @@ export default function UmatDetailModal({ umat, onClose }) {
               id="umat-detail-title"
               className="mt-1 wrap-break-word text-lg font-bold text-slate-900"
             >
-              {umat.name}
+              {normalizedStatus === "belum menikah" ? (
+                <p>{umat.name}</p>
+              ) : (
+                <p>Keluarga bapak/ibu {umat.name}</p>
+              )}
             </h2>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 font-semibold">
                 <MapPin size={13} aria-hidden="true" />
                 {valueOrFallback(umat.stasiKeluarga || rawData.stasiKeluarga)}
               </span>
-              <span>No. KK: {valueOrFallback(rawData.noKk || umat.noKk)}</span>
-              <span className="capitalize">Status: {normalizedStatus}</span>
+              <span className="font-semibold">
+                No. KK: {valueOrFallback(rawData.noKk || umat.noKk)}
+              </span>
+              <span className="capitalize font-semibold">
+                Status: {normalizedStatus}
+              </span>
             </div>
-            <p className="mt-1 break-all text-[11px] text-slate-500">
-              ID: {umat.id}
-            </p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup detail umat"
-            className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+            className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
             <X size={19} aria-hidden="true" />
           </button>
@@ -178,31 +183,33 @@ export default function UmatDetailModal({ umat, onClose }) {
 
         <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-6">
           {normalizedStatus === "belum menikah" ? (
-            <PersonDetails person={personal} label="Data individu" />
+            <PersonDetails person={personal} label="Data diri" />
           ) : (
             <>
-              <PersonDetails person={husband} label="Suami" />
-              <PersonDetails person={wife} label="Istri" />
-              <section className="rounded-xl border border-slate-200 bg-white p-4">
-                <h3 className="font-semibold text-slate-900">
-                  Data anak ({children.length})
-                </h3>
-                {children.length ? (
-                  <div className="mt-3 space-y-3">
-                    {children.map((child, index) => (
-                      <PersonDetails
-                        key={child._id || `${child.nama}-${index}`}
-                        person={child}
-                        label={`Anak ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-slate-500">
-                    Belum ada data anak.
-                  </p>
-                )}
-              </section>
+              <>
+                <PersonDetails person={husband} label="Suami" />
+                <PersonDetails person={wife} label="Istri" />
+                <section className="rounded-xl border border-slate-200 bg-white p-4">
+                  <h3 className="font-semibold text-slate-900">
+                    Data anak ({children.length})
+                  </h3>
+                  {children.length ? (
+                    <div className="mt-3 space-y-3">
+                      {children.map((child, index) => (
+                        <PersonDetails
+                          key={child._id || `${child.nama}-${index}`}
+                          person={child}
+                          label={`Anak ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-sm text-slate-500">
+                      Belum ada data anak.
+                    </p>
+                  )}
+                </section>
+              </>
             </>
           )}
         </div>

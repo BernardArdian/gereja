@@ -137,187 +137,210 @@ export default function Admin() {
     const { name, value } = e.target;
     setter((prev) => ({ ...prev, [name]: value }));
   };
-  const totalUmat = stasiList.reduce(
-    (total, stasi) => total + Number(stasi.jumlahUmat || 0),
-    0,
-  );
+  // const totalUmat = stasiList.reduce(
+  //   (total, stasi) => total + Number(stasi.jumlahUmat || 0),
+  //   0,
+  // );
 
   return (
-    <section className="min-h-full w-full bg-slate-50">
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
-              Panel Pengelolaan
-            </p>
-            <h1 className="truncate text-sm font-semibold text-slate-900 sm:text-base">
-              Paroki St. Fransiskus Assisi
-            </h1>
-          </div>
-          <button
-            onClick={() => setIsAdminModaOpen(true)}
-            type="button"
-            aria-label="Buka pengaturan administrator"
-            className="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white py-1.5 pl-1.5 pr-3 transition hover:border-amber-300 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-700 text-xs font-bold text-white">
-              AD
-            </span>
-            <span className="hidden text-sm font-medium text-slate-700 sm:block">
-              Administrator
-            </span>
-          </button>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-7xl space-y-7 px-4 py-6 sm:px-6 sm:py-8">
-        <section className="flex flex-col gap-2">
-          <p className="text-sm font-semibold text-amber-700">
-            Administrasi paroki
-          </p>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              Kelola komunitas paroki
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-              Pantau data stasi dan anggota Dewan Pastoral Paroki dalam satu
-              tempat.
-            </p>
-          </div>
-        </section>
-
-        <section
-          aria-label="Ringkasan data paroki"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
-        >
-          <StasiDanDppCard
-            title="Anggota DPP"
-            value={dppList.length}
-            icon={<UserRound size={20} />}
-            color="bg-sky-700"
-            actionLabel="Tambah anggota"
-            onInputClick={() => setIsDppModaOpen(true)}
+    <section
+      className="min-h-full w-full bg-slate-50"
+      children={
+        <>
+          <header
+            className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"
+            children={
+              <div
+                className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6"
+                children={
+                  <>
+                    <div
+                      className="min-w-0"
+                      children={
+                        <>
+                          <p
+                            className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700"
+                            children={"Panel Pengelolaan"}
+                          />
+                          <h1
+                            className="truncate text-sm font-semibold text-slate-900 sm:text-base"
+                            children={"Paroki St.Fransiskus Assisi"}
+                          />
+                        </>
+                      }
+                    />
+                    <button
+                      onClick={() => setIsAdminModaOpen(true)}
+                      type="button"
+                      aria-label="Buka pengaturan administrator"
+                      className="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white py-1.5 pl-1.5 pr-3 hover:border-amber-300 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                      children={
+                        <>
+                          <span
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-700 text-xs font-bold text-white"
+                            children={"AD"}
+                          />
+                          <span
+                            className="hidden text-sm font-bold text-slate-700 sm:block"
+                            children={"Administrator"}
+                          />
+                        </>
+                      }
+                    />
+                  </>
+                }
+              />
+            }
           />
-          <StasiDanDppCard
-            title="Total Stasi"
-            value={stasiList.length}
-            icon={<Church size={20} />}
-            color="bg-amber-700"
-            actionLabel="Tambah stasi"
-            onInputClick={() => setIsStasiModalOpen(true)}
-          />
-          <StasiDanDppCard
-            title="Total Umat"
-            value={totalUmat.toLocaleString("id-ID")}
-            icon={<Users size={20} />}
-            color="bg-emerald-700"
-            description="Tersebar di seluruh stasi"
-          />
-        </section>
 
-        <section className="space-y-5" aria-label="Data komunitas paroki">
-          <ListAnggotaDpp
-            data={dppList}
+          <main
+            className="mx-auto max-w-7xl space-y-7 px-4 py-6 sm:px-6 sm:py-8"
+            children={
+              <>
+                <section
+                  className="flex flex-col gap-2"
+                  children={
+                    <>
+                      <p
+                        className="text-sm font-semibold text-amber-700"
+                        children={"Administrasi paroki"}
+                      />
+                      <div
+                        children={
+                          <>
+                            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                              Kelola komunitas paroki
+                            </h2>
+                            <p
+                              className="mt-2 max-w-2xl text-sm leading-6 text-slate-600"
+                              children={
+                                "Pantau data stasi dan anggota Dewan Pastoral Paroki dalam satu tempat."
+                              }
+                            />
+                          </>
+                        }
+                      />
+                    </>
+                  }
+                />
+
+                <section
+                  className="space-y-5"
+                  aria-label="Data komunitas paroki"
+                  children={
+                    <>
+                      <ListAnggotaDpp
+                        data={dppList}
+                        actionLabel="Tambah anggota"
+                        handlers={{
+                          edit: (data) => {
+                            setEditingDpp(data);
+                            setDppFormData({
+                              nama: data.nama,
+                              jabatan: data.jabatan,
+                              periode: data.periode,
+                            });
+                            setSelectedDivisi(data.divisi || "");
+                            setIsDppModaOpen(true);
+                          },
+                          delete: handleDeleteDpp,
+                          onInputClick: () => setIsDppModaOpen(true),
+                        }}
+                      />
+                      <ListStatidanParoki
+                        data={stasiList}
+                        actionLabel="Tambah Stasi"
+                        handlers={{
+                          edit: (stasi) => {
+                            setEditingStasi(stasi);
+                            setFormData({
+                              stasi: stasi.stasi,
+                              jumlahUmat: stasi.jumlahUmat,
+                              namaGereja: stasi.namaGereja,
+                              desa: stasi.desa || "",
+                              alamat: stasi.alamat,
+                            });
+                            setIsStasiModalOpen(true);
+                          },
+                          delete: handleDeleteStasi,
+                          onInputClick: () => setIsStasiModalOpen(true),
+                        }}
+                      />
+                    </>
+                  }
+                />
+              </>
+            }
+          />
+
+          <AdminPages
+            isOpen={isAdminModalOpen}
             handlers={{
-              edit: (data) => {
-                setEditingDpp(data);
-                setDppFormData({
-                  nama: data.nama,
-                  jabatan: data.jabatan,
-                  periode: data.periode,
-                });
-                setSelectedDivisi(data.divisi || "");
-                setIsDppModaOpen(true);
-              },
-              delete: handleDeleteDpp,
+              open: isAdminModalOpen,
+              cancel: () => setIsAdminModaOpen(false),
             }}
           />
-          <ListStatidanParoki
-            data={stasiList}
+
+          <InputStasi
+            isOpen={isStasiModalOpen}
+            isSubmitting={false}
+            formdata={formData}
+            validations={() =>
+              !!(
+                formData?.stasi &&
+                formData?.namaGereja &&
+                formData?.desa &&
+                formData?.alamat &&
+                formData?.jumlahUmat
+              )
+            }
             handlers={{
-              edit: (stasi) => {
-                setEditingStasi(stasi);
-                setFormData({
-                  stasi: stasi.stasi,
-                  jumlahUmat: stasi.jumlahUmat,
-                  namaGereja: stasi.namaGereja,
-                  desa: stasi.desa || "",
-                  alamat: stasi.alamat,
-                });
-                setIsStasiModalOpen(true);
+              cancel: () => {
+                setIsStasiModalOpen(false);
+                resetForm();
+                setEditingStasi(null);
               },
-              delete: handleDeleteStasi,
+              reset: () => {
+                resetForm();
+                setEditingStasi(null);
+              },
+              submit: handleSubmit,
+              input: handleInputChange(setFormData),
             }}
           />
-        </section>
-      </main>
 
-      <AdminPages
-        isOpen={isAdminModalOpen}
-        handlers={{
-          open: isAdminModalOpen,
-          cancel: () => setIsAdminModaOpen(false),
-        }}
-      />
-
-      <InputStasi
-        isOpen={isStasiModalOpen}
-        isSubmitting={false}
-        formdata={formData}
-        validations={() =>
-          !!(
-            formData?.stasi &&
-            formData?.namaGereja &&
-            formData?.desa &&
-            formData?.alamat &&
-            formData?.jumlahUmat
-          )
-        }
-        handlers={{
-          cancel: () => {
-            setIsStasiModalOpen(false);
-            resetForm();
-            setEditingStasi(null);
-          },
-          reset: () => {
-            resetForm();
-            setEditingStasi(null);
-          },
-          submit: handleSubmit,
-          input: handleInputChange(setFormData),
-        }}
-      />
-
-      <InputDpp
-        isOpen={isDppModalOpen}
-        isSubmitting={false}
-        selectedDivisi={selectedDivisi}
-        formData={dppFormData}
-        validations={() =>
-          !!(
-            (selectedDivisi || editingDpp) &&
-            dppFormData?.nama &&
-            dppFormData?.jabatan &&
-            dppFormData?.periode
-          )
-        }
-        handlers={{
-          cancel: () => {
-            setIsDppModaOpen(false);
-            dppResetForm();
-            setSelectedDivisi("");
-            setEditingDpp(null);
-          },
-          reset: () => {
-            dppResetForm();
-            setSelectedDivisi("");
-            setEditingDpp(null);
-          },
-          divisi: handleDivisiChange,
-          submit: handleSubmit,
-          input: handleInputChange(setDppFormData),
-        }}
-      />
-    </section>
+          <InputDpp
+            isOpen={isDppModalOpen}
+            isSubmitting={false}
+            selectedDivisi={selectedDivisi}
+            formData={dppFormData}
+            validations={() =>
+              !!(
+                (selectedDivisi || editingDpp) &&
+                dppFormData?.nama &&
+                dppFormData?.jabatan &&
+                dppFormData?.periode
+              )
+            }
+            handlers={{
+              cancel: () => {
+                setIsDppModaOpen(false);
+                dppResetForm();
+                setSelectedDivisi("");
+                setEditingDpp(null);
+              },
+              reset: () => {
+                dppResetForm();
+                setSelectedDivisi("");
+                setEditingDpp(null);
+              },
+              divisi: handleDivisiChange,
+              submit: handleSubmit,
+              input: handleInputChange(setDppFormData),
+            }}
+          />
+        </>
+      }
+    />
   );
 }

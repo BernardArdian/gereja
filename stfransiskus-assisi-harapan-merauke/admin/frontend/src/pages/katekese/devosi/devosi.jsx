@@ -151,8 +151,8 @@ export default function Devosi() {
       </header>
 
       {/* STICKY SEARCH BAR */}
-      <div className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-8 sm:px-6">
-        <div className="max-w-4xl mx-auto py-2">
+      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-7 sm:px-6">
+        <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
               <Search
@@ -164,12 +164,12 @@ export default function Devosi() {
                 placeholder="Cari jadwal atau nama devosi..."
                 value={searchQuery}
                 onChange={handleSearch}
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-[1.6rem] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full pl-12 pr-4 py-2.5 bg-gray-50 rounded-xl text-sm focus:outline-none transition-all"
               />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* MAIN CONTENT GRID */}
       <main className="mx-auto mt-6 w-full max-w-6xl px-0 sm:mt-10 sm:px-2">

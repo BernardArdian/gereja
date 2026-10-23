@@ -140,12 +140,12 @@ export default function Renungan() {
         </div>
 
         <div className="absolute top-0 right-0 opacity-20 transform translate-x-10 -translate-y-5 text-white pointer-events-none z-10">
-          <Quote size={180} className="sm:h-[300px] sm:w-[300px]" />
+          <Quote size={180} className="sm:h-75 sm:w-75" />
         </div>
       </section>
 
       {/* SEARCH */}
-      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-8 sm:px-6">
+      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-7 sm:px-6">
         <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
@@ -161,7 +161,7 @@ export default function Renungan() {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-12 pr-4 py-3 bg-gray-50 rounded-[1.6rem] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full pl-12 pr-4 py-2.5 bg-gray-50 rounded-xl text-sm focus:outline-none transition-all"
               />
             </div>
           </div>

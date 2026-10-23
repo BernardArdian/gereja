@@ -1,8 +1,8 @@
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import DeleteModal from "../../alert/deleteModal";
 
-export default function StasiListModal({ data, handlers }) {
+export default function StasiListModal({ data, handlers, actionLabel }) {
   const [selectedStasi, setSelectedStasi] = useState(null);
   const total = data.reduce(
     (sum, stasi) => sum + Number(stasi.jumlahUmat || 0),
@@ -16,7 +16,7 @@ export default function StasiListModal({ data, handlers }) {
   };
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
         <div>
           <h3 className="text-base font-semibold text-slate-900">
@@ -26,9 +26,23 @@ export default function StasiListModal({ data, handlers }) {
             Paroki St. Fransiskus Assisi Harapan Makmur
           </p>
         </div>
-        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
-          {total.toLocaleString("id-ID")} umat
-        </span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span
+            className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900"
+            children={`${total.toLocaleString("id-ID")} umat`}
+          />
+
+          {actionLabel && handlers?.onInputClick && (
+            <button
+              type="button"
+              onClick={() => handlers.onInputClick(data)}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <Plus size={14} aria-hidden="true" />
+              {actionLabel}
+            </button>
+          )}
+        </div>
       </header>
 
       <div className="overflow-x-auto">
@@ -76,10 +90,7 @@ export default function StasiListModal({ data, handlers }) {
           <tbody className="divide-y divide-slate-100">
             {data.length ? (
               data.map((stasi) => (
-                <tr
-                  key={stasi.stasi}
-                  className="transition-colors hover:bg-slate-50"
-                >
+                <tr key={stasi.stasi} className="hover:bg-slate-50">
                   <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-slate-900 sm:px-6">
                     {stasi.stasi}
                   </td>
@@ -102,7 +113,7 @@ export default function StasiListModal({ data, handlers }) {
                       <button
                         type="button"
                         aria-label={`Edit ${stasi.stasi}`}
-                        className="cursor-pointer rounded-lg p-2.5 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        className="cursor-pointer rounded-lg p-2.5 text-amber-800 hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                         onClick={() => handlers.edit(stasi)}
                       >
                         <Edit2 size={17} aria-hidden="true" />
@@ -110,7 +121,7 @@ export default function StasiListModal({ data, handlers }) {
                       <button
                         type="button"
                         aria-label={`Hapus ${stasi.stasi}`}
-                        className="cursor-pointer rounded-lg p-2.5 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                        className="cursor-pointer rounded-lg p-2.5 text-rose-700 hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
                         onClick={() => setSelectedStasi(stasi)}
                       >
                         <Trash2 size={17} aria-hidden="true" />

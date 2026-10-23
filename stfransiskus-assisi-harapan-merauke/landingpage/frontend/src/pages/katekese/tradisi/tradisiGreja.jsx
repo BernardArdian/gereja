@@ -1,5 +1,11 @@
 import { useState, useMemo } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  ArrowRight,
+} from "lucide-react";
 
 export default function TradisiGereja() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,9 +141,9 @@ export default function TradisiGereja() {
   );
 
   return (
-    <section className="min-h-screen pb-12">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* HERO */}
-      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
+      <header className="relative mb-6 min-h-52 w-full overflow-hidden rounded-2xl sm:mb-8">
         <img
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -147,81 +153,87 @@ export default function TradisiGereja() {
           }}
         />
         <div className="absolute inset-0 bg-black/60 z-10" />
-        <section className="h-full flex flex-row justify-between">
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-white/50 mb-1">
+        <section className="relative z-20 flex min-h-52 flex-col justify-between gap-6 p-5 sm:flex-row sm:items-end sm:p-8">
+          <section>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
               Warisan Budaya & Iman
             </p>
-            <h1 className="font-serif text-3xl text-white">Tradisi Gereja</h1>
+            <h2 className="font-serif text-3xl font-bold text-white sm:text-4xl">
+              Tradisi Gereja
+            </h2>
           </section>
 
           {/* SEARCH */}
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <form className="relative border rounded border-gray-100">
+          <section className="w-full sm:max-w-sm">
+            <div className="relative">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={14}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+                aria-hidden="true"
               />
               <input
-                type="text"
+                type="search"
+                aria-label="Cari tradisi gereja"
                 placeholder="Cari nama tradisi..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+                className="w-full rounded-xl border border-white/70 bg-white/95 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-100"
               />
-            </form>
+            </div>
           </section>
         </section>
       </header>
 
       {/* GRID */}
-      <main className="px-15 pb-15">
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 rounded overflow-hidden"
+      <main className="px-1 pb-8 sm:px-2">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         children=
           {paginatedData.length === 0 && (
-            <section className="flex w-full items-center justify-center">
-              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
-                Katekese belum di inputkan atau judul yang anda cari tidak ada.
-              </span>
-            </section>
+            <p className="col-span-full rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-500">
+              Tidak ada tradisi yang cocok dengan pencarian.
+            </p>
           ),
           paginatedData.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-stone-500/50 hover:bg-slate-200/60 transition-colors border border-gray-100 rounded cursor-pointer flex flex-col group overflow-hidden"
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className="relative aspect-video overflow-hidden">
+              <section className="relative aspect-video overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <span
-                  className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-sm text-[9px] font-medium text-white uppercase tracking-widest"
-                  children={item.category}
-                />
-              </div>
-              <div className="p-6 flex-1 flex flex-col">
-                <p
-                  className="text-[10px] text-gray-900 uppercase tracking-widest mb-3"
-                  children={item.period}
-                />
-                <h3
-                  className="font-serif text-lg text-gray-900 leading-snug mb-2 group-hover:text-gray-900 transition-colors"
-                  children={item.title}
-                />
-                <p
-                  className="text-xs text-gray-900 leading-relaxed font-light line-clamp-2 flex-1"
-                  children={item.description}
-                />
-                <div className="mt-6 text-[12px] text-gray-100 uppercase tracking-widest group-hover:text-gray-500 transition-colors">
-                  Detail →
+                <div className="absolute left-4 top-4">
+                  <span className="rounded-lg border border-white/10 bg-black/40 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-md">
+                    {item.category}
+                  </span>
                 </div>
-              </div>
+              </section>
+              <section className="flex flex-1 flex-col p-4 sm:p-5">
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase text-amber-800">
+                  <Calendar size={12} aria-hidden="true" /> {item.period}
+                </div>
+                <h3 className="mb-2 break-words text-lg font-bold leading-tight text-slate-900 transition-colors group-hover:text-amber-800 sm:text-xl">
+                  {item.title}
+                </h3>
+                <p className="mb-5 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                  {item.description}
+                </p>
+                <footer className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedItem(item)}
+                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-50"
+                  >
+                    Baca <ArrowRight size={14} />
+                  </button>
+                </footer>
+              </section>
             </div>
           ))}
         >
@@ -230,22 +242,16 @@ export default function TradisiGereja() {
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
-          <p className="text-xs text-gray-100">
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={`Menapilkan ${paginatedData.length} dari`}
-            />
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={` ${filteredData.length} tardisi gereja`}
-            />
+        <footer className="mt-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-600">
+            Menampilkan {paginatedData.length} dari {filteredData.length} tradisi gereja
           </p>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman sebelumnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={14} />
             </button>
@@ -255,7 +261,8 @@ export default function TradisiGereja() {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-400 hover:bg-gray-50"}`}
+                  aria-current={currentPage === i + 1 ? "page" : undefined}
+                  className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
                   children={i + 1}
                 />
               ))}
@@ -263,7 +270,8 @@ export default function TradisiGereja() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman berikutnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={14} />
             </button>

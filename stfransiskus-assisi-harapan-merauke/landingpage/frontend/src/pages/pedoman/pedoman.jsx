@@ -7,33 +7,30 @@ export default function Pedoman() {
 Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pusat pendidikan dan pelayanan sosial bagi masyarakat lintas agama di wilayah ini.`,
   };
   return (
-    <section className="w-full min-h-screen px-4">
-      {/* HEADER */}
-      <header className="py-4 border-b border-amber-500 rounded-b-xl mt-1 bg-[#B38728]/60 mb-4">
-        <div className="ml-1">
-          <h2 className="font-serif text-1xl text-gray-900">
-            Pedoman Pastoral Paroki St.Fransiskus Assisi
-          </h2>
-          <p className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1">
-            Arsip Dokumen Pedoman Pastoral
+    <section className="min-h-screen w-full bg-slate-50">
+      <main className="mx-auto max-w-7xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
+        <header>
+          <p className="text-sm font-semibold text-amber-700">Arsip pastoral</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Pedoman pastoral paroki
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">
+            Pedoman iman dan arah pelayanan Paroki St. Fransiskus Assisi.
           </p>
-        </div>
-      </header>
-      <main className="max-w-5xl mx-auto px-8 py-10">
-        <section className="px-15">
-          {/* ARTIKEL */}
-          <section className="lg:col-span-8 p-10 border border-gray-100 rounded bg-gray-200/40">
-            <p className="text-[1em] font-serif tracking-[0.18em] uppercase text-gray-900 mb-6">
-              Pedoman Iman
-            </p>
-            <p className="text-justify font-serif text-xl text-gray-900 leading-relaxed mb-8 border-l-2 border-gray-200 pl-6 italic">
-              {data.ringkasan}
-            </p>
-            <div className="text-justify text-[1em] text-gray-900 leading-[1.9] font-light space-y-4 whitespace-pre-line">
-              {data.artikel}
-            </div>
-          </section>
-        </section>
+        </header>
+        <article className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+          <header className="mb-6 flex items-center gap-3 border-b border-slate-100 pb-5">
+            <span className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">
+              Pedoman iman
+            </span>
+          </header>
+          <blockquote className="border-l-4 border-amber-600 pl-4 text-base font-semibold leading-7 text-slate-800 sm:text-lg">
+            {data.ringkasan}
+          </blockquote>
+          <p className="mt-6 whitespace-pre-line text-justify text-sm leading-7 text-slate-600 sm:text-base">
+            {data.artikel}
+          </p>
+        </article>
       </main>
     </section>
   );

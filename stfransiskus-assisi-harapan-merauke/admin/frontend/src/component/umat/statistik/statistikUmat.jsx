@@ -1,12 +1,5 @@
 import { createElement } from "react";
-import {
-  Cross,
-  Heart,
-  MapPin,
-  PieChart,
-  Printer,
-  Users,
-} from "lucide-react";
+import { Cross, Heart, MapPin, PieChart, Printer, Users } from "lucide-react";
 
 import StatistikPerStasi from "./statistikPerStasi";
 
@@ -75,16 +68,16 @@ export default function StatistikUmat({ umatList = [] }) {
       color: "blue",
     },
     {
-      label: "Data berstatus hidup",
+      label: "Data umat berstatus hidup",
       value: hidupCount,
       icon: Heart,
       color: "emerald",
     },
     {
-      label: "Data berstatus meninggal",
+      label: "Data umat berstatus meninggal",
       value: meninggalCount,
       icon: Cross,
-      color: "rose",
+      color: "gray",
     },
     {
       label: "Kartu keluarga terdaftar",
@@ -94,10 +87,10 @@ export default function StatistikUmat({ umatList = [] }) {
     },
   ];
   const colorClasses = {
-    blue: "border-sky-200 bg-sky-50 text-sky-800",
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
-    rose: "border-rose-200 bg-rose-50 text-rose-800",
-    amber: "border-amber-200 bg-amber-50 text-amber-800",
+    blue: "border-sky-200 bg-sky-50  text-slate-900 ",
+    emerald: "border-emerald-200 bg-emerald-50  text-slate-900 ",
+    gray: "border-black/20 bg-black/10  text-slate-900 cursor-pointer",
+    amber: "border-amber-200 bg-amber-50  text-slate-900 ",
   };
 
   const counts = new Map();
@@ -172,7 +165,9 @@ export default function StatistikUmat({ umatList = [] }) {
             className={`rounded-2xl border p-4 sm:p-5 ${colorClasses[color]}`}
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-medium leading-5">{label}</p>
+              <p className="text-sm font-semibold leading-5  text-slate-900 ">
+                {label}
+              </p>
               <span className="rounded-xl bg-white/80 p-2.5">
                 {createElement(icon, { size: 19, "aria-hidden": true })}
               </span>
@@ -207,7 +202,7 @@ export default function StatistikUmat({ umatList = [] }) {
 }
 
 function MetricPanel({ title, description, metrics, total, color }) {
-  const barColor = color === "amber" ? "bg-amber-600" : "bg-sky-700";
+  const barColor = color === "amber" ? "bg-amber-400 " : "bg-emerald-500";
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">

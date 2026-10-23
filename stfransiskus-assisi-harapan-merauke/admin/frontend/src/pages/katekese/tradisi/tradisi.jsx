@@ -197,8 +197,8 @@ export default function Tradisi() {
       </header>
 
       {/* STICKY SEARCH BAR */}
-      <section className="sticky top-0 z-40 -mt-5 px-1 transition-all duration-300 sm:-mt-8 sm:px-6">
-        <div className="max-w-4xl mx-auto py-2">
+      <section className="sticky top-0 z-40 -mt-5 px-1 sm:-mt-7 sm:px-6">
+        <div className="max-w-3xl mx-auto py-2">
           <div className="bg-white p-2 rounded-2xl shadow-xl shadow-indigo-950/5 border border-gray-100 flex items-center">
             <div className="relative flex-1">
               <Search

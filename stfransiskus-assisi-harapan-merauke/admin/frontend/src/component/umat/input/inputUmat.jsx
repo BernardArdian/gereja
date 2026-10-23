@@ -85,9 +85,7 @@ const transformToPayload = (formData) => {
         tglMeninggal: almarhum.tglMeninggal || "Data Awal",
         lokasiMakam: almarhum.lokasiMakam || "-",
       }),
-      anak: formData.anak
-        .filter((child) => child.nama.trim())
-        .map(mapPerson),
+      anak: formData.anak.filter((child) => child.nama.trim()).map(mapPerson),
     },
   };
 };
@@ -222,7 +220,10 @@ const SakramenDetail = ({
 const SakramenBlock = ({ personData, onUpdate, personLabel }) => (
   <div className="space-y-2">
     {["baptis", "komuni", "krisma"].map((s) => (
-      <div key={s} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+      <div
+        key={s}
+        className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
+      >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
           <span className="w-32 text-sm font-semibold capitalize text-slate-800">
             {s === "komuni" ? "Komuni pertama" : s}
@@ -272,7 +273,10 @@ const StatusHidupBlock = ({ personData, onUpdate, label }) => (
       </span>
       <div className="flex gap-4">
         {["hidup", "meninggal"].map((s) => (
-          <label key={s} className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm text-slate-700 hover:bg-white">
+          <label
+            key={s}
+            className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm text-slate-700 hover:bg-white"
+          >
             <input
               type="radio"
               name={`life-status-${label}`}
@@ -280,9 +284,7 @@ const StatusHidupBlock = ({ personData, onUpdate, label }) => (
               checked={personData.statusHidup === s}
               onChange={() => onUpdate("statusHidup", s)}
             />
-            <span className="capitalize">
-              {s}
-            </span>
+            <span className="capitalize">{s}</span>
           </label>
         ))}
       </div>
@@ -454,41 +456,41 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
     >
       <header className="space-y-4">
         <div className="flex items-start gap-3">
-        <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
-          <UserRound size={20} aria-hidden="true" />
-        </span>
-        <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
-          {isEdit ? "Perbarui data terdaftar" : "Pendaftaran umat"}
-        </p>
-        <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-          {isEdit ? "Edit data umat" : "Input data umat"}
-        </h1>
-        <p className="mt-1 text-sm leading-6 text-slate-600">
-          Pilih status pernikahan, lalu lengkapi data diri dan sakramen.
-        </p>
-        </div>
+          <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+            <UserRound size={20} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+              {isEdit ? "Perbarui data terdaftar" : "Pendaftaran umat"}
+            </p>
+            <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+              {isEdit ? "Edit data umat" : "Input data umat"}
+            </h1>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Pilih status pernikahan, lalu lengkapi data diri dan sakramen.
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap justify-center gap-2">
-        {["belum menikah", "menikah", "duda", "janda"].map((s) => {
-          const isActive = formData.statusNikah === s;
-          return (
-            <button
-              key={s}
-              type="button"
-              aria-pressed={isActive}
-              onClick={() => handleStatusNikahChange(s)}
-              className={`inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold capitalize transition sm:px-4 ${
-                isActive
-                  ? `${statusConfig[s]} ring-2 ring-amber-100`
-                  : "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50"
-              }`}
-            >
-              {isActive && <Check size={14} aria-hidden="true" />}
-              {s}
-            </button>
-          );
-        })}
+          {["belum menikah", "menikah", "duda", "janda"].map((s) => {
+            const isActive = formData.statusNikah === s;
+            return (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => handleStatusNikahChange(s)}
+                className={`inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold capitalize transition sm:px-4 ${
+                  isActive
+                    ? `${statusConfig[s]}`
+                    : "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50"
+                }`}
+              >
+                {isActive && <Check size={14} aria-hidden="true" />}
+                {s}
+              </button>
+            );
+          })}
         </div>
       </header>
 
@@ -511,7 +513,10 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               },
             ].map(({ label, placeholder, key }) => (
               <div key={key} className="flex flex-col gap-1.5">
-                <label htmlFor={`umat-${key}`} className="text-xs font-medium text-slate-700">
+                <label
+                  htmlFor={`umat-${key}`}
+                  className="text-xs font-medium text-slate-700"
+                >
                   {label}
                 </label>
                 <input
@@ -630,7 +635,10 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
               },
             ].map(({ label, placeholder, key }) => (
               <div key={key} className="flex flex-col gap-1.5">
-                <label htmlFor={`family-${key}`} className="text-xs font-medium text-slate-700">
+                <label
+                  htmlFor={`family-${key}`}
+                  className="text-xs font-medium text-slate-700"
+                >
                   {label}
                 </label>
                 <input
@@ -861,7 +869,9 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
                           checked={a.statusNikah === stat}
                           onChange={() => {
                             const newAnak = formData.anak.map((child, i) =>
-                              i === idx ? { ...child, statusNikah: stat } : child,
+                              i === idx
+                                ? { ...child, statusNikah: stat }
+                                : child,
                             );
                             setFormData({ ...formData, anak: newAnak });
                           }}
@@ -979,7 +989,11 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
           className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
         >
           {loading ? (
-            <LoaderCircle size={18} className="animate-spin" aria-hidden="true" />
+            <LoaderCircle
+              size={18}
+              className="animate-spin"
+              aria-hidden="true"
+            />
           ) : (
             <Save size={18} aria-hidden="true" />
           )}

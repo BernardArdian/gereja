@@ -138,12 +138,16 @@ export default function Umat() {
   const handleSave = (savedUmat, isEdit) => {
     setLoadError("");
     if (!(savedUmat?._id || savedUmat?.id)) {
-      setLoadError("Data berhasil dikirim, tetapi server tidak mengembalikan ID umat.");
+      setLoadError(
+        "Data berhasil dikirim, tetapi server tidak mengembalikan ID umat.",
+      );
       return false;
     }
 
     const normalized = normalizeUmat(savedUmat);
-    const currentIndex = umatList.findIndex((item) => item.id === normalized.id);
+    const currentIndex = umatList.findIndex(
+      (item) => item.id === normalized.id,
+    );
     setUmatList((current) => {
       const exists = current.some((item) => item.id === normalized.id);
       return exists
@@ -221,15 +225,13 @@ export default function Umat() {
     <section className="min-h-full w-full bg-slate-50">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
         <header>
-          <p className="text-sm font-semibold text-amber-700">
-            Data komunitas
-          </p>
+          <p className="text-sm font-semibold text-amber-700">Data komunitas</p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Data umat paroki
+            Data umat
           </h1>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Kelola data keluarga, sakramen, dan statistik umat Paroki
-            St. Fransiskus Assisi.
+            Kelola data keluarga, sakramen, dan statistik umat Paroki St.
+            Fransiskus Assisi.
           </p>
         </header>
 

@@ -4,13 +4,9 @@ import {
   Newspaper,
   ChevronLeft,
   ChevronRight,
-  User,
-  Calendar,
-  ExternalLink,
 } from "lucide-react";
 
 import DetailBerita from "../../component/detail/detailBerita";
-import { Form } from "react-router-dom";
 import ListBerita from "../../component/berita/lsitBerita";
 
 export default function Berita() {
@@ -131,74 +127,60 @@ export default function Berita() {
 
   // --- TAMPILAN LIST UTAMA ---
   return (
-    <section className="w-full min-h-screen px-4">
-      {/* HEADER */}
-      <header className="py-4 border-b border-amber-500 mb-4 rounded-b-xl mt-1 bg-[#B38728]/60 ">
-        <section className="max-w-5xl mx-auto ml-1 mr-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <section className="min-h-screen w-full bg-slate-50">
+      <main className="mx-auto max-w-7xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
+        <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
-            <h2 className="font-serif text-1xl text-gray-900">
-              Berita Paroki St.Fransiskus Assisi
-            </h2>
-            <p className="text-[12px] font-smibold tracking-[0.18em] uppercase text-gray-800 mb-1">
-              Arsip Berita Paroki
+            <p className="text-sm font-semibold text-amber-800">Kabar paroki</p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Berita paroki
+            </h1>
+            <p className="mt-2 text-sm text-slate-600">
+              Informasi dan kegiatan Paroki St. Fransiskus Assisi.
             </p>
           </div>
-
-          <section className="relative w-full md:w-72">
+          <div className="relative w-full sm:max-w-sm">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-              size={14}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+              aria-hidden="true"
             />
             <input
-              type="text"
+              type="search"
+              aria-label="Cari berita"
               placeholder="Cari judul berita..."
               value={searchQuery}
               onChange={handleSearch}
-              className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
             />
-          </section>
-        </section>
-      </header>
+          </div>
+        </header>
 
-      {/* MAIN */}
-      <main className="max-w-5xl mx-auto px-8 py-10">
-        <section
-          className="px-15 pb-15"
-          children={
-            paginatedData.length > 0 ? (
-              <ListBerita
-                data={newsList.slice(0, 3)}
-                handler={{ showDetail: (item) => setSelectedNews(item) }}
-              />
-            ) : (
-              <div className="text-center py-24 text-gray-300">
-                <Newspaper size={36} className="mx-auto mb-4" />
-                <p className="text-xs uppercase tracking-widest">
-                  Berita tidak ditemukan
-                </p>
-              </div>
-            )
-          }
-        />
+        {paginatedData.length > 0 ? (
+          <ListBerita
+            data={paginatedData}
+            handler={{ showDetail: (item) => setSelectedNews(item) }}
+          />
+        ) : (
+          <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center text-slate-500">
+            <Newspaper size={36} className="mx-auto mb-4 text-slate-300" />
+            <p className="text-sm font-medium">Berita tidak ditemukan</p>
+            <p className="mt-1 text-xs">Coba gunakan kata kunci yang berbeda.</p>
+          </div>
+        )}
 
         {/* PAGINATION */}
         {totalPages > 1 && (
-          <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
-            <p className="text-xs text-gray-100">
-              <span
-                className="text-gray-700 font-serif font-medium"
-                children={`Menanpilkan ${paginatedData.length} dari`}
-              />
-              <span
-                className="text-gray-700 font-serif font-medium"
-                children={` ${filteredData.length} berita`}
-              />
+          <footer className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-slate-600">
+              Menampilkan {paginatedData.length} dari {filteredData.length} berita
             </p>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+                aria-label="Halaman sebelumnya"
+                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={14} />
               </button>
@@ -208,7 +190,8 @@ export default function Berita() {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                    aria-current={currentPage === i + 1 ? "page" : undefined}
+                    className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
                     children={i + 1}
                   />
                 ))}
@@ -218,7 +201,8 @@ export default function Berita() {
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+                aria-label="Halaman berikutnya"
+                className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronRight size={14} />
               </button>

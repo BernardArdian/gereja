@@ -156,8 +156,8 @@ export default function AdminPages({ isOpen, handlers = {} }) {
           <button
             type="button"
             aria-label="Tutup manajemen administrator"
-            onClick={handlers.cancel}
-            className="shrink-0 cursor-pointer rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+            onClick={() => handlers.cancel?.()}
+            className="flex min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
           >
             <X size={20} aria-hidden="true" />
           </button>

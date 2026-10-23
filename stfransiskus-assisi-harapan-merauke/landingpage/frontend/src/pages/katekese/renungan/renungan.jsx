@@ -1,13 +1,10 @@
 import { useState, useMemo } from "react";
 import {
   Search,
-  Clock,
-  Users,
   ChevronLeft,
   ChevronRight,
   ArrowRight,
   BookOpen,
-  PlayCircle,
 } from "lucide-react";
 
 export default function Renungan() {
@@ -95,9 +92,9 @@ export default function Renungan() {
   );
 
   return (
-    <section className="min-h-screen pb-12">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* HERO */}
-      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
+      <header className="relative mb-6 min-h-52 w-full overflow-hidden rounded-2xl sm:mb-8">
         <img
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -107,130 +104,113 @@ export default function Renungan() {
           }}
         />
         <div className="absolute inset-0 bg-black/60 z-10" />
-        <section className="h-full flex flex-row justify-between">
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-white/50 mb-1">
+        <section className="relative z-20 flex min-h-52 flex-col justify-between gap-6 p-5 sm:flex-row sm:items-end sm:p-8">
+          <section>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
               Santapan Rohani
             </p>
-            <h1 className="font-serif text-3xl text-white">Renungan</h1>
+            <h2 className="font-serif text-3xl font-bold text-white sm:text-4xl">
+              Renungan
+            </h2>
           </section>
 
           {/* SEARCH */}
-          <section className="flex flex-row  items-center">
-            <section className="relative z-20 h-full flex flex-col items-center justify-end p-8">
-              <div className="flex w-10 h-10 justify-center text-white items-center bg-rose-500 relative border rounded-3xl border-red-600">
-                <button
-                  className="cursor-pointer"
-                  onClick={""}
-                  children={<PlayCircle size={30} />}
-                />
-              </div>
-            </section>
-            <section className="relative z-20 h-full flex flex-col justify-end p-8">
-              <section className="relative border rounded border-gray-100">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                  size={14}
-                />
-                <input
-                  type="text"
-                  placeholder="Cari judul atau ayat Alkitab..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
-                />
-              </section>
-            </section>
+          <section className="w-full sm:max-w-sm">
+            <div className="relative">
+              <Search
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                aria-label="Cari renungan"
+                placeholder="Cari judul atau ayat Alkitab..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full rounded-xl border border-white/70 bg-white/95 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-100"
+              />
+            </div>
           </section>
         </section>
       </header>
 
       {/* LIST */}
-      <main className="px-15 pb-15">
-        <section className="divide-y divide-gray-100 rounded"
-        children=
-          {paginatedData.length === 0 && (
-            <section className="flex w-full items-center justify-center">
-              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
-                Katekese belum di inputkan atau judul yang anda cari tidak ada.
+      <main className="mx-auto mt-6 w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:mt-10">
+        {paginatedData.length === 0 && (
+          <p className="py-10 text-center text-sm text-slate-500">
+            Tidak ada hasil ditemukan.
+          </p>
+        )}
+        {paginatedData.map((item) => (
+          <section
+            key={item.id}
+            onClick={() => setSelectedItem(item)}
+            className="group relative cursor-pointer overflow-hidden border-b border-slate-100 bg-white p-4 transition hover:bg-slate-50 sm:p-6"
+          >
+            <section className="absolute right-0 top-0">
+              <span className="rounded-bl-xl bg-amber-50 px-3 py-1.5 text-[9px] font-bold uppercase text-amber-900 sm:px-5">
+                {item.category}
               </span>
             </section>
-          ),
-          paginatedData.map((item) => (
-            <section
-              key={item.id}
-              onClick={() => setSelectedItem(item)}
-              className="flex gap-6 p-6 md:p-8 bg-slate-300/50 hover:bg-slate-200/60 mb-1 rounded border border-stone-300 transition-colors cursor-pointer group relative overflow-hidden"
-            >
-              <section className="absolute top-0 right-0">
-                <span className="px-6 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase rounded-bl-2xl">
-                  {item.category}
-                </span>
-              </section>
-              {/* DATE BLOCK */}
-              <section className="flex flex-col items-center justify-center p-4 bg-gray-50/30 rounded-2xl min-w-[100px] h-fit">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+            <section className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+              <div className="flex h-fit w-fit min-w-20 flex-row items-center gap-2 rounded-xl bg-slate-50 p-3 sm:min-w-24 sm:flex-col sm:gap-0 sm:p-4">
+                <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-400">
                   {item.date.split(" ")[1]}
                 </span>
-                <span className="text-3xl font-black text-indigo-900 leading-none my-1">
+                <span className="text-2xl font-black leading-none text-amber-900 sm:my-1 sm:text-3xl">
                   {item.date.split(" ")[0]}
                 </span>
-                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">
                   {item.date.split(" ")[2]}
                 </span>
-              </section>
-
-              <div className="w-px bg-gray-100 flex-shrink-0" />
-
-              {/* CONTENT */}
-              <section className="flex-1 flex flex-col justify-between">
-                <div>
-                  <span className="flex items-center gap-2 text-[10px] text-gray-900 font-semibold uppercase tracking-widest mb-2">
-                    <BookOpen size={16} /> {item.verse}
-                  </span>
-                  <h3 className="font-serif text-lg text-gray-900 mb-2 group-hover:text-gray-500 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-900 leading-relaxed font-light italic line-clamp-2">
-                    "{item.excerpt}"
-                  </p>
-                </div>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                  <span className="text-xs text-gray-900 font-semibold">
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase text-indigo-500">
+                  <BookOpen size={12} aria-hidden="true" /> {item.verse}
+                </span>
+                <h3 className="mb-3 break-words text-lg font-bold text-slate-900 transition-colors group-hover:text-amber-800 sm:text-2xl">
+                  {item.title}
+                </h3>
+                <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-slate-600 sm:mb-6">
+                  "{item.excerpt}"
+                </p>
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                  <span className="text-xs font-semibold text-gray-600">
                     {item.author}
                   </span>
-                  <span className="text-[10px] text-gray-600 uppercase tracking-widest group-hover:text-gray-500 transition-colors flex items-center gap-1">
-                    Baca selengkapnya <ArrowRight size={10} />
-                  </span>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSelectedItem(item);
+                    }}
+                    className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-amber-800 transition hover:gap-2"
+                  >
+                    Baca Selengkapnya <ArrowRight size={14} />
+                  </button>
                 </div>
-              </section>
+              </div>
             </section>
-          ))}
-        >
-        </section>
+          </section>
+        ))}
       </main>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 ">
-          <p className="text-xs text-gray-100">
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={`Menampilkan ${paginatedData.length} dari`}
-            />
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={` ${filteredData.length} renungan`}
-            />
+        <footer className="mt-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-600">
+            Menampilkan {paginatedData.length} dari {filteredData.length} renungan
           </p>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman sebelumnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={14} />
             </button>
@@ -240,7 +220,8 @@ export default function Renungan() {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                  aria-current={currentPage === i + 1 ? "page" : undefined}
+                  className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
                   children={i + 1}
                 />
               ))}
@@ -248,7 +229,8 @@ export default function Renungan() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman berikutnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={14} />
             </button>

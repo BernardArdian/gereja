@@ -12,67 +12,52 @@ export default function VisiMisiGereja() {
   };
 
   return (
-    <section className="min-h-screen pb-12">
-      <main className="max-w-6xl mx-auto p-8">
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* VISI CARD*/}
-          <div className="lg:col-span-12">
-            <section className="bg-stone-400/40 rounded p-8 md:p-12 border border-gray-100 relative overflow-hidden group">
-              {/* Decorative Background */}
-              <section className="absolute top-0 right-0 p-8 text-indigo-50/50 group-hover:text-indigo-50 transition-colors">
-                <Sparkles size={120} />
-              </section>
-
-              <section className="relative text-justify z-10 flex flex-col items-center text-center">
-                <div className="h-16 w-16 bg-slate-200 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
-                  <Target size={32} />
-                </div>
-                <h3 className="text-[16px] font-poppins font-black text-blue-500/90 uppercase tracking-[0.3em] mb-4">
-                  Visi Utama
-                </h3>
-                <p
-                  className="text-2xl md:text-3xl font-bold text-gray-800 leading-relaxed max-w-3xl italic"
-                  children={data.visi}
-                />
-              </section>
-            </section>
+    <section className="w-full">
+      <main className="mx-auto w-full max-w-6xl space-y-5">
+        <article className="relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-slate-50 p-6 shadow-sm sm:p-10">
+          <Sparkles
+            size={100}
+            className="pointer-events-none absolute -right-3 -top-3 text-amber-100 sm:right-4 sm:top-4"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
+            <span className="rounded-2xl bg-amber-100 p-3 text-amber-800">
+              <Target size={25} aria-hidden="true" />
+            </span>
+            <h2 className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">
+              Visi utama
+            </h2>
+            <p className="mt-4 text-lg font-semibold leading-8 text-slate-800 sm:text-2xl sm:leading-10">
+              “{data.visi}”
+            </p>
           </div>
+        </article>
 
-          {/* MISI CARD */}
-          <div className="lg:col-span-12">
-            <div className="bg-stone-600/40 rounded border border-gray-100  overflow-hidden flex flex-col md:flex-row">
-              {/* Left Side: Title */}
-              <div className="bg-[#B38728] p-10 md:w-1/3 flex flex-col justify-center text-white">
-                <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm">
-                  <Compass size={24} />
-                </div>
-                <h3 className="text-2xl font-black mb-2">Misi Kami</h3>
-                <p className="text-xl font-semibold text-gray-900">
-                  Langkah-langkah strategis yang kami ambil untuk mewujudkan
-                  visi ilahi di tengah umat.
-                </p>
-              </div>
-
-              {/* Right Side: Mission Items */}
-              <div className="p-10 md:w-2/3">
-                <ul
-                  className="space-y-6"
-                  children={data.misi.map((misi, index) => (
-                    <li key={index} className="flex gap-4 items-start group">
-                      <div
-                        className="flex-shrink-0 w-8 h-8 bg-gray-50 rounded-full flex items-center justify-center text-xs font-black text-indigo-400 group-hover:bg-[#B38728]/70 group-hover:text-white transition-all"
-                        children={index + 1}
-                      />
-                      <p
-                        className="text-gray-900 font-medium font-semibold leading-relaxed pt-1"
-                        children={misi}
-                      />
-                    </li>
-                  ))}
-                />
-              </div>
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <header className="flex items-center gap-3 border-b border-slate-200 p-4 sm:p-6">
+            <span className="rounded-xl bg-sky-50 p-2.5 text-sky-800">
+              <Compass size={20} aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="font-semibold text-slate-900">Misi pelayanan</h2>
+              <p className="mt-1 text-xs text-slate-600">
+                {data.misi.length} komitmen untuk mewujudkan visi paroki.
+              </p>
             </div>
-          </div>
+          </header>
+          <ol className="divide-y divide-slate-100">
+            {data.misi.map((misi, index) => (
+              <li
+                key={`${index}-${misi}`}
+                className="flex items-start gap-3 px-4 py-4 sm:gap-4 sm:px-6"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-50 text-sm font-bold text-amber-900">
+                  {index + 1}
+                </span>
+                <p className="pt-1 text-sm leading-6 text-slate-700">{misi}</p>
+              </li>
+            ))}
+          </ol>
         </section>
       </main>
     </section>

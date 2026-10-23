@@ -169,7 +169,7 @@ export default function TableUmat({
             }}
             className="md:w-44"
             options={[
-              { value: "", label: "Semua status pernikahan" },
+              { value: "", label: "Semua status" },
               { value: "lajang", label: "Belum menikah" },
               { value: "menikah", label: "Sudah menikah" },
               { value: "janda", label: "Janda" },
@@ -275,7 +275,7 @@ export default function TableUmat({
                     item.id === highlightedUmatId
                       ? "umat-row-highlight"
                       : item.statusHidup === "meninggal"
-                        ? "bg-red-50/40"
+                        ? "bg-black/20"
                         : ""
                   }`}
                 >
@@ -283,7 +283,7 @@ export default function TableUmat({
                   <td className="px-4 md:px-8 py-5">
                     <div className="flex flex-col items-center md:items-start">
                       <span
-                        className={`text-center md:text-left text-base font-bold tracking-tight ${item.statusHidup === "meninggal" ? "text-red-600 italic" : "text-slate-800"}`}
+                        className={`text-center md:text-left text-base font-bold tracking-tight ${item.statusHidup === "meninggal" ? "text-slate-800" : ""}`}
                       >
                         {item.name} {item.statusHidup === "meninggal" && "†"}
                       </span>
@@ -326,16 +326,13 @@ export default function TableUmat({
                     <div className="flex justify-center gap-1.5">
                       {["baptis", "komuni", "krisma"].map((s) => {
                         const isDone = isSacramentComplete(item, s);
+                        if (!isDone) return null;
                         return (
                           <div
                             key={s}
-                            className={`w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-bold uppercase transition-all border ${
-                              isDone
-                                ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                                : "bg-blue-300/50 border-slate-100 text-gray-800"
-                            }`}
+                            className="w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-bold uppercase transition-all border bg-emerald-50 border-emerald-100  text-slate-900"
                           >
-                            {s.charAt(0)}
+                            {s === "krisma" ? s[0] + s[1] : s[0] + s[2]}
                           </div>
                         );
                       })}

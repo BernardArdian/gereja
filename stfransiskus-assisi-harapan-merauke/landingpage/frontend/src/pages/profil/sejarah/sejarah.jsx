@@ -28,91 +28,63 @@ Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pu
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-8">
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <section className="lg:col-span-8 space-y-8">
-          <section className="bg-stone-400/40 rounded border border-gray-100 p-8 md:p-12 border border-gray-100">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-12 w-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                <History size={24} />
+    <main className="mx-auto w-full max-w-6xl">
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,0.8fr)]">
+        <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+          <header className="mb-5 flex items-center gap-3">
+            <span className="rounded-xl bg-amber-50 p-2.5 text-amber-800">
+              <History size={20} aria-hidden="true" />
+            </span>
+            <h2 className="text-lg font-semibold text-slate-900">
+              Perjalanan iman
+            </h2>
+          </header>
+          <blockquote className="border-l-4 border-amber-600 pl-4 text-base font-semibold leading-7 text-slate-800 sm:text-lg">
+            {data.ringkasan}
+          </blockquote>
+          <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">
+            {data.artikel}
+          </p>
+          <section className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {["Foto masa lalu", "Foto saat ini"].map((label) => (
+              <div
+                key={label}
+                className="flex aspect-video flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-slate-500"
+              >
+                <ImageIcon size={25} aria-hidden="true" />
+                <span className="mt-2 text-xs font-medium">{label}</span>
+                <span className="mt-1 text-[11px]">Belum ada foto</span>
               </div>
-              <h3 className="text-2xl font-serif text-gray-800 tracking-tight">
-                Perjalanan Iman
-              </h3>
-            </div>
-
-            <section
-              className="prose prose-indigo text-justify max-w-none"
-              children={[
-                <p
-                  className="text-xl font-bold text-gray-900 leading-relaxed mb-6 italic border-l-4 border-indigo-500 pl-6"
-                  children={data.ringkasan}
-                />,
-                <div
-                  className="text-gray-900 leading-[1.8] font-medium space-y-4 whitespace-pre-line"
-                  children={data.artikel}
-                />,
-              ]}
-            />
-
-            {/* Placeholder Foto Sejarah */}
-            <div className="mt-12 grid grid-cols-2 gap-4">
-              <div className="aspect-video bg-gray-100 rounded-3xl flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                <ImageIcon size={32} className="mb-2" />
-                <span className="text-[10px] font-black uppercase">
-                  Foto Masa Lalu
-                </span>
-              </div>
-              <div className="aspect-video bg-gray-100 rounded-3xl flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                <ImageIcon size={32} className="mb-2" />
-                <span className="text-[10px] font-black uppercase">
-                  Foto Saat Ini
-                </span>
-              </div>
-            </div>
+            ))}
           </section>
-        </section>
+        </article>
 
-        {/* SISI KANAN: Timeline / Milestones */}
-        <section className="lg:col-span-4 space-y-6">
-          <section className="bg-[#B38728]/50 border border-gray-100 rounded p-8 text-white shadow-indigo-200">
-            <section className="flex text-gray-900 items-center gap-3 mb-8">
-              <Milestone size={24} />
-              <h3 className="text-lg font-semibold font-serif tracking-tight">
-                Garis Waktu
-              </h3>
-            </section>
-
-            <section className="space-y-8 relative text-justify ">
-              {/* Garis Vertikal Timeline */}
-              <div className="absolute left-[14px] top-2 bottom-2 w-0.5 bg-indigo-700" />
-
-              {data.milestones.map((item, index) => (
-                <div key={index} className="relative pl-10 group">
-                  {/* Dot */}
-                  <div className="absolute left-0 top-1.5 h-6 w-6 rounded-full bg-slate-300 border-4 border-white group-hover:border-sky-900/80 transition-all z-10" />
-
-                  <div className="flex flex-col cursor-pointer">
-                    <span
-                      className="text-black font-black text-sm tracking-widest mb-1 group-hover:text-white"
-                      children={item.tahun}
-                    />
-                    <p
-                      className="text-sm font-medium text-gray-900/80 leading-relaxed group-hover:text-white transition-colors"
-                      children={item.event}
-                    />
-                  </div>
-                </div>
-              ))}
-            </section>
-
-            <footer className="text-center mt-10 pt-6 border-t border-gray-100">
-              <p className="text-[13px] font-semibold text-gray-900 uppercase tracking-widest mb-1">
-                Update Terakhir
+        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
+          <header className="mb-6 flex items-center gap-3">
+            <span className="rounded-xl bg-white p-2.5 text-amber-800">
+              <Milestone size={20} aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="font-semibold text-slate-900">Garis waktu</h2>
+              <p className="mt-1 text-xs text-slate-600">
+                {data.milestones.length} tonggak perjalanan.
               </p>
-              <p className="text-sm font-serif text-gray-800">Februari 2026</p>
-            </footer>
-          </section>
+            </div>
+          </header>
+          <ol className="relative space-y-5 before:absolute before:bottom-2 before:left-[9px] before:top-2 before:w-px before:bg-amber-300">
+            {data.milestones.map((item, index) => (
+              <li key={`${item.tahun}-${index}`} className="relative pl-8">
+                <span className="absolute left-0 top-1.5 h-5 w-5 rounded-full border-4 border-amber-200 bg-amber-700" />
+                <p className="text-sm font-bold text-amber-900">{item.tahun}</p>
+                <p className="mt-1 text-sm leading-6 text-slate-700">
+                  {item.event}
+                </p>
+              </li>
+            ))}
+          </ol>
+          <footer className="mt-6 border-t border-amber-200 pt-4 text-xs text-slate-600">
+            Update terakhir: Februari 2026
+          </footer>
         </section>
       </section>
     </main>

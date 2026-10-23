@@ -1,18 +1,18 @@
 export default function DppTable({ nama, jabatan, periode }) {
   return (
     <tr
-      className="text-center  hover:bg-slate-200/60 transition-colors cursor-pointer group"
+      className="transition hover:bg-slate-50"
       children={[
         <td
-          className="px-3 py-4 font-semibold text-sm text-gray-800 font-medium capitalize"
+          className="px-4 py-4 text-sm font-semibold capitalize text-slate-900 sm:px-6"
           children={nama}
         />,
         <td
-          className="px-3 py-4 font-semibold text-sm text-gray-800 font-medium"
+          className="px-4 py-4 text-sm text-slate-600 sm:px-6"
           children={jabatan}
         />,
         <td
-          className="px-3 py-4 font-semibold text-sm text-gray-800 font-medium"
+          className="px-4 py-4 text-sm text-slate-600 sm:px-6"
           children={periode}
         />,
       ]}

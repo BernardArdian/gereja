@@ -198,69 +198,45 @@ export default function Pengumuman() {
   );
 
   return (
-    <section className="w-full min-h-screen px-4">
-      {/* HEADER */}
-      <header className="py-4 border-b border-amber-500 rounded-b-xl mt-1 bg-[#B38728]/60 mb-4">
-        <section className="max-w-5xl ml-1 mr-1 mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <section>
-            <h2
-              className="font-serif text-1xl text-gray-900"
-              children={"Pengumuman Gereja Paroki St.Fransiskus Assisi"}
-            />
-            <p
-              className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gray-800 mb-1"
-              children={"Arsip Pengumuman Geraja"}
-            />
-          </section>
-          <section className="flex flex-wrap items-center gap-3">
-            {/* Search */}
-            <section className="relative flex-1 min-w-[240px]">
+    <section className="min-h-screen w-full bg-slate-50">
+      <main className="mx-auto max-w-7xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
+        <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-amber-800">
+              Informasi umat
+            </p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Pengumuman paroki
+            </h1>
+            <p className="mt-2 text-sm text-slate-600">
+              Jadwal misa, pernikahan, dan informasi dari setiap stasi.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative min-w-0 flex-1 sm:min-w-60">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
-                size={14}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+                aria-hidden="true"
               />
               <input
-                type="text"
-                placeholder="Cari nama stasi..."
-                className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+                type="search"
+                aria-label="Cari pengumuman"
+                placeholder="Cari pengumuman..."
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
               />
-            </section>
-
-            {/* Filter Stasi */}
-            <section className="relative">
+            </div>
+            <div className="relative flex items-center">
               <Filter
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-400"
+                size={16}
+                aria-hidden="true"
               />
-              {/* <select
-                className="pl-9 pr-8 py-2 border border-gray-300 rounded text-sm text-gray-500 outline-none appearance-none cursor-pointer bg-white focus:border-gray-300 transition-all"
-                value={stasiFilter}
-                onChange={(e) => {
-                  setStasiFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-                children={[
-                  <option value="Semua">Semua Stasi</option>,
-                  stasi.map((item) => (
-                    <option
-                      key={item.id}
-                      value={item.value}
-                      children={item.label}
-                    />
-                  )),
-                ]}
-              /> */}
-
-              <Filter
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 z-10"
-                size={13}
-              />
-
               <CustomDropdown
                 value={stasiFilter}
                 onChange={(val) => {
@@ -275,58 +251,39 @@ export default function Pengumuman() {
                   })),
                 ]}
               />
-            </section>
-          </section>
-        </section>
-      </header>
+            </div>
+          </div>
+        </header>
 
-      {/* GRID */}
-      <main className="max-w-7xl mx-auto w-full flex-1 py-10">
-        <section
-          className="px-15 pb-15"
-          children={
-            paginatedData.length > 0 ? (
-              <ListPengumuman
-                data={paginatedData}
-                handler={{ showDetail: handleShowDetail }}
-              />
-            ) : (
-              <section className="flex flex-col items-center justify-center py-32 text-gray-300">
-                <Search size={36} className="mb-4" />
-                <p
-                  className="text-xs uppercase tracking-widest"
-                  children={"Data tidak ditemukan"}
-                />
-              </section>
-            )
-          }
-        />
+        {paginatedData.length > 0 ? (
+          <ListPengumuman
+            data={paginatedData}
+            handler={{ showDetail: handleShowDetail }}
+          />
+        ) : (
+          <section className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white py-20 text-slate-500">
+            <Search size={36} className="mb-4 text-slate-300" />
+            <p className="text-sm font-medium">Pengumuman tidak ditemukan</p>
+            <p className="mt-1 text-xs">Ubah kata kunci atau filter stasi.</p>
+          </section>
+        )}
 
         {/* PAGINATION */}
         {totalPages > 1 && (
           <footer
-            className="flex p-5 rounded-xl bg-stone-300 items-center justify-between border-t border-gray-100 "
+            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
             children={[
-              <p
-                className="text-xs text-gray-100"
-                children={[
-                  <span
-                    className="text-gray-700 font-serif font-medium"
-                    children={`Menampilkan ${paginatedData.length} dari`}
-                  />,
-                  <span
-                    className="text-gray-700 font-serif font-medium"
-                    children={` ${filteredData.length} pengumuman`}
-                  />,
-                ]}
-              />,
+              <p className="text-sm text-slate-600">
+                Menampilkan {paginatedData.length} dari {filteredData.length} pengumuman
+              </p>,
               <div
                 className="flex items-center gap-1"
                 children={[
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+                    aria-label="Halaman sebelumnya"
+                    className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                     children={<ChevronLeft size={14} />}
                   />,
                   <div
@@ -335,10 +292,11 @@ export default function Pengumuman() {
                       <button
                         key={i}
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${
+                        aria-current={currentPage === i + 1 ? "page" : undefined}
+                        className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${
                           currentPage === i + 1
-                            ? "bg-gray-900 text-white"
-                            : "border border-gray-100 text-gray-900 hover:bg-gray-50"
+                            ? "bg-amber-700 text-white"
+                            : "border border-slate-200 text-slate-700 hover:bg-slate-50"
                         }`}
                         children={i + 1}
                       />
@@ -350,7 +308,8 @@ export default function Pengumuman() {
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+                    aria-label="Halaman berikutnya"
+                    className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                     children={<ChevronRight size={14} />}
                   />,
                 ]}

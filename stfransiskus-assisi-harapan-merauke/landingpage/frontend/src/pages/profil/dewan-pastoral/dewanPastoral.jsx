@@ -2,37 +2,40 @@ import DppTable from "./table/dppTable";
 
 export default function DewanPastoralParoki() {
   return (
-    <section className="pb-12">
-      <div className="border border-stone-600 rounded overflow-hidden">
-        <div className="flex flex-col px-8 py-6 border-b border-gray-100 bg-sky-800/50">
-          <h3 className="font-serif text-xl text-gray-900">
+    <section className="w-full pb-8">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <header className="border-b border-slate-200 px-4 py-5 sm:px-6">
+          <p className="text-sm font-semibold text-amber-800">Kepemimpinan paroki</p>
+          <h2 className="mt-1 text-lg font-bold text-slate-900 sm:text-xl">
             Anggota Dewan Pastoral Paroki St.Fransiskus Assisi
-          </h3>
-          <h3 className="font-serif text-xl text-gray-900">
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
             Harapan Makmur - Merauke Papua Selatan
-          </h3>
-        </div>
-        <table className="w-full bg-sky-700/50 text-left border-collapse">
-          <thead>
-            <tr className="text-center border-b font-serif border-gray-800 bg-gray-50/55">
-              <th className="px-8 py-4 text-[0.70em] font-medium text-gray-900 uppercase tracking-widest">
+          </p>
+        </header>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[36rem] border-collapse text-left">
+            <thead className="bg-slate-50">
+              <tr className="border-b border-slate-200">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Nama
               </th>
-              <th className="px-8 py-4 text-[0.70em] font-medium text-gray-900 uppercase tracking-widest">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Jabatan
               </th>
-              <th className="px-8 py-4 text-[0.70em] font-medium text-gray-900 uppercase tracking-widest">
+              <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
                 Periode
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 bg-stone-300">
+          <tbody className="divide-y divide-slate-100">
             <DppTable nama="arwind" jabatan="Anggota" periode="2022 - 2025" />
             <DppTable nama="mawar" jabatan="Anggota" periode="2022 - 2025" />
             <DppTable nama="irwan" jabatan="Anggota" periode="2022 - 2025" />
             <DppTable nama="linda" jabatan="Anggota" periode="2022 - 2025" />
           </tbody>
         </table>
+        </div>
       </div>
     </section>
   );

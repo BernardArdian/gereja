@@ -1,5 +1,10 @@
 import { useState, useMemo } from "react";
-import { Search, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
 
 export default function OrangKudus() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -134,9 +139,9 @@ export default function OrangKudus() {
   );
 
   return (
-    <section className="min-h-screen pb-12">
+    <section className="w-full min-w-0 pb-8 sm:pb-12">
       {/* HERO */}
-      <header className="relative w-full h-55 overflow-hidden rounded mb-8">
+      <header className="relative mb-6 min-h-52 w-full overflow-hidden rounded-2xl sm:mb-8">
         <img
           className="absolute inset-0 w-full h-full z-0"
           style={{
@@ -146,30 +151,34 @@ export default function OrangKudus() {
           }}
         />
         <div className="absolute inset-0 bg-black/60 z-10" />
-        <section className="h-full flex flex-row justify-between">
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <p className="text-[10px] font-medium tracking-[0.18em] uppercase text-white/50 mb-1">
+        <section className="relative z-20 flex min-h-52 flex-col justify-between gap-6 p-5 sm:flex-row sm:items-end sm:p-8">
+          <section>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
               Perjalanan Iman
             </p>
-            <h1 className="font-serif text-3xl text-white">Orang Kudus</h1>
+            <h2 className="font-serif text-3xl font-bold text-white sm:text-4xl">
+              Orang Kudus
+            </h2>
           </section>
 
           {/* SEARCH */}
-          <section className="relative z-20 h-full flex flex-col justify-end p-8">
-            <div className="relative border rounded border-gray-100">
+          <section className="w-full sm:max-w-sm">
+            <div className="relative">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300"
-                size={14}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+                aria-hidden="true"
               />
               <input
                 type="text"
+                aria-label="Cari orang kudus"
                 placeholder="Cari nama tokoh..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-gray-300 transition-all bg-white"
+                className="w-full rounded-xl border border-white/70 bg-white/95 py-2.5 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-100"
               />
             </div>
           </section>
@@ -177,54 +186,64 @@ export default function OrangKudus() {
       </header>
 
       {/* LIST */}
-      <main className="px-15 pb-15">
-        <section className="divide-y divide-gray-100 overflow-hidden"
+      <main className="px-1 pb-8 sm:px-2">
+        <section className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
         children=
           {paginatedData.length === 0 && (
-            <section className="flex w-full items-center justify-center">
-              <span className="text-center text-gray-300 text-xl uppercase tracking-widest py-12">
-                Katekese belum di inputkan atau judul yang anda cari tidak ada.
-              </span>
-            </section>
+            <p className="py-10 text-center text-sm text-slate-500">
+              Tidak ada hasil ditemukan.
+            </p>
           ),
           paginatedData.map((item) => (
             <section
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="bg-gray-200 hover:bg-slate-300/80 flex border border-stone-300 rounded items-center gap-6 p-6 transition-colors cursor-pointer group mb-1"
+              className="group flex cursor-pointer items-center gap-3 border-b border-slate-100 bg-white p-3 transition hover:bg-slate-50 sm:gap-5 sm:p-5"
             >
-              <form className="size-30 w-25 items-center rounded overflow-hidden flex-shrink-0">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 sm:h-24 sm:w-24">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="h-full w-full object-cover grayscale-[0.5] transition-all duration-500 group-hover:grayscale-0"
                 />
-              </form>
+              </div>
 
-              <section className="flex-1 min-w-0">
-                <form className="flex items-center gap-3 mb-1">
+              <section className="min-w-0 flex-1">
+                <div className="mb-1 flex flex-wrap items-center gap-2 sm:gap-3">
                   <h3
-                    className="font-serif text-base text-gray-900 truncate group-hover:text-gray-500 transition-colors"
+                    className="min-w-0 text-sm font-bold text-slate-900 sm:text-lg"
                     children={item.name}
                   />
                   <span
-                    className="text-[10px] text-gray-800 border border-gray-100 px-2 py-0.5 rounded flex-shrink-0"
+                    className="shrink-0 rounded-md bg-amber-50 px-2 py-0.5 text-[9px] font-bold uppercase text-amber-800"
                     children={item.postDay}
                   />
-                </form>
+                </div>
                 <p
-                  className="text-[10px] text-gray-800 uppercase tracking-widest mb-1"
+                  className="mb-1 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wide text-slate-500 sm:mb-2 sm:text-[10px]"
                   children={`Pelindung ${item.patronOf}`}
                 />
                 <p
-                  className="text-xs text-white font-light line-clamp-1 group-hover:text-gray-500"
+                  className="line-clamp-2 text-[11px] leading-relaxed text-slate-600 sm:text-xs"
                   children={item.summary}
                 />
               </section>
 
-              {/* <div className="text-gray-300 group-hover:text-gray-500 transition-colors text-sm flex-shrink-0">
-                →
-              </div> */}
+              <button
+                type="button"
+                aria-label={`Lihat detail ${item.name}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setSelectedItem(item);
+                }}
+                className="shrink-0 rounded-lg p-2 text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 sm:px-3 sm:py-2"
+              >
+                <span className="hidden text-xs font-semibold sm:inline">
+                  Detail
+                </span>
+                <ArrowRight size={16} className="sm:hidden" />
+                <ArrowRight size={14} className="hidden sm:inline" />
+              </button>
             </section>
           ))}
         />
@@ -232,22 +251,16 @@ export default function OrangKudus() {
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <footer className="flex p-5 rounded-xl bg-gray-300 items-center justify-between border-t border-gray-100 ">
-          <p className="text-xs text-gray-100">
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={`Menampilkan ${paginatedData.length} dari`}
-            />
-            <span
-              className="text-gray-700 font-serif font-medium"
-              children={` ${filteredData.length} orang kudus`}
-            />
+        <footer className="mt-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-600">
+            Menampilkan {paginatedData.length} dari {filteredData.length} orang kudus
           </p>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman sebelumnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={14} />
             </button>
@@ -257,7 +270,8 @@ export default function OrangKudus() {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`cursor-pointer w-8 h-8 rounded text-[11px] font-semibold font-medium transition-all ${currentPage === i + 1 ? "bg-gray-900 text-white" : "border border-gray-100 text-gray-900 hover:bg-gray-50"}`}
+                  aria-current={currentPage === i + 1 ? "page" : undefined}
+                  className={`h-9 min-w-9 cursor-pointer rounded-lg px-2 text-xs font-semibold transition ${currentPage === i + 1 ? "bg-amber-700 text-white" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
                   children={i + 1}
                 />
               ))}
@@ -265,7 +279,8 @@ export default function OrangKudus() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="cursor-pointer p-2 border border-gray-100 rounded hover:bg-gray-50 disabled:opacity-20 transition-all"
+              aria-label="Halaman berikutnya"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={14} />
             </button>

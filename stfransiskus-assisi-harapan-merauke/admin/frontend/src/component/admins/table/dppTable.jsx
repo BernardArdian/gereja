@@ -6,7 +6,7 @@ export default function DppTable({ data, handlers }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
-    <tr className="transition-colors hover:bg-slate-50">
+    <tr className="hover:bg-slate-50">
       <td className="px-4 py-4 text-sm font-semibold text-slate-900 sm:px-6">
         {data.nama}
       </td>
@@ -23,7 +23,7 @@ export default function DppTable({ data, handlers }) {
           <button
             type="button"
             aria-label={`Edit ${data.nama}`}
-            className="cursor-pointer rounded-lg p-2.5 text-amber-800 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="cursor-pointer rounded-lg p-2.5 text-amber-800 hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             onClick={() => handlers.edit(data)}
           >
             <Edit2 size={17} aria-hidden="true" />
@@ -31,7 +31,7 @@ export default function DppTable({ data, handlers }) {
           <button
             type="button"
             aria-label={`Hapus ${data.nama}`}
-            className="cursor-pointer rounded-lg p-2.5 text-rose-700 transition hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+            className="cursor-pointer rounded-lg p-2.5 text-rose-700 hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
             onClick={() => setIsDeleteModalOpen(true)}
           >
             <Trash2 size={17} aria-hidden="true" />

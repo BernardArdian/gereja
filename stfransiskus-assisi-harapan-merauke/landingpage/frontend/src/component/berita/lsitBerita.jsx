@@ -13,69 +13,55 @@ export default function ListBerita({ data, handler }) {
   }
 
   return (
-    <section
-      className="flex flex-col gap-1"
-      children={data.map((item) => (
+    <section className="flex flex-col gap-3">
+      {data.map((item) => (
         <section
           key={item.id}
           onClick={() => handler.showDetail(item)}
-          className="flex flex-col md:flex-row border border-stone-300 gap-6 py-8 px-6 border border-gray-100 group cursor-pointer bg-gray-50 hover:bg-slate-200/60 rounded transition-colors"
+          className="group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-amber-200 hover:shadow-md sm:flex-row"
         >
-          {/* IMAGE */}
-          <section
-            className="md:w-48 h-32 md:h-auto flex-shrink-0 overflow-hidden rounded"
-            children={[
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />,
-            ]}
-          />
-
-          {/* CONTENT */}
-          <section className="flex-1 flex flex-col justify-between">
-            <div>
-              <section
-                className="flex items-center gap-4 text-[0.8em] text-gray-800 uppercase tracking-widest mb-3"
-                children={[
-                  <span
-                    className="flex items-center gap-1"
-                    children={[<Calendar size={11} />, item.date]}
-                  />,
-                  <span
-                    className="flex items-center gap-1"
-                    children={[<User size={11} />, item.author]}
-                  />,
-                ]}
-              />
-              <h3
-                className="font-serif text-xl text-gray-900 leading-snug"
-                children={item.title}
-              />
-              {item.excerpt && (
-                <p
-                  className="text-xs text-gray-500 mt-2 leading-relaxed line-clamp-2"
-                  children={item.excerpt}
-                />
-              )}
-            </div>
-            <div
-              className="mt-4"
-              children={
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handler.showDetail(item);
-                  }}
-                  className="text-[10px] text-gray-800 uppercase tracking-widest flex items-center gap-1 hover:text-gray-700 transition-colors"
-                  children={["Baca ", <ExternalLink size={11} />]}
-                />
-              }
+          <section className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-100 sm:aspect-auto sm:h-auto sm:w-56">
+            <img
+              src={item.image}
+              alt={item.title}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
+          </section>
+          <section className="flex min-w-0 flex-1 flex-col justify-between p-4 sm:p-5">
+            <section className="min-w-0">
+              <section className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-slate-500">
+                <span className="flex items-center gap-1.5">
+                  <Calendar size={14} aria-hidden="true" /> {item.date}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <User size={14} aria-hidden="true" /> {item.author}
+                </span>
+              </section>
+              <h2 className="mb-2 break-words text-base font-semibold leading-snug text-slate-900 transition-colors group-hover:text-amber-800 sm:text-lg">
+                {item.title}
+              </h2>
+              {item.excerpt && (
+                <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+                  {item.excerpt}
+                </p>
+              )}
+            </section>
+            <section className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+              <button
+                type="button"
+                aria-label={`Baca berita: ${item.title}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handler.showDetail(item);
+                }}
+                className="inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-lg px-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-50 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+              >
+                Baca <ExternalLink size={12} aria-hidden="true" />
+              </button>
+            </section>
           </section>
         </section>
       ))}
-    />
+    </section>
   );
 }

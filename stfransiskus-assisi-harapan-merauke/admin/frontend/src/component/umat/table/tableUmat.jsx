@@ -486,6 +486,142 @@ export default function TableUmat({
         umat={selectedUmat}
         onClose={() => setSelectedUmat(null)}
       />
+      <UmatPrintPreview
+        isOpen={isPrintPreviewOpen}
+        onClose={() => setIsPrintPreviewOpen(false)}
+        title="Pratinjau daftar umat"
+        description={`${filteredUmat.length.toLocaleString("id-ID")} data sesuai filter • ${printPages.length.toLocaleString("id-ID")} lembar • Maksimal ${PRINT_ROWS_PER_PAGE} data per lembar, dikelompokkan menurut status pernikahan.`}
+      >
+        <div className="umat-print-roster">
+          {printPages.length === 0 ? (
+            <article className="umat-print-document rounded-sm bg-white p-8 text-center text-sm text-slate-600 shadow-2xl">
+              Tidak ada data umat untuk dicetak.
+            </article>
+          ) : (
+            printPages.map((page, pageNumber) => {
+              const firstRowNumber =
+                page.pageIndex * PRINT_ROWS_PER_PAGE + 1;
+              const lastRowNumber = firstRowNumber + page.rows.length - 1;
+
+              return (
+                <article
+                  key={`${page.key}-${page.pageIndex}`}
+                  className="umat-print-document umat-roster-print-page mx-auto mb-5 max-w-5xl bg-white p-6 text-slate-900 shadow-2xl sm:p-10"
+                >
+                  <header className="border-b-2 border-amber-700 pb-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">
+                      Paroki St. Fransiskus Assisi
+                    </p>
+                    <div className="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                      <div>
+                        <h1 className="text-2xl font-bold tracking-tight text-slate-950">
+                          Daftar Umat
+                        </h1>
+                        <p className="mt-1 text-sm text-slate-600">
+                          Data dikelompokkan berdasarkan status pernikahan.
+                        </p>
+                      </div>
+                      <p className="text-sm text-slate-600">
+                        Tanggal laporan:{" "}
+                        <span className="font-semibold text-slate-900">
+                          {reportDate}
+                        </span>
+                      </p>
+                    </div>
+                  </header>
+
+                  <section className="mt-5 flex flex-col justify-between gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 sm:flex-row sm:items-center">
+                    <div>
+                      <h2 className="font-bold text-amber-950">
+                        Status: {page.label}
+                      </h2>
+                      <p className="mt-0.5 text-xs text-amber-900/80">
+                        Data {firstRowNumber.toLocaleString("id-ID")}–
+                        {lastRowNumber.toLocaleString("id-ID")} dari{" "}
+                        {page.totalRows.toLocaleString("id-ID")} pada kelompok
+                        ini
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold tabular-nums text-amber-950">
+                      {page.totalRows.toLocaleString("id-ID")} data
+                    </span>
+                  </section>
+
+                  <table className="umat-roster-print-table mt-4 w-full border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-100 text-left text-[10px] uppercase tracking-wide text-slate-700">
+                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                          No.
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                          Nama umat / keluarga
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                          No. KK
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                          Stasi
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                          Baptis
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                          Komuni
+                        </th>
+                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                          Krisma
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {page.rows.map((item, rowIndex) => (
+                        <tr key={item.id}>
+                          <td className="border border-slate-300 px-2 py-2 text-center tabular-nums">
+                            {(firstRowNumber + rowIndex).toLocaleString("id-ID")}
+                          </td>
+                          <th
+                            scope="row"
+                            className="border border-slate-300 px-2 py-2 text-left font-semibold"
+                          >
+                            {item.name}
+                            {item.statusHidup === "meninggal" ? " †" : ""}
+                          </th>
+                          <td className="border border-slate-300 px-2 py-2 tabular-nums">
+                            {item.noKk || "-"}
+                          </td>
+                          <td className="border border-slate-300 px-2 py-2">
+                            {item.stasiKeluarga ||
+                              item.lingkungan ||
+                              "Tanpa Stasi"}
+                          </td>
+                          {["baptis", "komuni", "krisma"].map((sacrament) => (
+                            <td
+                              key={sacrament}
+                              className="border border-slate-300 px-2 py-2 text-center"
+                            >
+                              {isSacramentComplete(item, sacrament)
+                                ? "Sudah"
+                                : "Belum"}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <footer className="mt-5 flex justify-between border-t border-slate-300 pt-3 text-xs text-slate-500">
+                    <span>Data umat Paroki St. Fransiskus Assisi</span>
+                    <span>
+                      Lembar {(pageNumber + 1).toLocaleString("id-ID")} dari{" "}
+                      {printPages.length.toLocaleString("id-ID")}
+                    </span>
+                  </footer>
+                </article>
+              );
+            })
+          )}
+        </div>
+      </UmatPrintPreview>
     </main>
   );
 }

@@ -14,8 +14,8 @@ export default function Footers({ theme, onToggleTheme }) {
     <footer
       className={`w-full border-t border-amber-600 transition-colors ${
         isDark
-          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
-          : "bg-gradient-to-br from-slate-800 via-slate-800 to-slate-950 text-white"
+          ? "bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
+          : "bg-linear-to-br from-slate-800 via-slate-800 to-slate-950 text-white"
       }`}
     >
       <section className="mx-auto max-w-7xl px-6 py-5">
@@ -80,7 +80,10 @@ export default function Footers({ theme, onToggleTheme }) {
               </h3>
               <ul className="space-y-1.5">
                 {jadwalMisa.map((jadwal) => (
-                  <li key={jadwal} className="text-sm font-light text-slate-200">
+                  <li
+                    key={jadwal}
+                    className="text-sm font-light text-slate-200"
+                  >
                     {jadwal}
                   </li>
                 ))}

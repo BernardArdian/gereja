@@ -208,7 +208,7 @@ export default function Home() {
   return (
     <section className="flex min-h-screen w-full flex-col items-center justify-start overflow-y-auto no-scrollbar">
       <header
-        className="group relative flex h-[68vh] min-h-[32rem] w-full items-end overflow-hidden bg-slate-950 sm:h-[76vh] lg:h-[82vh]"
+        className="group relative flex h-[68vh] min-h-128 w-full items-end overflow-hidden bg-slate-950 sm:h-[76vh] lg:h-[82vh]"
         children={[
           images.map((img, index) => (
             <div
@@ -228,7 +228,7 @@ export default function Home() {
           )),
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-slate-950/10"
+            className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-slate-950/85 via-slate-950/25 to-slate-950/10"
           />,
           <section className="pointer-events-none relative z-20 mx-auto mb-20 w-full max-w-7xl px-5 sm:mb-24 sm:px-10 lg:px-16">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-amber-200 sm:text-sm">
@@ -308,7 +308,27 @@ export default function Home() {
               />,
               <div
                 className="whitespace-pre-line text-sm leading-7 text-slate-600"
-                children={data.artikel}
+                children={[
+                  data.artikel,
+
+                  <div
+                    className="flex flex-row justify-end"
+                    children={
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigate("/profil-gereja");
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
+                        children={[
+                          "Lihat semua",
+                          <ArrowRight size={14} className="ml-1 inline" />,
+                        ]}
+                      />
+                    }
+                  />,
+                ]}
               />,
             ]}
           />
@@ -323,11 +343,10 @@ export default function Home() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-amber-700">
                   <ImageIcon size={20} aria-hidden="true" />
                 </div>
-                <span
-                  className="text-sm font-medium"
-                  children={label}
-                />
-                <span className="text-xs text-slate-400">Dokumentasi paroki</span>
+                <span className="text-sm font-medium" children={label} />
+                <span className="text-xs text-slate-400">
+                  Dokumentasi paroki
+                </span>
               </section>
             ))}
           />
@@ -341,7 +360,7 @@ export default function Home() {
                 Informasi umat
               </p>
               <h2 className="mt-1 border-l-4 border-amber-600 pl-3 font-serif text-2xl font-semibold text-slate-900 sm:text-3xl">
-              Pengumuman
+                Pengumuman
               </h2>
             </div>
             <button
@@ -351,9 +370,11 @@ export default function Home() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
-            >
-              Lihat semua <ArrowRight size={14} className="ml-1 inline" />
-            </button>
+              children={[
+                "Lihat semua",
+                <ArrowRight size={14} className="ml-1 inline" />,
+              ]}
+            />
           </section>
           <ListPengumuman
             data={dummyPengumuman.slice(0, 4)}
@@ -393,7 +414,7 @@ export default function Home() {
 
       {isOpen && (
         <section
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4"
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90 p-4"
           onClick={() => setIsOpen(false)}
           role="presentation"
           children={[

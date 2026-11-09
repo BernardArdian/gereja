@@ -20,22 +20,30 @@ export default function Footers({ theme, onToggleTheme }) {
     >
       <section className="mx-auto max-w-7xl px-6 py-5">
         <section className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
-          <section className="grid grid-cols-1 items-center gap-4 sm:grid-cols-[auto_1fr]">
-            <img
-              src={StFransis}
-              className="mx-auto h-40 w-40 object-cover sm:mx-0 sm:h-52 sm:w-36"
-              alt="Santo Fransiskus Assisi"
-            />
-            <div className="text-center sm:text-left">
-              <h2 className="mb-1 font-serif text-base font-medium text-amber-400">
-                Santo Fransiskus Assisi, Harapan Makmur.
-              </h2>
-              <p className="font-serif text-sm leading-relaxed text-slate-200">
-                Jl. Pattimura, Harapan Makmur - Distrik Kurik, Kab. Merauke,
-                Papua Selatan.
-              </p>
-            </div>
-          </section>
+          <section
+            className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[auto_1fr]"
+            children={[
+              <img
+                src={StFransis}
+                className="mx-auto object-contain sm:mx-0 sm:h-52 sm:w-36"
+                alt="Santo Fransiskus Assisi"
+              />,
+              <div
+                className="flex flex-col gap-6 text-center sm:text-left justify-around"
+                children={[
+                  <h2
+                    className="font-serif text-base font-medium text-amber-400"
+                    children="Santo Fransiskus Assisi, Harapan Makmur."
+                  />,
+                  <p
+                    className="font-serif text-sm leading-relaxed text-slate-200"
+                    children="Jl. Pattimura, Harapan Makmur - Distrik Kurik, Kab. Merauke,
+                      Papua Selatan."
+                  />,
+                ]}
+              />,
+            ]}
+          />
 
           <section className="flex flex-col items-center justify-around gap-7 text-center">
             <p className="cursor-pointer font-serif text-xs font-medium uppercase tracking-[0.18em] text-amber-400 hover:underline">
@@ -43,9 +51,10 @@ export default function Footers({ theme, onToggleTheme }) {
             </p>
 
             <section>
-              <h3 className="mb-3 font-serif text-xs font-medium uppercase tracking-[0.18em] text-amber-400 underline">
-                Kontak Person
-              </h3>
+              <h3
+                className="mb-3 font-serif text-xs font-medium uppercase tracking-[0.18em] text-amber-400 "
+                children="Kontak Person"
+              />
               <a
                 href="https://wa.me/6284690128891"
                 target="_blank"
@@ -74,40 +83,48 @@ export default function Footers({ theme, onToggleTheme }) {
               </a>
             </section>
 
-            <section>
-              <h3 className="mb-3 font-serif text-xs font-medium uppercase tracking-[0.18em] text-amber-400 underline">
-                Jadwal Misa
-              </h3>
-              <ul className="space-y-1.5">
-                {jadwalMisa.map((jadwal) => (
-                  <li
-                    key={jadwal}
-                    className="text-sm font-light text-slate-200"
-                  >
-                    {jadwal}
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <section
+              children={[
+                <h3
+                  className="mb-3 font-serif text-xs font-medium uppercase tracking-[0.18em] text-amber-400 "
+                  children={"Jadwal Misa"}
+                />,
+                <ul
+                  className="space-y-1.5"
+                  children={jadwalMisa.map((jadwal) => (
+                    <li
+                      key={jadwal}
+                      className="text-sm font-light text-slate-200"
+                      children={jadwal}
+                    />
+                  ))}
+                />,
+              ]}
+            />
           </section>
 
-          <section>
-            <h3 className="mb-3 font-serif text-xs uppercase tracking-[0.18em] text-amber-400 underline">
-              Lokasi
-            </h3>
-            <div
-              className={`flex h-44 w-full flex-col items-center justify-center gap-2 overflow-hidden rounded border ${
-                isDark
-                  ? "border-white/10 bg-white/5 text-slate-400"
-                  : "border-white/15 bg-white/5 text-slate-300"
-              }`}
-            >
-              <MapIcon size={18} aria-hidden="true" />
-              <p className="text-[10px] uppercase tracking-widest">
-                Peta belum tersedia
-              </p>
-            </div>
-          </section>
+          <section
+            children={[
+              <h3
+                className="mb-3 font-serif text-xs uppercase tracking-[0.18em] text-amber-400 "
+                children={"Lokasi"}
+              />,
+              <div
+                className={`flex h-44 w-full flex-col items-center justify-center gap-2 overflow-hidden rounded border ${
+                  isDark
+                    ? "border-white/10 bg-white/5 text-slate-400"
+                    : "border-white/15 bg-white/5 text-slate-300"
+                }`}
+                children={[
+                  <MapIcon size={18} aria-hidden="true" />,
+                  <p
+                    className="text-[10px] uppercase tracking-widest"
+                    children={"Peta belum tersedia"}
+                  />,
+                ]}
+              />,
+            ]}
+          />
         </section>
 
         <div className="mt-5 h-px bg-amber-500" />
@@ -123,16 +140,18 @@ export default function Footers({ theme, onToggleTheme }) {
             aria-label={`Aktifkan tema ${isDark ? "terang" : "gelap"}`}
             aria-pressed={isDark}
             className="inline-flex justify-self-end cursor-pointer items-center gap-2 rounded-xl border border-white/20 bg-white/5 p-2.5 text-xs font-semibold text-slate-100 transition hover:border-amber-300/60 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-          >
-            {isDark ? (
-              <Sun size={16} aria-hidden="true" />
-            ) : (
-              <Moon size={16} aria-hidden="true" />
-            )}
-            <span className="hidden sm:inline">
-              Tema {isDark ? "terang" : "gelap"}
-            </span>
-          </button>
+            children={[
+              isDark ? (
+                <Sun size={16} aria-hidden="true" />
+              ) : (
+                <Moon size={16} aria-hidden="true" />
+              ),
+              <span
+                className="hidden sm:inline"
+                children={`Tema ${isDark ? "terang" : "gelap"}`}
+              />,
+            ]}
+          />
         </section>
       </section>
     </footer>

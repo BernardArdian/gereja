@@ -1,12 +1,6 @@
-import {
-  X,
-  User,
-  Calendar,
-  Briefcase,
-  Save,
-  Building2,
-  Building,
-} from "lucide-react";
+import { X, User, Calendar, Briefcase, Save, Building2 } from "lucide-react";
+
+//import { dppMemberService } from "../../../../../backend/service/dpp/memberDppService";
 import { useRef } from "react";
 import Dropdown from "../../dropdown/dropdown";
 
@@ -17,6 +11,7 @@ export default function InputDpp({
   validations,
   selectedDivisi,
   isSubmitting,
+  //initialData,
 }) {
   // const [selectedDivisi, setSelectedDivisi] = useState("")
 
@@ -24,6 +19,25 @@ export default function InputDpp({
   const divisiRef = useRef(null);
   const jabatanRef = useRef(null);
   const periodeRef = useRef(null);
+
+  // const divisis = [
+  //   { id: "dpph", label: "Dpph" },
+  //   { id: "pleno", label: "Pleno" },
+  // ];
+
+  // const mapAnggota = (data) =>({
+  //   nama: data.nama,
+  //   jabatan: data.jabatan,
+  //   perode: data.periode,
+  // });
+
+  // const createAnggotaTable = () => ({
+  //   nama: "",
+  //   jabatan: "",
+  //   periode: "",
+  // });
+
+  // const [formData, setFormData] = useState(() => createAnggotaTable(initialData));
 
   const order = [namaRef, divisiRef, jabatanRef, periodeRef];
 
@@ -48,10 +62,9 @@ export default function InputDpp({
     }
   };
 
-  // const divisis = [
-  //   { id: "dpph", label: "Dpph" },
-  //   { id: "pleno", label: "Pleno" },
-  // ];
+  // useEffect(() => {
+  //   setFormData();
+  // });
 
   if (!isOpen) return false;
   return (

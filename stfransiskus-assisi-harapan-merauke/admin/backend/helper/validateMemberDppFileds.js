@@ -1,5 +1,5 @@
 function validateMemberDppfFields(data) {
-  const requiredFields = ["name", "photos", "periode", "jabatan"];
+  const requiredFields = ["name", "jabatan", "periode"];
 
   for (const field of requiredFields) {
     const value = data[field];

@@ -12,6 +12,7 @@ const initialData = {
   ],
 };
 
+// Menampilkan visi-misi dan membuka editor untuk memperbarui kontennya.
 export default function VisiMisi() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(initialData);

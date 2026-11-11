@@ -4,6 +4,7 @@ import FormField from "../../formField";
 const fieldClass =
   "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
+// Bagian form untuk informasi pernikahan dan pratinjau foto terkait.
 export default function PernikahanSection({
   data = {},
   handlers,
@@ -93,7 +94,11 @@ export default function PernikahanSection({
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <FormField label="Tanggal pernikahan" icon={<Church size={15} />} required>
+        <FormField
+          label="Tanggal pernikahan"
+          icon={<Church size={15} />}
+          required
+        >
           <input
             type="date"
             name="tanggalPernikahan"

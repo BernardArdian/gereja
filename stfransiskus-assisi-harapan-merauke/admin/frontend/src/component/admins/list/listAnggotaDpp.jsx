@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import DppTable from "../table/dppTable";
 
+// Menyusun daftar anggota DPP dan meneruskan aksi pengelolaan ke tabel.
 export default function ListAnggotaDpp({
   data,
   handlers,

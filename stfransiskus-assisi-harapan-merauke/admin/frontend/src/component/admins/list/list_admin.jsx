@@ -2,6 +2,7 @@ import { Pencil, ShieldCheck, Trash2, UserRound } from "lucide-react";
 import { useState } from "react";
 import DeleteModal from "../../alert/deleteModal";
 
+// Menampilkan daftar akun admin dan meminta konfirmasi sebelum penghapusan.
 export default function Admin_List({ admins = [], handlers = {} }) {
   const [adminToDelete, setAdminToDelete] = useState(null);
 
@@ -86,7 +87,8 @@ export default function Admin_List({ admins = [], handlers = {} }) {
             Belum ada administrator
           </p>
           <p className="mt-1 text-xs text-slate-500">
-            Tambahkan administrator melalui formulir untuk mulai mengelola akses.
+            Tambahkan administrator melalui formulir untuk mulai mengelola
+            akses.
           </p>
         </div>
       )}

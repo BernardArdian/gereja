@@ -8,6 +8,7 @@ import {
 import Pagination from "../../../component/common/Pagination";
 import DetailBerita from "../../../component/detail/detailBerita";
 
+// Daftar devosi dengan jadwal/lokasi, pencarian, dan pagination.
 export default function Devosi() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

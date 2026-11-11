@@ -12,12 +12,14 @@ const navMenuTitle = [
   { to: "/gallery", label: "Galeri" },
 ];
 
+// Layout navigasi situs menangani tautan halaman, menu mobile, dan tema aktif.
 export default function Layout({ children, theme }) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isDark = theme === "dark";
 
   const navigateHome = () => {
+    // Kembali ke beranda, gulir ke awal, dan tutup menu seluler.
     navigate("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
     setIsMenuOpen(false);

@@ -7,6 +7,7 @@ import {
 import Pagination from "../../../component/common/Pagination";
 import DetailBerita from "../../../component/detail/detailBerita";
 
+// Daftar tradisi gereja dengan pencarian, pagination, dan detail terpilih.
 export default function TradisiGereja() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

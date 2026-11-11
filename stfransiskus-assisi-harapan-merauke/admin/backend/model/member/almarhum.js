@@ -1,6 +1,7 @@
 // model/almarhum.js
 const mongoose = require("mongoose");
 
+// Bentuk arsip anggota umat yang meninggal beserta relasi ke data umat asal.
 const AlmarhumSchema = new mongoose.Schema(
   {
     nama: { type: String, required: true },

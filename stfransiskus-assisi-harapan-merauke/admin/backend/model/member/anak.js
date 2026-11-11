@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const sakramen = require("./sakramen");
 
+// Skema data anak memuat identitas, relasi orang tua, status hidup, dan sakramen.
 const anakSchema = new mongoose.Schema({
   nama: { type: String, required: true },
   tglLahir: { type: String, default: "" },

@@ -1,6 +1,7 @@
 import { MapPin, Calendar, Clock } from "lucide-react";
 
 const badgeColor = (status) => {
+  // Pilih warna label berdasarkan jenis pengumuman.
   if (status === "pernikahan") return "bg-rose-50 text-rose-700";
   if (status === "misa") return "bg-sky-50 text-sky-700";
   return "bg-amber-50 text-amber-800";

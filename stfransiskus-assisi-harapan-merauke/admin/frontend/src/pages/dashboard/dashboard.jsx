@@ -7,6 +7,7 @@ import SejarahGereja from "./sejarah/sejarahgereja";
 import VisiMisi from "./visi-dan-misi/visimisi";
 import Pedoman from "./pedoman/pedoman";
 
+// Daftar ini menghubungkan slug URL dengan konten tiap bagian dashboard.
 const dashboardTabs = [
   {
     label: "Thumbnail & galeri",
@@ -111,10 +112,7 @@ export default function Dashboard() {
             </div>
           </nav>
 
-          <section
-            aria-label={activeTab.label}
-            className="min-h-72 p-4 sm:p-6"
-          >
+          <section aria-label={activeTab.label} className="min-h-72 p-4 sm:p-6">
             <ActiveContent />
           </section>
         </section>

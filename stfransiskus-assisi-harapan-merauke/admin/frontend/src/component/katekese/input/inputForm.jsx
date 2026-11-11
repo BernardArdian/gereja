@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 import FormField from "../../formField";
 import Dropdown from "../../dropdown/dropdown";
 
+// Modal input katekese menangani teks, gambar, dan konfirmasi konten baru.
 export default function KatekeseInput({
   isOpen,
   onClose,

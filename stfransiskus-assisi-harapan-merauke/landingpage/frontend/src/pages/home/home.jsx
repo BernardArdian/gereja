@@ -15,6 +15,7 @@ import DetailPengumuman from "../../component/detail/detailPengumuman";
 import ListPengumuman from "../../component/pengumuman/listPengumuman";
 import ListBerita from "../../component/berita/lsitBerita";
 
+// Beranda merangkum konten pilihan, galeri, dan dialog detail untuk pengunjung.
 export default function Home() {
   const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ export default function Home() {
   const [selectedDetail, setSelectedDetail] = useState(null);
   //pengumuman detail
   const handleShowDetail = (item) => {
+    // Simpan pilihan lalu buka dialog detail pengumuman.
     setSelectedDetail(item);
     setIsDetailOpen(true);
   };

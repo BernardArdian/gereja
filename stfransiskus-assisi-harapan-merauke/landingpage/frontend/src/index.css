@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Tema global menetapkan font dan warna dasar situs publik. */
 @theme {
   --font-family-poppins: "Poppins", sans-serif;
 }

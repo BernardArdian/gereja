@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
+// Skema akun admin menyimpan identitas, hash password, dan role yang diizinkan.
 const adminSchema = new mongoose.Schema(
   {
     id: {

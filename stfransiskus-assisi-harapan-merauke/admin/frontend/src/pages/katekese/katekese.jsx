@@ -16,6 +16,7 @@ const katekeseTabs = [
   { label: "Tradisi gereja", slug: "tradisi-gereja", content: Tradisi },
 ];
 
+// Memilih subhalaman katekese dari slug URL dan membuka modal input konten.
 export default function Katekese() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -24,8 +25,7 @@ export default function Katekese() {
     katekeseTabs.find(
       (item) =>
         item.slug === tab ||
-        item.label.toLowerCase() ===
-          tab?.replace(/-/g, " ").toLowerCase(),
+        item.label.toLowerCase() === tab?.replace(/-/g, " ").toLowerCase(),
     ) ?? katekeseTabs[0];
   const ActiveContent = activeTab.content;
 
@@ -106,10 +106,7 @@ export default function Katekese() {
             </div>
           </nav>
 
-          <section
-            aria-label={activeTab.label}
-            className="min-h-72 p-4 sm:p-6"
-          >
+          <section aria-label={activeTab.label} className="min-h-72 p-4 sm:p-6">
             <ActiveContent />
           </section>
         </section>

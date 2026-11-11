@@ -9,6 +9,7 @@ import {
 import Layout from "./component/menu/sidebar";
 //import { useEffect, useState } from "react";
 
+// Muat halaman besar secara terpisah agar bundle awal panel admin lebih ringan.
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const Umat = lazy(() => import("./pages/umat/umat"));
 const Berita = lazy(() => import("./pages/berita/berita"));
@@ -58,6 +59,7 @@ function App() {
   // }
 
   return (
+    // Layout membungkus seluruh halaman; Suspense menampilkan status saat chunk dimuat.
     <Layout
       children={
         <Suspense
@@ -76,6 +78,7 @@ function App() {
 
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
+            {/* Parameter tab opsional dipakai halaman untuk memilih sub-tampilan. */}
             <Route path="/dashboard/:tab?" element={<Dashboard />} />
             <Route path="/umat/:tab?" element={<Umat />} />
             <Route path="/berita" element={<Berita />} />

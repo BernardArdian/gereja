@@ -2,6 +2,7 @@ import { handleRequest } from "../helper";
 
 import api from "../url";
 
+// Kumpulan operasi HTTP untuk membuat, membaca, memperbarui, dan menghapus data umat.
 export const umatServiceApi = {
   inputDataUmat: (data) =>
     handleRequest(api.post("/inputmember/inputmember", data)),

@@ -17,6 +17,7 @@ import DetailPengumumanModal from "../../../component/dashboard/pengumuman/detai
 import DeleteModal from "../../../component/alert/deleteModal";
 import Dropdown from "../../../component/dropdown/dropdown";
 
+// Halaman pengelolaan pengumuman: daftar, pencarian, filter, edit, dan hapus.
 const createEmptyForm = () => ({
   judul: "",
   stasi: "",

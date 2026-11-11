@@ -2,6 +2,7 @@ import { handleRequest } from "../helper";
 
 import api from "../url";
 
+// Kumpulan operasi API untuk CRUD anggota Dewan Pastoral Paroki.
 export const dppServiceApi = {
   inputDataAnggotaDpp: (data) => handleRequest(api.post("/anggota-dpp", data)),
   displayAnggotaDpp: (params) =>

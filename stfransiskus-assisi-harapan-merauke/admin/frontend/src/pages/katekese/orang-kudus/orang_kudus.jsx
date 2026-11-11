@@ -14,6 +14,7 @@ import Detail from "../../../component/detail";
 import PaginationFooter from "../../../component/PaginationFooter";
 import DeleteModal from "../../../component/alert/deleteModal";
 
+// Daftar profil orang kudus dengan pencarian, pagination, dan aksi pengelolaan.
 export default function OrangKudus() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

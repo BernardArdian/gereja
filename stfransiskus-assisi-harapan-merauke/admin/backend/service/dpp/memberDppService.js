@@ -3,6 +3,7 @@ const validateDpp = require("../../helper/validateMemberDppFileds");
 const dppMember = require("../../model/dpp-member/dpp-member");
 
 function normalizeMemberDppData(data) {
+  // Salin data masuk dan singkirkan field internal yang dikelola MongoDB.
   const normalized = { ...data };
 
   if (!normalized.nama && normalized.jabatan && normalized.periode) {
@@ -19,6 +20,7 @@ function normalizeMemberDppData(data) {
 }
 
 function throwDatabaseError(error, action) {
+  // Ubah error duplikat, validasi, dan database menjadi respons terklasifikasi.
   if (error.code === 11000) {
     throw Object.assign(new Error("Nama anggota tersebut sudah terdaftar."), {
       statusCode: 409,
@@ -33,6 +35,7 @@ function throwDatabaseError(error, action) {
 }
 
 class dppMemberService {
+  // Validasi anggota sebelum membuat dokumen DPP baru.
   static async createDppMember(data) {
     const dppData = normalizeMemberDppData(data);
     validateDpp(dppData);
@@ -44,6 +47,7 @@ class dppMemberService {
   }
   static async getAllDppMember() {
     try {
+      // Tampilkan anggota terbaru lebih dulu tanpa metadata Mongoose.
       return await dppMember.find({}).sort({ createdAt: -1 }).lean();
     } catch (error) {
       throwDatabaseError(error, "Gagal mengambil data anggota dpp");
@@ -81,6 +85,7 @@ class dppMemberService {
     validateDpp(dppData);
 
     try {
+      // Minta Mongoose memvalidasi field hasil pembaruan sebelum mengembalikan dokumen.
       const dpp = await dppMember.findByIdAndUpdate(
         id,
         { $set: dppData },

@@ -14,6 +14,7 @@ import {
 import ThumbnaildanGallery from "../../../component/dashboard/thumbnailngallery/thumbnaildangallery";
 import DeleteModal from "../../../component/alert/deleteModal";
 
+// Mengelola thumbnail dan galeri dengan filter berdasarkan stasi.
 export default function Thumbnail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("thumbnail");

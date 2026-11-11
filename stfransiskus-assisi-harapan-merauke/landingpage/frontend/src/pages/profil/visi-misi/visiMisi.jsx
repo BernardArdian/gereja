@@ -1,5 +1,6 @@
 import { Target, Sparkles, Compass } from "lucide-react";
 
+// Menyajikan pernyataan visi dan daftar misi gereja.
 export default function VisiMisiGereja() {
   const data = {
     visi: "Menjadi komunitas iman yang inklusif, misioner, dan berakar pada kasih Kristus untuk melayani sesama.",

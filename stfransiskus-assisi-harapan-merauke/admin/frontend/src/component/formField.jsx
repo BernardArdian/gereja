@@ -1,3 +1,4 @@
+// Pembungkus field formulir yang menyatukan label, ikon, penanda wajib, dan input.
 export default function FormField({ label, icon, required, children, htmlFor }) {
   return (
     <label htmlFor={htmlFor} className="block w-full space-y-2">

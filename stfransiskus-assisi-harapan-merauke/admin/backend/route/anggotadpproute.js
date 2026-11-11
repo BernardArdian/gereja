@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const authMiddleware = require("../midleware/authMiddleware");
 
-//input dan tampilkan
+// Endpoint anggota DPP: pembuatan memerlukan autentikasi, daftar membaca service.
 router
   .post("/anggota-dpp", authMiddleware, async (req, res) => {
     try {
@@ -16,6 +16,7 @@ router
       }
 
       const missingFields = [];
+      // Kumpulkan field kosong agar klien menerima satu pesan validasi.
       if (!nama?.trim()) missingFields.push("nama");
       if (!jabatan?.trim()) missingFields.push("jabatan");
       if (!periode?.trim()) missingFields.push("periode");
@@ -54,7 +55,7 @@ router
     }
   });
 
-//edit dan delete
+// Perubahan dan penghapusan anggota DPP dibatasi untuk pengguna terautentikasi.
 router
   .put("/:id", authMiddleware, async (req, res) => {
     try {

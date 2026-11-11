@@ -1,5 +1,6 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
+// Komponen pagination lama untuk daftar renungan.
 export default function Paginations(items, actions) {
   return (
     <footer className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">

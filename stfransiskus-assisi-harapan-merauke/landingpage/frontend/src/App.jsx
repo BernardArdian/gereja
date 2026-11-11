@@ -15,12 +15,14 @@ import ProfilGereja from "./pages/profil/profilGereja.jsx";
 
 import Footers from "./component/footer/footers.jsx";
 
+// Mengatur tema situs yang persisten dan rute utama halaman publik gereja.
 function App() {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("siteTheme") || "light",
   );
 
   useEffect(() => {
+    // Sinkronkan tema pilihan ke atribut root dan penyimpanan browser.
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("siteTheme", theme);
   }, [theme]);

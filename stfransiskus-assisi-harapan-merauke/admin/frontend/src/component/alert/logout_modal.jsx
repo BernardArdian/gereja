@@ -1,6 +1,7 @@
 import { X, AlertCircle } from "lucide-react";
 import { createPortal } from "react-dom";
 
+// Dialog portal untuk meminta konfirmasi sebelum pengguna keluar dari panel.
 export default function LogoutModal({ isOpen, onClose, onConfirm }) {
   if (!isOpen) return null;
 

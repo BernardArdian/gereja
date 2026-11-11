@@ -7,6 +7,7 @@ const jadwalMisa = [
   "Minggu — 16.00 WIT",
 ];
 
+// Footer menampilkan identitas gereja, jadwal misa, lokasi, dan kontrol tema.
 export default function Footers({ theme, onToggleTheme }) {
   const isDark = theme === "dark";
 

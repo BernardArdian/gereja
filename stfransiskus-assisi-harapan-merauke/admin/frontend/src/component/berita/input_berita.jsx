@@ -15,6 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import FormField from "../formField";
 
+// Form editor berita mengelola metadata serta pratinjau gambar yang dipilih.
 export default function InputBerita({
   isOpen,
   editMode,

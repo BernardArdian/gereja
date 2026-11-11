@@ -2,6 +2,7 @@
 
 @import "tailwindcss";
 
+/* Token tema font global yang digunakan oleh utility Tailwind. */
 @theme {
   /* Menjadikan Poppins sebagai font default (sans) */
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;

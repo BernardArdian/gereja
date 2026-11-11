@@ -15,6 +15,7 @@ import InputBerita from "../../component/berita/input_berita";
 import PaginationFooter from "../../component/PaginationFooter";
 import DeleteModal from "../../component/alert/deleteModal";
 
+// Mengelola daftar berita, pencarian, detail, dan dialog CRUD pada panel admin.
 export default function Berita() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

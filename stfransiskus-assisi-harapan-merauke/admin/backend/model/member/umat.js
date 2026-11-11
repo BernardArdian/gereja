@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Skema sakramen dipakai ulang untuk baptis, komuni, dan krisma tanpa sub-ID.
 const sacramentSchema = new mongoose.Schema(
   {
     status: { type: String, enum: ["sudah"], required: true },
@@ -10,6 +11,7 @@ const sacramentSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// Data seseorang digunakan oleh umat lajang maupun anggota keluarga/anak.
 const personSchema = new mongoose.Schema(
   {
     nama: { type: String, required: true, trim: true },
@@ -29,6 +31,7 @@ const personSchema = new mongoose.Schema(
   { _id: false, minimize: true },
 );
 
+// Data keluarga memuat pasangan, status sakramen, serta daftar anak.
 const keluargaSchema = new mongoose.Schema(
   {
     namaSuami: { type: String, required: true, trim: true },
@@ -64,6 +67,7 @@ const keluargaSchema = new mongoose.Schema(
   },
 );
 
+// Dokumen utama umat memilih data individu atau keluarga berdasarkan status nikah.
 const umatSchema = new mongoose.Schema(
   {
     statusNikah: {
@@ -89,6 +93,7 @@ const umatSchema = new mongoose.Schema(
 );
 
 umatSchema.pre("validate", function () {
+  // Jaga agar bentuk dokumen konsisten dengan status pernikahan yang dipilih.
   if (this.statusNikah === "belum menikah") {
     if (!this.single || this.keluarga) {
       this.invalidate(

@@ -13,6 +13,7 @@ const assignments = [
 const fieldClass =
   "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
+// Form bagian misa mengelola petugas liturgi melalui satu objek data.
 export default function Misa({ data = {}, onChange, disabled = false }) {
   return (
     <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
@@ -21,9 +22,7 @@ export default function Misa({ data = {}, onChange, disabled = false }) {
           <Users2 size={18} aria-hidden="true" />
         </span>
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">
-            Petugas misa
-          </h3>
+          <h3 className="text-sm font-semibold text-slate-900">Petugas misa</h3>
           <p className="mt-1 text-xs text-slate-600">
             Isi petugas yang bertugas pada perayaan ini.
           </p>

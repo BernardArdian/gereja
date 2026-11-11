@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bycript = require("bcrypt");
 
+// Skema menyimpan nama anggota DPP, jabatan, periode, dan ID unik.
 const dppMemberSchema = new mongoose.Schema(
   {
     id: {

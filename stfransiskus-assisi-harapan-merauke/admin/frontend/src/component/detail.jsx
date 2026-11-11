@@ -1,5 +1,6 @@
 import { CalendarDays, UserRound, X } from "lucide-react";
 
+// Menampilkan konten terpilih beserta metadata dan aksi kembali.
 export default function Detail({ formData = {}, handlers = {} }) {
   const title = formData.title || "Detail konten";
   const content =

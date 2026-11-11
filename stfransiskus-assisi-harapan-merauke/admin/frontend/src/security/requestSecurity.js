@@ -3,6 +3,7 @@ const LOGIN_MAX_ATTEMPTS = 5;
 let loginWindowStartedAt = 0;
 let loginAttemptCount = 0;
 
+// Tolak key yang berisiko memengaruhi query MongoDB atau prototipe objek.
 const isUnsafeKey = (key) =>
   key.startsWith("$") ||
   key.includes(".") ||
@@ -11,6 +12,7 @@ const isUnsafeKey = (key) =>
   key === "constructor";
 
 function assertSafeInput(value) {
+  // Periksa pula nilai di dalam array dan objek bertingkat.
   if (Array.isArray(value)) {
     value.forEach(assertSafeInput);
     return;
@@ -27,12 +29,14 @@ function assertSafeInput(value) {
 }
 
 function isLoginRequest(config) {
+  // Kenali hanya request POST yang menuju endpoint login admin.
   const endpoint = `${config.baseURL || ""}${config.url || ""}`;
   return config.method?.toLowerCase() === "post" &&
     /(?:^|\/)admin\/login(?:[?#]|$)/i.test(endpoint);
 }
 
 export function secureFrontendRequest(config) {
+  // Validasi parameter dan body sebelum Axios mengirimkan request.
   assertSafeInput(config.params);
   assertSafeInput(config.data);
 
@@ -54,6 +58,7 @@ export function secureFrontendRequest(config) {
 }
 
 export function resetFrontendLoginLimit(config) {
+  // Reset hanya untuk respons sukses dari endpoint login yang dikenali.
   if (isLoginRequest(config)) {
     loginWindowStartedAt = 0;
     loginAttemptCount = 0;

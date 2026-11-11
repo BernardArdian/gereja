@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const sakramen = require("./sakramen");
 e;
 
+// Skema profil umat individu, termasuk data keluarga asal dan sakramen.
 const SingleSchema = new mongoose.Schema(
   {
     nama: { type: String, required: true },

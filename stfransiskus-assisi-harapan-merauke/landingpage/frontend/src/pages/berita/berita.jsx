@@ -1,13 +1,11 @@
 import { useState, useMemo } from "react";
-import {
-  Search,
-  Newspaper,
-} from "lucide-react";
+import { Search, Newspaper } from "lucide-react";
 
 import DetailBerita from "../../component/detail/detailBerita";
 import ListBerita from "../../component/berita/lsitBerita";
 import Pagination from "../../component/common/Pagination";
 
+// Halaman berita menyediakan pencarian, pagination, dan tampilan detail.
 export default function Berita() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -164,7 +162,9 @@ export default function Berita() {
           <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center text-slate-500">
             <Newspaper size={36} className="mx-auto mb-4 text-slate-300" />
             <p className="text-sm font-medium">Berita tidak ditemukan</p>
-            <p className="mt-1 text-xs">Coba gunakan kata kunci yang berbeda.</p>
+            <p className="mt-1 text-xs">
+              Coba gunakan kata kunci yang berbeda.
+            </p>
           </div>
         )}
 

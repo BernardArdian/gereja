@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Skema berita menyimpan judul, thumbnail, isi, dan penulis.
 const newsSchema = new mongoose.Schema(
   {
     id: {
@@ -15,6 +16,7 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true,
       validate: {
+        // Batasi nama/URL thumbnail pada ekstensi gambar yang didukung.
         validator: function (v) {
           return /\.(jpg|jpeg|png)$/i.test(v);
         },
@@ -31,7 +33,7 @@ const newsSchema = new mongoose.Schema(
       require: true,
     },
   },
-  { createdAt: { Date } }
+  { createdAt: { Date } },
 );
 
 module.exports = mongoose.model("news", newsSchema);

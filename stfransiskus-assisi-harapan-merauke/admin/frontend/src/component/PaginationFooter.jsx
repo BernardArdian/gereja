@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// Pilih nomor halaman yang ringkas sambil tetap menampilkan awal dan akhir daftar.
 function getVisiblePages(currentPage, totalPages) {
   if (totalPages <= 5) {
     return Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -18,6 +19,7 @@ export default function PaginationFooter({
   onPageChange,
   itemLabel = "item",
 }) {
+  // Hitung rentang item dan sembunyikan footer jika hanya ada satu halaman.
   const totalPages = Math.ceil(totalItems / pageSize);
   if (totalPages <= 1) return null;
 

@@ -24,6 +24,7 @@ const PRINT_STATUS_GROUPS = [
   { key: "janda", label: "Janda" },
 ];
 
+// Samakan label status lama/baru sebelum filter dan kelompok laporan diterapkan.
 function normalizeMaritalStatus(item) {
   const status = (item.statusNikah || item.status || "belum menikah")
     .toLowerCase()
@@ -32,6 +33,7 @@ function normalizeMaritalStatus(item) {
 }
 
 function isSacramentComplete(item, key) {
+  // Periksa kemungkinan letak data sakramen dari bentuk API lama maupun baru.
   const family = item.rawData?.keluarga || {};
   const candidates = [
     item[key],
@@ -62,6 +64,7 @@ export default function TableUmat({
   highlightedUmatId = null,
   onHighlightComplete,
 }) {
+  // Simpan referensi tabel untuk scroll ke data yang baru saja diperbarui.
   const tableRef = useRef(null);
   const [stasiFilter, setStasiFilter] = useState("");
   const [statusNikahFilter, setStatusNikahFilter] = useState("");
@@ -94,6 +97,7 @@ export default function TableUmat({
   }, [highlightedUmatId, onHighlightComplete]);
 
   const filteredUmat = useMemo(() => {
+    // Gabungkan pencarian teks dengan filter status, stasi, dan sakramen.
     return (umatList || []).filter((item) => {
       const query = searchQuery.trim().toLowerCase();
       const status = normalizeMaritalStatus(item);
@@ -143,6 +147,7 @@ export default function TableUmat({
   const [selectedUmat, setSelectedUmat] = useState(null);
   const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
   const printPages = useMemo(
+    // Bagi hasil filter per status dan jumlah baris yang muat pada satu halaman cetak.
     () =>
       PRINT_STATUS_GROUPS.flatMap((group) => {
         const rows = filteredUmat.filter(
@@ -499,8 +504,7 @@ export default function TableUmat({
             </article>
           ) : (
             printPages.map((page, pageNumber) => {
-              const firstRowNumber =
-                page.pageIndex * PRINT_ROWS_PER_PAGE + 1;
+              const firstRowNumber = page.pageIndex * PRINT_ROWS_PER_PAGE + 1;
               const lastRowNumber = firstRowNumber + page.rows.length - 1;
 
               return (
@@ -550,25 +554,46 @@ export default function TableUmat({
                   <table className="umat-roster-print-table mt-4 w-full border-collapse text-xs">
                     <thead>
                       <tr className="bg-slate-100 text-left text-[10px] uppercase tracking-wide text-slate-700">
-                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2 text-center"
+                        >
                           No.
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2"
+                        >
                           Nama umat / keluarga
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2"
+                        >
                           No. KK
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2"
+                        >
                           Stasi
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2 text-center"
+                        >
                           Baptis
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2 text-center"
+                        >
                           Komuni
                         </th>
-                        <th scope="col" className="border border-slate-300 px-2 py-2 text-center">
+                        <th
+                          scope="col"
+                          className="border border-slate-300 px-2 py-2 text-center"
+                        >
                           Krisma
                         </th>
                       </tr>
@@ -577,7 +602,9 @@ export default function TableUmat({
                       {page.rows.map((item, rowIndex) => (
                         <tr key={item.id}>
                           <td className="border border-slate-300 px-2 py-2 text-center tabular-nums">
-                            {(firstRowNumber + rowIndex).toLocaleString("id-ID")}
+                            {(firstRowNumber + rowIndex).toLocaleString(
+                              "id-ID",
+                            )}
                           </td>
                           <th
                             scope="row"

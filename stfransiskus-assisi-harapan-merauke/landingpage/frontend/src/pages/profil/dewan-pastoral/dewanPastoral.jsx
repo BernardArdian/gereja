@@ -1,5 +1,6 @@
 import DppTable from "./table/dppTable";
 
+// Menampilkan daftar anggota Dewan Pastoral Paroki dan masa pelayanannya.
 export default function DewanPastoralParoki() {
   const members = [
     { nama: "arwind", jabatan: "Anggota", periode: "2022 - 2025" },

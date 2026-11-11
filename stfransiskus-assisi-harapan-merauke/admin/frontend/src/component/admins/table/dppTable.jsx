@@ -2,6 +2,7 @@ import { Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import DeleteModal from "../../alert/deleteModal";
 
+// Baris tabel anggota DPP dengan kontrol edit dan konfirmasi penghapusan.
 export default function DppTable({ data, handlers }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

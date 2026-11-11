@@ -13,6 +13,7 @@ import Detail from "../../../component/detail";
 import PaginationFooter from "../../../component/PaginationFooter";
 import DeleteModal from "../../../component/alert/deleteModal";
 
+// Daftar renungan yang dapat dicari, dibuka detailnya, dan dikelola.
 export default function Renungan() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

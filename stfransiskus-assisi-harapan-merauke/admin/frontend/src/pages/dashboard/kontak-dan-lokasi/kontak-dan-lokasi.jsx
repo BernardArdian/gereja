@@ -4,6 +4,7 @@ import { Globe, Map as MapIcon, MapPin, Phone, Save } from "lucide-react";
 const fieldClass =
   "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
 
+// Field kontak yang menggunakan ikon dan validasi URL embed peta.
 function ContactField({ id, label, icon, ...inputProps }) {
   return (
     <label htmlFor={id} className="block space-y-2">

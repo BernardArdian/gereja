@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Skema anggota DPP pada halaman administratif, termasuk validasi ekstensi foto.
 const memberdppSchema = new mongoose.Schema({
   id: { type: String, required: true },
   name: { type: String, required: true },

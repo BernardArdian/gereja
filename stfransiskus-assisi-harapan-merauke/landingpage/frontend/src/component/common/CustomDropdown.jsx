@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
+// Dropdown kustom menutup menu saat klik di luar komponennya.
 export default function CustomDropdown({
   value,
   options,

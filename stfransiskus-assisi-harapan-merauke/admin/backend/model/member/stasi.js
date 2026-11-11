@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Menyimpan identitas stasi, gereja, wilayah desa, jumlah umat, dan alamat.
 const StasiSchema = new mongoose.Schema(
   {
     nama_stasi: { type: String, require: true },

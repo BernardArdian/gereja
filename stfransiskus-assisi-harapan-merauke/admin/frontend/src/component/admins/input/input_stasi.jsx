@@ -1,6 +1,7 @@
 import { X, Church, MapPin, Home, Users, Map, Save } from "lucide-react";
 import { useRef } from "react";
 
+// Formulir data stasi; Enter memindahkan fokus antarkolom secara berurutan.
 export default function InputStasi({
   isOpen,
   formdata,

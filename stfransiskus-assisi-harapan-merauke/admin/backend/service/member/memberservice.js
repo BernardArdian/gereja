@@ -3,6 +3,7 @@ const validatedatamember = require("../../helper/validatedatamember");
 const Umat = require("../../model/member/umat");
 
 function normalizeMemberData(data) {
+  // Samakan variasi format input lama dengan bentuk yang dipakai model umat.
   const normalized = { ...data };
 
   if (normalized.statusNikah === "menikah") {
@@ -35,6 +36,7 @@ function normalizeMemberData(data) {
 }
 
 function throwDatabaseError(error, action) {
+  // Terjemahkan error MongoDB menjadi status HTTP sesuai jenis kegagalannya.
   if (error.code === 11000) {
     throw Object.assign(
       new Error("Nomor kartu keluarga tersebut sudah terdaftar."),
@@ -50,6 +52,7 @@ function throwDatabaseError(error, action) {
 }
 
 class MemberService {
+  // Normalisasi dan validasi dijalankan sebelum data baru disimpan.
   static async createMember(data) {
     const memberData = normalizeMemberData(data);
     validatedatamember(memberData);
@@ -63,6 +66,7 @@ class MemberService {
 
   static async getAllMember() {
     try {
+      // Urutkan data terbaru dahulu dan gunakan lean untuk hasil baca biasa.
       return await Umat.find({}).sort({ createdAt: -1 }).lean();
     } catch (error) {
       throwDatabaseError(error, "Gagal mengambil data umat");
@@ -70,6 +74,7 @@ class MemberService {
   }
 
   static async getAllMemberById(id) {
+    // Validasi ObjectId lebih awal agar query database tidak menerima ID rusak.
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw Object.assign(new Error("ID umat tidak valid."), {
         statusCode: 400,
@@ -101,6 +106,7 @@ class MemberService {
     validatedatamember(memberData);
 
     try {
+      // Jalankan validator schema pada field yang diperbarui.
       const updatedMember = await Umat.findByIdAndUpdate(
         id,
         { $set: memberData },

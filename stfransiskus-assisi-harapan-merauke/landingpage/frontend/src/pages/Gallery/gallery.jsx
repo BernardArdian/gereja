@@ -12,6 +12,7 @@ import CustomDropdown from "../../component/common/CustomDropdown";
 import Pagination from "../../component/common/Pagination";
 
 const galleryItems = [
+  // Sumber item galeri yang dipakai untuk pencarian, filter, dan tampilan gambar.
   {
     id: 3,
     url: "https://picsum.photos/seed/gal1/1000/1000",

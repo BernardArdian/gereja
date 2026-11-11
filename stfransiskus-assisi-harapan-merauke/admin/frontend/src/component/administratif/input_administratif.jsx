@@ -9,6 +9,7 @@ const emptyDocument = {
   status: "Aktif",
 };
 
+// Form tambah/edit dokumen administratif dengan state awal dari data terpilih.
 export default function Input_Administratif({
   initialData,
   onClose,

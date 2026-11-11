@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+// Skema mencatat identitas dan informasi dasar administrasi perkawinan.
 const AdministratifPerkawinanShema = new mongoose.Schema({
     id: {
         type: String, require : true

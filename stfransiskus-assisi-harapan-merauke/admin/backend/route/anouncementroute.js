@@ -3,6 +3,7 @@ const router = express.Router();
 const anouncementServices = require("../service/pengumuman/pengumuman");
 const mongoose = require("mongoose");
 
+// Terima data pengumuman baru dan kembalikan dokumen yang dibuat.
 router.post("/input-anouncement", async (req, res) => {
   try {
     const result = await anouncementServices.input_anouncemet(req.body);
@@ -14,6 +15,7 @@ router.post("/input-anouncement", async (req, res) => {
 });
 
 router.get("/anoumncement-list", async (req, res) => {
+  // Endpoint ini dimaksudkan untuk mengambil daftar pengumuman.
   try {
     const result = await anouncementServices.getAnouncement; // pastikan pakai method getAllAdmins
 
@@ -28,7 +30,7 @@ router.put("/:id", async (req, res) => {
   try {
     const result = await anouncementServices.updateAnouncemnet(
       req.params.id,
-      req.body
+      req.body,
     );
     res.status(200).json(result);
   } catch (error) {
@@ -37,6 +39,7 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  // Pastikan parameter memiliki format ObjectId sebelum penghapusan dipanggil.
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "ID tidak valid" });

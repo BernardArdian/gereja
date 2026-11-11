@@ -1,20 +1,19 @@
 import { useState } from "react";
-import {
-  History,
-  Image as ImageIcon,
-  Milestone,
-  Pencil,
-} from "lucide-react";
+import { History, Image as ImageIcon, Milestone, Pencil } from "lucide-react";
 import ContentEditorModal from "../../../component/dashboard/content_editor/ContentEditorModal";
 
 const initialHistory = {
+  // Nilai awal konten sejarah ditampilkan sampai data diubah melalui editor.
   ringkasan:
     "Berawal dari sebuah gubuk kecil di tahun 1950, komunitas ini tumbuh menjadi pusat iman yang kokoh bagi ribuan umat hingga saat ini.",
   artikel: `Gereja ini didirikan pada tanggal 15 Agustus 1950 oleh Pastor Johannes van der Steur. Pada awalnya, jemaat hanya berjumlah 12 kepala keluarga yang berkumpul di rumah salah satu warga. Seiring berjalannya waktu, semangat gotong royong umat berhasil membangun gedung semi-permanen pertama pada tahun 1965.
 
 Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pusat pendidikan dan pelayanan sosial bagi masyarakat lintas agama di wilayah ini.`,
   milestones: [
-    { tahun: "1950", event: "Peletakan batu pertama oleh Mgr. Soegijapranata." },
+    {
+      tahun: "1950",
+      event: "Peletakan batu pertama oleh Mgr. Soegijapranata.",
+    },
     { tahun: "1975", event: "Peresmian gedung utama dengan arsitektur lokal." },
     { tahun: "2005", event: "Renovasi besar dan penambahan aula paroki." },
     { tahun: "2024", event: "Pencapaian 10.000 umat terdaftar." },

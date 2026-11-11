@@ -4,12 +4,14 @@ const memberService = require("../service/member/memberservice");
 const authMiddleware = require("../midleware/authMiddleware");
 const mongoose = require("mongoose");
 
+// Satukan format respons error untuk seluruh endpoint data umat.
 function sendError(res, error, fallbackStatus = 500) {
   res
     .status(error.statusCode || fallbackStatus)
     .json({ error: error.message || "Terjadi kesalahan pada data umat." });
 }
 
+// Buat data umat baru dari body request.
 router.post("/inputmember", async (req, res) => {
   try {
     const member = await memberService.createMember(req.body);
@@ -47,6 +49,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  // Tolak ID yang tidak valid sebelum memanggil penghapusan database.
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ error: "ID umat tidak valid." });
   }

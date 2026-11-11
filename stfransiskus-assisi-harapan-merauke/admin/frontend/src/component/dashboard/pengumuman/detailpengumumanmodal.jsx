@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 const topicLabels = {
+  // Terjemahkan nilai kategori internal menjadi label yang ditampilkan pengguna.
   baptis: "Baptis",
   krisma: "Krisma",
   komuni: "Komuni",

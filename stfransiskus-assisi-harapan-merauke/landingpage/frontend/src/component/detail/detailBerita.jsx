@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, Calendar, Share2, User } from "lucide-react";
 import ListBerita from "../../component/berita/lsitBerita";
 
+// Dialog detail berita menggunakan daftar lokal sebagai konten terkait.
 const newsList = [
   {
     id: 1,
@@ -44,7 +45,9 @@ function getDetail(item, type) {
       date: item.postDay,
       dateLabel: "Hari peringatan",
       author: "Orang Kudus",
-      metadata: item.patronOf ? [{ label: "Pelindung", value: item.patronOf }] : [],
+      metadata: item.patronOf
+        ? [{ label: "Pelindung", value: item.patronOf }]
+        : [],
       tags: ["Orang Kudus"],
     };
   }
@@ -175,7 +178,9 @@ export default function DetailBerita({
               </span>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                  {type === "berita" || type === "renungan" ? "Penulis" : "Kategori"}
+                  {type === "berita" || type === "renungan"
+                    ? "Penulis"
+                    : "Kategori"}
                 </p>
                 <p className="text-sm font-semibold text-slate-800">
                   {detail.author}

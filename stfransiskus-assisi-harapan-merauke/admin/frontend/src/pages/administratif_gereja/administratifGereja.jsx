@@ -7,6 +7,7 @@ import DeleteModal from "../../component/alert/deleteModal";
 import Dropdown from "../../component/dropdown/dropdown";
 
 const initialDocuments = [
+  // Data contoh untuk tampilan dokumen administratif yang dikelola halaman ini.
   {
     id: 1,
     name: "Struktur DPP 2024-2027",

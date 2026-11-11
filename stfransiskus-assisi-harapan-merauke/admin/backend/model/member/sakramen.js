@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Menyimpan status dan keterangan penerimaan satu jenis sakramen.
 const sakramenSchema = new mongoose.Schema(
   {
     status: { type: String, enum: ["sudah", "belum"], default: "belum" },

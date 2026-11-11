@@ -5,6 +5,7 @@ import Renungan from "./renungan/renungan";
 import TradisiGereja from "./tradisi/tradisiGreja";
 import Devosi from "./devosi/devosi";
 
+// Mengalihkan tab katekese ke konten orang kudus, renungan, devosi, atau tradisi.
 export default function Katekese() {
   const [activeTab, setActiveTab] = useState("orang kudus");
 

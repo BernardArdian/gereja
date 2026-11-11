@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Users, FileText } from "lucide-react";
 import Pagination from "../../component/common/Pagination";
 
+// Menampilkan daftar dokumen administratif dengan pagination.
 export default function AdministratifGereja() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
@@ -175,26 +176,35 @@ export default function AdministratifGereja() {
             <table className="w-full min-w-170 border-collapse text-left">
               <thead className="bg-slate-50">
                 <tr className="border-b border-slate-200">
-                  <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
                     Nama Dokumen
                   </th>
-                  <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
                     Kategori
                   </th>
-                  <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
                     PIC / Penanggung Jawab
                   </th>
-                  <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6"
+                  >
                     Status
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {paginatedData.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="transition hover:bg-slate-50"
-                  >
+                  <tr key={item.id} className="transition hover:bg-slate-50">
                     <td className="px-4 py-4 sm:px-6">
                       <div className="flex items-center gap-3">
                         <span className="rounded-lg bg-amber-50 p-2 text-amber-800">

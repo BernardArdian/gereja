@@ -2,6 +2,7 @@ import { Edit2, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 import DeleteModal from "../../alert/deleteModal";
 
+// Menampilkan ringkasan stasi beserta aksi tambah, edit, dan hapus.
 export default function StasiListModal({ data, handlers, actionLabel }) {
   const [selectedStasi, setSelectedStasi] = useState(null);
   const total = data.reduce(

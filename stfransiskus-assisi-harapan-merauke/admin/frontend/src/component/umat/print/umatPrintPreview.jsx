@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Printer, X } from "lucide-react";
 
+// Portal pratinjau cetak yang dapat ditutup dengan tombol maupun Escape.
 export default function UmatPrintPreview({
   isOpen,
   onClose,

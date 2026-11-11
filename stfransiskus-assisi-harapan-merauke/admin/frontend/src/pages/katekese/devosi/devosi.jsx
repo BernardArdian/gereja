@@ -16,6 +16,7 @@ import Detail from "../../../component/detail";
 import PaginationFooter from "../../../component/PaginationFooter";
 import DeleteModal from "../../../component/alert/deleteModal";
 
+// Daftar konten devosi dengan pencarian, pagination, detail, dan aksi CRUD.
 export default function Devosi() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

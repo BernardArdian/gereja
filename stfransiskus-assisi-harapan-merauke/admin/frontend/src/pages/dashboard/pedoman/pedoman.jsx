@@ -12,6 +12,7 @@ import {
 import ContentEditorModal from "../../../component/dashboard/content_editor/ContentEditorModal";
 import DeleteModal from "../../../component/alert/deleteModal";
 
+// Konten awal pedoman dipakai untuk menampilkan dan mengelola panduan gereja.
 const initialPedoman = [
   {
     id: 1,

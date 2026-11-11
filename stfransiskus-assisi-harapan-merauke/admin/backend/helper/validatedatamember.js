@@ -1,3 +1,4 @@
+// Status yang diterima menentukan apakah data berbentuk individu atau keluarga.
 const allowedMaritalStatuses = new Set([
   "belum menikah",
   "sudah menikah",
@@ -6,10 +7,12 @@ const allowedMaritalStatuses = new Set([
 ]);
 
 function fail(message) {
+  // Samakan bentuk error validasi agar route dapat mengirim status 400.
   throw Object.assign(new Error(message), { statusCode: 400 });
 }
 
 function validatePerson(person, label) {
+  // Setiap anggota wajib memiliki nama dan bentuk data sakramen yang konsisten.
   if (
     !person ||
     typeof person !== "object" ||
@@ -38,6 +41,7 @@ function validatePerson(person, label) {
 }
 
 function ValidateDataMember(data) {
+  // Validasi bentuk dasar dan stasi dilakukan sebelum membedakan tipe umat.
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     fail("Data umat tidak valid.");
   }
@@ -55,6 +59,7 @@ function ValidateDataMember(data) {
   }
 
   if (data.statusNikah === "belum menikah") {
+    // Data individu memakai objek single dan tidak boleh menyertakan keluarga.
     validatePerson(data.single, "umat");
     if (data.keluarga) {
       fail("Data individu tidak boleh berisi data keluarga.");
@@ -69,6 +74,7 @@ function ValidateDataMember(data) {
     fail("Nomor kartu keluarga harus diisi untuk data keluarga.");
   }
 
+  // Status menikah memerlukan nomor KK, data pasangan, dan daftar anak.
   const family = data.keluarga;
   if (!family || typeof family !== "object") {
     fail("Data suami dan istri harus diisi.");
@@ -86,7 +92,9 @@ function ValidateDataMember(data) {
   if (!Array.isArray(children)) {
     fail("Data anak tidak valid.");
   }
-  children.forEach((child, index) => validatePerson(child, `anak ke-${index + 1}`));
+  children.forEach((child, index) =>
+    validatePerson(child, `anak ke-${index + 1}`),
+  );
 }
 
 module.exports = ValidateDataMember;

@@ -1,3 +1,4 @@
+// Satu baris tabel untuk nama, jabatan, dan periode pelayanan anggota DPP.
 export default function DppTable({ nama, jabatan, periode }) {
   return (
     <tr className="transition hover:bg-slate-50">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { umatServiceApi } from "../../../api/umatApi/umatServiceApi";
 import { Check, LoaderCircle, Save, UserRound } from "lucide-react";
 
+// Konversi status form agar sesuai dengan nilai enum yang dipakai backend.
 // TRANSFORM: formData UI => payload backend
 const STATUS_NIKAH_MAP = {
   "belum menikah": "belum menikah",
@@ -11,6 +12,7 @@ const STATUS_NIKAH_MAP = {
 };
 
 const mapSacrament = (obj) => {
+  // Backend menyimpan sakramen sebagai daftar; yang belum diterima dikirim kosong.
   if (!obj || obj.status !== "sudah") return [];
   return [
     {
@@ -29,6 +31,7 @@ const mapSacraments = (person) => ({
 });
 
 const mapPerson = (person) => ({
+  // Bentuk data orang dan sertakan data kematian hanya untuk status terkait.
   nama: person.nama,
   tempatLahir: person.tempatLahir || "",
   tglLahir: person.tglLahir || "",
@@ -116,6 +119,7 @@ function readSacrament(value) {
 }
 
 function readPerson(source = {}) {
+  // Isi nilai default agar data lama/parsial tetap dapat dimuat ke form.
   const person = { ...createPersonTemplate(), ...source };
   for (const key of ["baptis", "komuni", "krisma"]) {
     person[key] = readSacrament(source[key]);
@@ -124,6 +128,7 @@ function readPerson(source = {}) {
 }
 
 function createInitialFormData(initialData) {
+  // Normalisasi status serta struktur keluarga untuk mode tambah maupun edit.
   const maritalStatus = (initialData?.statusNikah || "belum menikah")
     .toLowerCase()
     .replaceAll("_", " ");
@@ -182,6 +187,7 @@ const SakramenDetail = ({
   personLabel,
   onUpdate,
 }) => {
+  // Tampilkan detail tempat, tanggal, dan stasi hanya saat sakramen sudah diterima.
   const inputClass =
     "w-full min-h-11 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100";
   return (

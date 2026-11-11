@@ -1,5 +1,6 @@
 import { Calendar, User, ExternalLink, Newspaper } from "lucide-react";
 
+// Daftar kartu berita dengan keadaan kosong dan aksi buka detail.
 export default function ListBerita({ data, handler }) {
   if (!data || data.length === 0) {
     return (

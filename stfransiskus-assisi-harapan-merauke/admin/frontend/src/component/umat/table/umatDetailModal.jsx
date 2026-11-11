@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { MapPin, UserRound, X } from "lucide-react";
 
+// Normalisasi nilai kosong serta susun detail umat dan anggota keluarganya.
 const valueOrFallback = (value) =>
   value === null || value === undefined || value === "" ? "Belum diisi" : value;
 

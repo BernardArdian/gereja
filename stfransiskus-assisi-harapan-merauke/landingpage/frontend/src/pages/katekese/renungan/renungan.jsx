@@ -1,12 +1,9 @@
 import { useState, useMemo } from "react";
-import {
-  Search,
-  ArrowRight,
-  BookOpen,
-} from "lucide-react";
+import { Search, ArrowRight, BookOpen } from "lucide-react";
 import Pagination from "../../../component/common/Pagination";
 import DetailBerita from "../../../component/detail/detailBerita";
 
+// Daftar renungan yang dapat dicari dan dibuka dalam tampilan detail.
 export default function Renungan() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

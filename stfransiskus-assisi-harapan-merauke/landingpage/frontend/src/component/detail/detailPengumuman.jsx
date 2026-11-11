@@ -10,6 +10,7 @@ import {
   Map,
 } from "lucide-react";
 
+// Dialog detail menyesuaikan informasi yang ditampilkan menurut jenis acara.
 export default function DetailPengumuman({ isOpen, onClose, data }) {
   if (!isOpen || !data) return null;
 

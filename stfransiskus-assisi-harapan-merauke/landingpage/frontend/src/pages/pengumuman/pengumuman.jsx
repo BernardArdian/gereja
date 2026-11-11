@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  MapPin,
-  Calendar,
-  Clock,
-  Search,
-  Filter,
-} from "lucide-react";
+import { MapPin, Calendar, Clock, Search, Filter } from "lucide-react";
 
 import DetailPengumuman from "../../component/detail/detailPengumuman";
 import ListPengumuman from "../../component/pengumuman/listPengumuman";
 import CustomDropdown from "../../component/common/CustomDropdown";
 import Pagination from "../../component/common/Pagination";
 
+// Halaman pengumuman memfilter daftar dan membuka detail item yang dipilih.
 export default function Pengumuman() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +15,7 @@ export default function Pengumuman() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const handleShowDetail = (item) => {
+    // Simpan pengumuman terpilih agar dialog dapat menampilkan detailnya.
     setSelectedDetail(item);
     setIsDetailOpen(true);
   };

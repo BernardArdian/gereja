@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// Kontrol navigasi halaman yang menerima rentang item dan aksi dari parent.
 export default function Pagination({
   currentPage,
   totalPages,
@@ -49,9 +50,7 @@ export default function Pagination({
         )}
         <button
           type="button"
-          onClick={() =>
-            onPageChange(Math.min(totalPages, currentPage + 1))
-          }
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
           aria-label="Halaman berikutnya"
           className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"

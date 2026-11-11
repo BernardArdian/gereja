@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
-import { BookOpen, Calendar, ChevronDown, FileText, Search } from "lucide-react";
+import {
+  BookOpen,
+  Calendar,
+  ChevronDown,
+  FileText,
+  Search,
+} from "lucide-react";
 
 const pedomanList = [
+  // Data pedoman pastoral yang ditampilkan dan difilter pada halaman ini.
   {
     id: 1,
     title: "Tata Cara Baptis Bayi",
@@ -130,9 +137,7 @@ export default function Pedoman() {
                       type="button"
                       aria-expanded={isOpen}
                       aria-controls={panelId}
-                      onClick={() =>
-                        setOpenAccordion(isOpen ? null : item.id)
-                      }
+                      onClick={() => setOpenAccordion(isOpen ? null : item.id)}
                       className="min-w-0 flex-1 cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
                     >
                       <span className="block wrap-break-word text-sm font-semibold text-slate-900">
@@ -150,12 +155,12 @@ export default function Pedoman() {
                     </button>
                     <button
                       type="button"
-                      aria-label={isOpen ? "Tutup isi pedoman" : "Buka isi pedoman"}
+                      aria-label={
+                        isOpen ? "Tutup isi pedoman" : "Buka isi pedoman"
+                      }
                       aria-expanded={isOpen}
                       aria-controls={panelId}
-                      onClick={() =>
-                        setOpenAccordion(isOpen ? null : item.id)
-                      }
+                      onClick={() => setOpenAccordion(isOpen ? null : item.id)}
                       className="shrink-0 cursor-pointer rounded-lg p-2 text-slate-500 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600"
                     >
                       <ChevronDown

@@ -2,6 +2,7 @@ const Homili = require("../../model/katekese/renungan/homili");
 const validateHomiliFields = require("../../helper/validateHomiliFields");
 
 class homiliService {
+  // Validasi, buang nilai kosong, dan simpan homili dengan ID fallback.
   static async inputHomili(data) {
     try {
       validateHomiliFields(data);
@@ -9,8 +10,8 @@ class homiliService {
 
       const cleanedData = Object.fromEntries(
         Object.entries(data).filter(
-          ([_, value]) => value != null && value !== ""
-        )
+          ([_, value]) => value != null && value !== "",
+        ),
       );
       if (typeof data.tema !== "string") {
         throw Object.assign(new Error("Tema harus berupa string"), {
@@ -35,6 +36,7 @@ class homiliService {
   }
   static async getHomili(data) {
     try {
+      // Filter hanya berdasarkan kriteria yang diberikan; tema dicari tanpa membedakan kapital.
       const query = {};
       if (data.id) {
         query.id = data.id;
@@ -49,7 +51,7 @@ class homiliService {
         new Error(`Gagal mengambil data homili: ${error.message}`),
         {
           statusCode: 500,
-        }
+        },
       );
     }
   }
@@ -68,11 +70,12 @@ class homiliService {
       if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
         throw Object.assign(
           new Error("Data pembaruan tidak valid atau kosong"),
-          { statusCode: 400 }
+          { statusCode: 400 },
         );
       }
 
       // Define allowed fields to prevent unwanted updates
+      // Batasi field pembaruan agar properti lain tidak ikut ditulis ke dokumen.
       const allowedFields = ["title", "content", "author", "date", "category"]; // Adjust based on schema
       const cleanedData = Object.fromEntries(
         Object.entries(data)
@@ -81,19 +84,19 @@ class homiliService {
               allowedFields.includes(key) &&
               value != null &&
               value !== "" &&
-              typeof value !== "undefined"
+              typeof value !== "undefined",
           )
           .map(([key, value]) => [
             key,
             typeof value === "string" ? value.trim() : value,
-          ])
+          ]),
       );
 
       // Check if there's anything to update
       if (Object.keys(cleanedData).length === 0) {
         throw Object.assign(
           new Error("Tidak ada data valid untuk diperbarui"),
-          { statusCode: 400 }
+          { statusCode: 400 },
         );
       }
 
@@ -105,7 +108,7 @@ class homiliService {
           new: true,
           runValidators: true, // Ensure schema validators are applied
           select: "-__v", // Exclude version key from response
-        }
+        },
       );
 
       // Check if document was found
@@ -123,12 +126,13 @@ class homiliService {
       // Re-throw error with appropriate status code
       throw Object.assign(
         new Error(`Gagal memperbarui homili: ${error.message}`),
-        { statusCode: error.statusCode || 500 }
+        { statusCode: error.statusCode || 500 },
       );
     }
   }
   static async deleteHomili(id) {
     try {
+      // Hapus berdasarkan field id kustom dan laporkan jika dokumen tidak ditemukan.
       const sanitizedId = id.trim();
       const deletedHomili = await Homili.findOneAndDelete({ id: sanitizedId });
       if (!deletedHomili) {
@@ -142,7 +146,7 @@ class homiliService {
         new Error(`Gagal menghapus homili: ${error.message}`),
         {
           statusCode: 500,
-        }
+        },
       );
     }
   }

@@ -6,6 +6,7 @@ const validateMemberDppfFields = require("../../helper/validateMemberDppFileds")
 
 class administratifService {
   //struktur DPP
+  // Validasi dan normalisasi anggota DPP, lalu cegah nama yang sudah terdaftar.
   static async inputMemberDPP(data) {
     validateMemberDppfFields(data);
     const sanitizedId = data.id?.trim() || `DPP-${Date.now()}`;
@@ -16,6 +17,7 @@ class administratifService {
       throw Object.assign(new Error("nama sudah ada"), { statusCode: 409 });
     }
 
+    // Abaikan field kosong agar tidak disimpan sebagai nilai administratif.
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== ""),
     );
@@ -32,6 +34,7 @@ class administratifService {
   //struktur DPP
 
   //syarat administratif
+  // Validasi syarat, cegah judul duplikat, lalu simpan dokumen baru.
   static async inputSyaratAdministratif(data) {
     try {
       validateAdministratif(data);
@@ -70,6 +73,7 @@ class administratifService {
   }
   static async getSyaratAdministratifById() {
     try {
+      // Saat ini metode mengembalikan seluruh syarat, bukan mencari berdasarkan ID.
       const syaratAdministratif = await SyaratAdministratif.find({});
 
       return syaratAdministratif;

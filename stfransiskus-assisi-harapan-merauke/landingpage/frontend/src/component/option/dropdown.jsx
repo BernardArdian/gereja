@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, CheckCheck } from "lucide-react";
 
+// Dropdown opsi sederhana dengan deteksi klik di luar menu.
 export default function CustomDropdown({
   value,
   options,

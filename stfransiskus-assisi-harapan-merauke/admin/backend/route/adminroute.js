@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const authMiddleware = require("../midleware/authMiddleware");
 
+// Counter MongoDB menyediakan nomor urut untuk ID admin yang mudah dibaca.
 const Counter = mongoose.model(
   "Counter",
   new mongoose.Schema({
@@ -15,6 +16,7 @@ const Counter = mongoose.model(
 );
 
 const getNextSequence = async (name) => {
+  // Increment atomik menghindari nomor urut yang sama pada request bersamaan.
   const result = await Counter.findByIdAndUpdate(
     name,
     { $inc: { seq: 1 } },
@@ -23,6 +25,7 @@ const getNextSequence = async (name) => {
   return result.seq;
 };
 
+// Login bersifat publik; daftar admin memerlukan token autentikasi.
 router
   .post("/login", async (req, res) => {
     try {
@@ -61,6 +64,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Pendaftaran dan penghapusan admin hanya tersedia bagi pengguna terautentikasi.
 router
   .post("/register", authMiddleware, async (req, res) => {
     try {

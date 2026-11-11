@@ -1,5 +1,6 @@
 import { X, User, Calendar, Briefcase, Save, Building2 } from "lucide-react";
 
+// Formulir anggota DPP menerima state, validasi, dan aksi dari komponen induk.
 //import { dppMemberService } from "../../../../../backend/service/dpp/memberDppService";
 import { useRef } from "react";
 import Dropdown from "../../dropdown/dropdown";

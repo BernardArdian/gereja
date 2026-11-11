@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 
+// Dialog detail berita untuk menampilkan field pilihan dan aksi dari parent.
 export default function DetailBerita(isOpen, handlers, formData) {
   if (!isOpen) return null;
   return (

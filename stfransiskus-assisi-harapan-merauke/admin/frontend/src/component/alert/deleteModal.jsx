@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, X } from "lucide-react";
 
+// Modal konfirmasi hapus dengan pengelolaan fokus, Escape, dan status proses.
 export default function DeleteModal({
   isOpen,
   onClose,

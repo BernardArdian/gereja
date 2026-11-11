@@ -14,6 +14,7 @@ const tabs = [
 ];
 const UMAT_PAGE_SIZE = 20;
 
+// Ubah variasi record backend menjadi bentuk seragam yang dipakai komponen UI.
 function normalizeUmat(item) {
   const personal = item.single || item.personal || {};
   const family = item.keluarga || {};
@@ -54,6 +55,7 @@ function normalizeUmat(item) {
 }
 
 function parseUmatResponse(response, error) {
+  // Validasi bentuk respons sebelum mengubah record menjadi daftar umat.
   if (error) {
     return {
       data: null,
@@ -77,6 +79,7 @@ function parseUmatResponse(response, error) {
 }
 
 export default function Umat() {
+  // Tab disimpan pada URL sehingga sub-halaman dapat dibuka langsung.
   const navigate = useNavigate();
   const { tab } = useParams();
   const activeTab = tabs.some((item) => item.id === tab) ? tab : "input";
@@ -93,6 +96,7 @@ export default function Umat() {
   };
 
   const loadUmatData = useCallback(async () => {
+    // Muat ulang data dan perbarui status error/loading berdasarkan hasil API.
     setLoading(true);
     const [response, error] = await umatServiceApi.displayDataUmat();
     const result = parseUmatResponse(response, error);
@@ -106,6 +110,7 @@ export default function Umat() {
   }, []);
 
   useEffect(() => {
+    // Muat data awal dan abaikan hasil asynchronous setelah komponen dilepas.
     let isCurrent = true;
 
     umatServiceApi
@@ -136,6 +141,7 @@ export default function Umat() {
   }, []);
 
   const handleSave = (savedUmat, isEdit) => {
+    // Sinkronkan record hasil simpan ke state lokal tanpa meminta daftar ulang.
     setLoadError("");
     if (!(savedUmat?._id || savedUmat?.id)) {
       setLoadError(
@@ -173,6 +179,7 @@ export default function Umat() {
   }, []);
 
   const handleDelete = async (id) => {
+    // Hapus dari server dahulu; state lokal hanya berubah jika request berhasil.
     setDeleteError("");
     const [, error] = await umatServiceApi.deleteDataUmat(id);
     if (error) {

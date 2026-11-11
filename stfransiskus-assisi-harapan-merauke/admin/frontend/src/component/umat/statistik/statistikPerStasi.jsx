@@ -1,5 +1,6 @@
 import { PieChart } from "lucide-react";
 
+// Kolom statistik yang ditampilkan untuk setiap stasi.
 const columns = [
   { key: "total", label: "Total", className: "font-semibold text-slate-900" },
   { key: "baptis", label: "Baptis" },

@@ -6,6 +6,7 @@ import {
 import Pagination from "../../../component/common/Pagination";
 import DetailBerita from "../../../component/detail/detailBerita";
 
+// Daftar orang kudus dengan pencarian, pagination, dan detail pilihan.
 export default function OrangKudus() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

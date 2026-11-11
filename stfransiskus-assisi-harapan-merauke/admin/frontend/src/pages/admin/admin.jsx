@@ -8,6 +8,7 @@ import StasiDanDppCard from "../../component/admins/card/stasiDppCard";
 import ListStatidanParoki from "../../component/admins/list/listStasiModal";
 import ListAnggotaDpp from "../../component/admins/list/listAnggotaDpp";
 
+// Mengatur dialog admin, data stasi, dan anggota DPP pada halaman pengelolaan.
 export default function Admin() {
   const [isStasiModalOpen, setIsStasiModalOpen] = useState(false);
   const [isDppModalOpen, setIsDppModaOpen] = useState(false);

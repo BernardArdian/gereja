@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 
+// Menampilkan ringkasan sejarah, narasi, dan tonggak perjalanan gereja.
 export default function SejarahGereja() {
   const data = {
     ringkasan:

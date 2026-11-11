@@ -18,6 +18,7 @@ import Dropdown from "../../dropdown/dropdown";
 const fieldClass =
   "min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100";
 
+// Form editor pengumuman menggabungkan informasi acara dan bagian penugasan misa.
 export default function PengumumanComponent({
   isOpen,
   editMode,

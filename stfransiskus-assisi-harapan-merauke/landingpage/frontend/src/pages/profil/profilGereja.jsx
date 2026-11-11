@@ -4,6 +4,7 @@ import VisiMisiGereja from "./visi-misi/visiMisi";
 import SejarahGereja from "./sejarah/sejarah";
 import DewanPastoralParoki from "./dewan-pastoral/dewanPastoral";
 
+// Memilih subhalaman profil gereja berdasarkan tab aktif.
 export default function ProfilGereja() {
   const [activeTab, setActiveTab] = useState("sejarah gereja");
 

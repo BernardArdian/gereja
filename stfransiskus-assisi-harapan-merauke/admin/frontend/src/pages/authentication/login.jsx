@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
 
+// Form login lokal dengan pilihan role dan kontrol visibilitas password.
 export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);

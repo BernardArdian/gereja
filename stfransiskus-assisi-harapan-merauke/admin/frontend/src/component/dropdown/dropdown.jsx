@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
+// Dropdown kustom yang menangani fokus, navigasi keyboard, dan opsi nonaktif.
 export default function Dropdown({
   value,
   options = [],

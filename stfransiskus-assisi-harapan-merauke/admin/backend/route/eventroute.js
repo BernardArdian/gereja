@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const EvetnSerVice = require('../service/event/eventgerejaservice')
 
+// Endpoint CRUD event meneruskan data request ke service event.
 //create event(pengumuman)
 router.post('/', (req, res) => {
     try {
@@ -13,6 +14,7 @@ router.post('/', (req, res) => {
 })
  
 //get all event
+// Mengembalikan semua event yang tersedia pada service.
 router.get('/', (reg, res) => {
     try {
         const eventGetAll = EvetnSerVice.getAllEvent()
@@ -23,6 +25,7 @@ router.get('/', (reg, res) => {
 })
 
 //get all event with id
+// Mengambil satu event berdasarkan ID pada parameter URL.
 router.get('/:id', (reg, res) => { 
     try {
         const eventGetByid = EvetnSerVice.getAllEventById(reg.params.id)

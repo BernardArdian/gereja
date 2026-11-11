@@ -19,6 +19,7 @@ import StFransis from "../../../public/saint_francis_assisi.png";
 
 const THEME_STORAGE_KEY = "admin-theme";
 
+// Layout utama panel: navigasi responsif, pilihan tema, dan aksi logout.
 export default function Layout({ children, onLogout }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -32,6 +33,7 @@ export default function Layout({ children, onLogout }) {
   const activeMenuItemRef = useRef(null);
 
   useEffect(() => {
+    // Perbarui state responsif saat ukuran viewport berubah.
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -39,6 +41,7 @@ export default function Layout({ children, onLogout }) {
   }, []);
 
   useEffect(() => {
+    // Sinkronkan tema ke elemen root dan simpan pilihan untuk kunjungan berikutnya.
     document.documentElement.classList.toggle("dark", isDarkMode);
     document.documentElement.style.colorScheme = isDarkMode ? "dark" : "light";
     window.localStorage.setItem(
@@ -48,6 +51,7 @@ export default function Layout({ children, onLogout }) {
   }, [isDarkMode]);
 
   useEffect(() => {
+    // Awali halaman dari atas setiap kali rute utama berganti.
     mainRef.current?.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
 
@@ -61,6 +65,7 @@ export default function Layout({ children, onLogout }) {
   };
 
   const menuItems = [
+    // Satu daftar ini menjadi sumber tautan dan status aktif sidebar.
     {
       id: "Dashboard",
       icon: LayoutDashboard,

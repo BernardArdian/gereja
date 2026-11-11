@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// Kontrol pagination lama untuk daftar dokumen dengan aksi dari parent.
 export default function Paginations(items, handlers) {
   return (
     <footer className="mt-10 flex items-center justify-between bg-gray-400/30 p-4 rounded-xl border border-gray-100">

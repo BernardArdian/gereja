@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+// Mengatur tab akun admin, validasi formulir, serta operasi daftar administrator.
 import { KeyRound, ShieldCheck, UserPlus, UsersRound, X } from "lucide-react";
 import Admin_List from "./list/list_admin";
 import Input_Admin from "./input/input_admin";

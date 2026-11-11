@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 
+// Kartu ringkasan jumlah/data stasi atau DPP dengan aksi opsional.
 export default function StasiDanDppCard({
   title,
   value,

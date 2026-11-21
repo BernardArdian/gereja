@@ -14,23 +14,24 @@ import {
 export default function DetailPengumuman({ isOpen, onClose, data }) {
   if (!isOpen || !data) return null;
 
+  // Pengumuman pernikahan memakai susunan konten khusus untuk data pasangan.
   const isPernikahan = data.status === "pernikahan";
 
   return (
     <>
       {/* Backdrop */}
       <section
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110]"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-110"
         onClick={onClose}
       />
 
       {/* Container Utama */}
-      <section className="fixed inset-0 z-[120] flex items-center justify-center p-4 pointer-events-none">
+      <section className="fixed inset-0 z-120 flex items-center justify-center p-4 pointer-events-none">
         <form className="relative bg-white w-full max-w-2xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden pointer-events-auto">
           {/* --- TOMBOL X STICKY --- */}
           <button
             onClick={onClose}
-            className={`cursor-pointer absolute top-5 right-5 p-2.5 transition-all z-[150] backdrop-blur-md rounded-xl 
+            className={`cursor-pointer absolute top-5 right-5 p-2.5 transition-all z-150 backdrop-blur-md rounded-xl
               ${isPernikahan ? "bg-black/20 text-white hover:bg-red-500" : "bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-500"}`}
           >
             <X size={20} strokeWidth={3} />
@@ -45,9 +46,9 @@ export default function DetailPengumuman({ isOpen, onClose, data }) {
 
             {/* HEADER (Hanya muncul jika Pernikahan) */}
             {isPernikahan && (
-              <section className="relative h-64 w-full shrink-0 bg-gradient-to-br from-indigo-950 via-indigo-900 to-blue-900 overflow-hidden">
+              <section className="relative h-64 w-full shrink-0 bg-linear-to-br from-indigo-950 via-indigo-900 to-blue-900 overflow-hidden">
                 <div className="flex h-full w-full items-center justify-around px-8 relative">
-                  <div className="absolute inset-y-0 left-1/2 w-[1px] bg-white/10 z-0" />
+                  <div className="absolute inset-y-0 left-1/2 w-px bg-white/10 z-0" />
 
                   {/* Pria */}
                   <div className="flex flex-col items-center z-10">
@@ -156,6 +157,7 @@ export default function DetailPengumuman({ isOpen, onClose, data }) {
 }
 
 function InfoItem({ icon, label, value, color }) {
+  // Tampilkan satu metadata dengan ikon dan fallback untuk nilai yang belum ada.
   return (
     <section className="flex gap-4 items-center">
       <form

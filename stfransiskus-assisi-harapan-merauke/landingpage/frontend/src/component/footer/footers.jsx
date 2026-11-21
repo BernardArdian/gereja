@@ -84,6 +84,7 @@ export default function Footers({ theme, onToggleTheme }) {
               </a>
             </section>
 
+            {/* Jadwal tetap dikelola sebagai daftar agar mudah diperbarui. */}
             <section
               children={[
                 <h3
@@ -135,6 +136,7 @@ export default function Footers({ theme, onToggleTheme }) {
             © {new Date().getFullYear()} Paroki St. Fransiskus Assisi Harapan
             Makmur — All Rights Reserved
           </p>
+          {/* Tombol ini meneruskan perubahan tema ke state aplikasi utama. */}
           <button
             type="button"
             onClick={onToggleTheme}

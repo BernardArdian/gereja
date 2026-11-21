@@ -50,6 +50,7 @@ export default function DewanPastoralParoki() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
+              {/* Teruskan tiap field anggota ke komponen baris tabel. */}
               {members.map((member, index) => (
                 <DppTable
                   key={`${member.nama}-${index}`}

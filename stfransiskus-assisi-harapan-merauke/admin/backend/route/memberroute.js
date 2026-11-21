@@ -12,7 +12,7 @@ function sendError(res, error, fallbackStatus = 500) {
 }
 
 // Buat data umat baru dari body request.
-router.post("/inputmember", async (req, res) => {
+router.post("/inputmember", authMiddleware, async (req, res) => {
   try {
     const member = await memberService.createMember(req.body);
     res.status(201).json(member);
@@ -21,7 +21,7 @@ router.post("/inputmember", async (req, res) => {
   }
 });
 
-router.get("/displaymember", async (_req, res) => {
+router.get("/displaymember", authMiddleware, async (_req, res) => {
   try {
     const members = await memberService.getAllMember();
     res.status(200).json(members);
@@ -30,7 +30,7 @@ router.get("/displaymember", async (_req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const member = await memberService.getAllMemberById(req.params.id);
     res.status(200).json(member);
@@ -48,7 +48,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   // Tolak ID yang tidak valid sebelum memanggil penghapusan database.
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ error: "ID umat tidak valid." });

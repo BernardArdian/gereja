@@ -1,28 +1,57 @@
 import { useRef, useState } from "react";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
+import { handleRequest } from "../../api/helper";
+import api from "../../api/url";
+import StFransis from "../../assets/image/st.fransiskus_assisi.png";
 
 // Form login lokal dengan pilihan role dan kontrol visibilitas password.
-export default function Login() {
+export default function Login({ onLogin }) {
   const userName = useRef(null);
   const password = useRef(null);
 
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("admin");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const roles = [
     { id: "superadmin", label: "Super Admin" },
     { id: "admin", label: "Admin" },
   ];
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(
-      "Login with:",
-      userName.current.value,
-      password.current.value,
-      selectedRole,
+    if (isSubmitting) return;
+
+    const adminname = userName.current?.value.trim();
+    const passwordValue = password.current?.value || "";
+    if (!adminname || !passwordValue) {
+      setErrorMessage("Username dan password wajib diisi.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+    const [result, requestError] = await handleRequest(
+      api.post("/admin/login", {
+        adminname,
+        password: passwordValue,
+        role: selectedRole,
+      }),
     );
+    setIsSubmitting(false);
+
+    if (requestError || !result?.token || !result?.admin) {
+      setErrorMessage(
+        typeof requestError === "string"
+          ? requestError
+          : "Login gagal. Periksa kredensial dan coba lagi.",
+      );
+      return;
+    }
+
+    onLogin?.(result);
   };
 
   const handleUsernameKeyDown = (e) => {
@@ -33,11 +62,17 @@ export default function Login() {
   };
 
   return (
-    <section className="flex items-center justify-center bg-yellow-400/50 h-screen overflow-hidden font-sans">
-      <form className="w-full max-w-sm flex  flex-col h-[85vh] justify-center relative">
-        <section className="flex-1 bg-gray-400/60 rounded-[1rem] flex flex-col justify-center">
-          <div className=" backdrop-blur-md border border-white/40 p-8 rounded-[1rem] relative overflow-hidden">
-            <div className="absolute -top-[30%] -left-[30%] w-64 h-64 rounded-full blur-3xl pointer-events-none" />
+    <section className="flex flex-col items-center justify-center h-screen overflow-hidden font-sans bg-linear-to-br from-yellow-300/30 via-yellow-400/60 to-yellow-400/30 ">
+      <section className="flex item-center justify-center overflow-hidden rounded-xl border border-yellow-500">
+        <img
+          src={StFransis}
+          className="mx-auto object-cover sm:mx-0 sm:h-100.5 sm:w-56"
+          alt="Santo Fransiskus Assisi"
+        />
+
+        <section className="flex-1 h-[85vh] bg-gray-400/60  w-full max-w-sm flex flex-col justify-center items-center ">
+          <div className=" backdrop-blur-md border border-white/40 p-8">
+            <div className="absolute top-[-30%] left-[-30%] h-64 rounded-full blur-3xl pointer-events-none" />
             {/* header login content */}
             <header className="mb-6 font-serif text-center relative z-10">
               <h1 className="text-1xl tracking-tight">Admin Paroki</h1>
@@ -55,9 +90,12 @@ export default function Login() {
                 <input
                   ref={userName}
                   type="text"
+                  name="adminname"
+                  autoComplete="username"
+                  required
                   placeholder="Username"
                   onKeyDown={handleUsernameKeyDown}
-                  className="w-full py-2.5 pl-5 bg-transparent outline-none text-slate-900 focus-within:bg-gray-300/40 focus:border-b focus:border-b-3 focus:border-green-500/50 placeholder-slate-800/60 text-sm font-medium"
+                  className="w-full py-2.5 pl-5 bg-transparent outline-none text-slate-900 focus-within:bg-gray-300/40  focus:border-b-3 focus:border-green-500/50 placeholder-slate-800/60 text-sm font-medium"
                 />
               </section>
 
@@ -65,8 +103,11 @@ export default function Login() {
                 <input
                   ref={password}
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
+                  required
                   placeholder="Password"
-                  className="w-full py-2.5 pl-5 bg-transparent outline-none text-slate-900 focus-within:bg-gray-300/40 focus:border-b focus:border-b-3 focus:border-green-500/50 placeholder-slate-800/60 text-sm font-medium"
+                  className="w-full py-2.5 pl-5 bg-transparent outline-none text-slate-900 focus-within:bg-gray-300/40 focus:border-b-3 focus:border-green-500/50 placeholder-slate-800/60 text-sm font-medium"
                 />
                 <button
                   type="button"
@@ -78,7 +119,7 @@ export default function Login() {
               </section>
 
               <section className="relative pt-1">
-                <label className="block text-[0.8em] font-bold text-slate-900 font-serif tracking-widest mb-1 ml-1">
+                <label className="block text-[0.8em]  text-slate-900 font-medium tracking-widest mb-1 ml-1">
                   Role
                 </label>
 
@@ -122,30 +163,35 @@ export default function Login() {
                 )}
               </section>
 
-              <form className="flex justify-end">
+              {errorMessage && (
+                <p role="alert" className="text-sm text-rose-700">
+                  {errorMessage}
+                </p>
+              )}
+
+              <div className="flex justify-end">
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="w-[12dvw] text-center cursor-pointer mt-4 bg-amber-800 hover:bg-amber-800/30 hover:text-black text-white text-xs
                    font-bold py-4 rounded-full transition-all duration-300 active:scale-95 "
                 >
-                  <p>Sign In</p>
+                  <p>{isSubmitting ? "Memproses..." : "Sign In"}</p>
                 </button>
-              </form>
-
-              {/* Footer diletakkan di dasar container agar tidak terpotong */}
-              <footer className="flex flex-col items-center justify-center text-center">
-                <p className="flex flex-row items-center font-serif gap-1 text-[0.8em] text-center">
-                  <p className="text-rose-700 text-[1.5em]">©</p>{" "}
-                  {new Date().getFullYear()} Paroki St. Fransiskus Assisi
-                </p>
-                <p className="font-serif gap-1 text-[0.8em] text-center tracking-widest">
-                  Harapan Makmur — All Rights Reserved
-                </p>
-              </footer>
+              </div>
             </form>
           </div>
         </section>
-      </form>
+      </section>
+      <footer className="flex flex-col items-center justify-center text-center">
+        <p className="flex flex-row items-center font-serif gap-1 text-[0.8em] text-center">
+          <p className="text-rose-700 text-[1.5em]">©</p>{" "}
+          {new Date().getFullYear()} Paroki St. Fransiskus Assisi
+        </p>
+        <p className="font-serif gap-1 text-[0.8em] text-center tracking-widest">
+          Harapan Makmur — All Rights Reserved
+        </p>
+      </footer>
     </section>
   );
 }

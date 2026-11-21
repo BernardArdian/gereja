@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const HomiliService = require("../service/event/homiliservice");
+const authMiddleware = require("../midleware/authMiddleware");
 
 // Endpoint pembuatan dan pembacaan homili menerima data/filter dari request.
 router
-  .post("/input-homili", async (req, res) => {
+  .post("/input-homili", authMiddleware, async (req, res) => {
     try {
       const homili = await HomiliService.inputHomili(req.body);
       res.status(201).json(homili);
@@ -31,7 +32,7 @@ router
   });
 
 router
-  .put("/:id", async (req, res) => {
+  .put("/:id", authMiddleware, async (req, res) => {
     try {
       const updatedHomili = await HomiliService.updateHomili(
         req.params.id,
@@ -42,7 +43,7 @@ router
       res.status(400).json({ error: error.message });
     }
   })
-  .delete("/:id", async (req, res) => {
+  .delete("/:id", authMiddleware, async (req, res) => {
     try {
       const deletedHomili = await HomiliService.deleteHomili(req.params.id);
       res.json(deletedHomili);

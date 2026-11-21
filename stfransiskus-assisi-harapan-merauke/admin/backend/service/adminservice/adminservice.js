@@ -5,11 +5,12 @@ require("dotenv").config();
 
 // Environment variables
 const JWT_SECRET = process.env.JWT;
+const BCRYPT_ROUNDS = 12;
 
 class adminService {
   // Simpan kredensial dalam bentuk hash; password asli tidak disimpan ke DB.
   static async registerAdmin({ id, adminname, password, role }) {
-    const hashedPassword = await bcrypt.hash(password.trim(), 10);
+    const hashedPassword = await bcrypt.hash(password.trim(), BCRYPT_ROUNDS);
     const admin = new Admin({
       id,
       adminname: adminname.trim(),
@@ -27,13 +28,19 @@ class adminService {
 
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) throw new Error("Username atau password salah");
-    if (admin.role !== role) throw new Error("Role tidak cocok");
+    if (admin.role !== role) throw new Error("Username atau password salah");
+
+    // Tingkatkan hash akun lama setelah verifikasi password berhasil.
+    if (bcrypt.getRounds(admin.password) < BCRYPT_ROUNDS) {
+      admin.password = await bcrypt.hash(password, BCRYPT_ROUNDS);
+      await admin.save();
+    }
 
     // Token membawa identitas dan role admin dengan masa berlaku satu jam.
     const token = jwt.sign(
       { id: admin.id, adminname: admin.adminname, role: admin.role },
       JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "1h", algorithm: "HS256" },
     );
 
     return {

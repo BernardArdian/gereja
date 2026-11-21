@@ -57,7 +57,7 @@ export default function KatekeseInput({
   if (!isOpen) return null;
 
   return createPortal(
-    <section className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <section className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={handleClose}
@@ -84,8 +84,8 @@ export default function KatekeseInput({
           <div className="flex-1 p-6 overflow-y-auto space-y-6 bg-gray-50/30">
             <section className="flex flex-col sm:flex-row gap-6">
               {/* Thumbnail Upload & Preview */}
-              <section className="relative flex flex-shrink-0 flex-col w-full sm:w-1/3 aspect-square bg-white group overflow-hidden">
-                <label className="relative flex flex-shrink-0 flex-col items-center justify-center w-full sm:w-1/1 aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-white hover:bg-indigo-50 hover:border-indigo-400 transition-all group overflow-hidden">
+              <section className="relative flex shrink-0 flex-col w-full sm:w-1/3 aspect-square bg-white group overflow-hidden">
+                <label className="relative flex shrink-0 flex-col items-center justify-center w-full sm:w-1/1 aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-white hover:bg-indigo-50 hover:border-indigo-400 transition-all group overflow-hidden">
                   {previewUrl ? (
                     <>
                       <img

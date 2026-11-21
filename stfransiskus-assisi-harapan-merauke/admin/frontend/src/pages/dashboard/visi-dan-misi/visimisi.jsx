@@ -41,7 +41,7 @@ export default function VisiMisi() {
         </button>
       </header>
 
-      <article className="visi-main-card relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-slate-50 p-6 sm:p-10">
+      <article className="visi-main-card relative overflow-hidden rounded-2xl border border-amber-200 bg-linear-to-br from-amber-50 via-white to-slate-50 p-6 sm:p-10">
         <Sparkles
           size={100}
           className="visi-main-decoration pointer-events-none absolute -right-3 -top-3 text-amber-100 sm:right-4 sm:top-4"

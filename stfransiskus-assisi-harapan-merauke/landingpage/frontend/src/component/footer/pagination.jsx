@@ -17,6 +17,7 @@ export default function Paginations(items, actions) {
         {"  "}
         renungan
       </p>
+      {/* Tombol halaman meneruskan navigasi ke callback yang disediakan parent. */}
       <div className="flex items-center gap-1">
         <button
           onClick={actions.onClick}

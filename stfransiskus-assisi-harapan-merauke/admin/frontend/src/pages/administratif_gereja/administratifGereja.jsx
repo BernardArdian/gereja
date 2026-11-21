@@ -148,6 +148,12 @@ export default function AdministratifGereja() {
     setEditingDocument(null);
   };
 
+  const handlePageChange = (page) => {
+    // Pindah halaman lalu gulir kembali ke paling atas.
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <section className="min-h-full w-full bg-slate-50">
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
@@ -344,7 +350,7 @@ export default function AdministratifGereja() {
           currentPage={page}
           pageSize={PAGE_SIZE}
           totalItems={filteredDocuments.length}
-          onPageChange={setCurrentPage}
+          onPageChange={handlePageChange}
           itemLabel="dokumen"
         />
       </main>

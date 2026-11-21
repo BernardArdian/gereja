@@ -126,7 +126,7 @@ export default function AdminPages({ isOpen, handlers = {} }) {
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-90 flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSubmitting) {
           handlers.cancel?.();

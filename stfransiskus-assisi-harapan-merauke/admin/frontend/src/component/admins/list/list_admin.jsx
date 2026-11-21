@@ -43,7 +43,7 @@ export default function Admin_List({ admins = [], handlers = {} }) {
                   <UserRound size={19} aria-hidden="true" />
                 </span>
                 <div className="min-w-0">
-                  <p className="break-words text-sm font-semibold text-slate-900">
+                  <p className="wrap-break-words text-sm font-semibold text-slate-900">
                     {admin.name}
                   </p>
                   <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">

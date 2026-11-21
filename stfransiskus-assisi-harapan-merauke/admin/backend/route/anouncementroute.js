@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const anouncementServices = require("../service/pengumuman/pengumuman");
 const mongoose = require("mongoose");
+const authMiddleware = require("../midleware/authMiddleware");
 
 // Terima data pengumuman baru dan kembalikan dokumen yang dibuat.
-router.post("/input-anouncement", async (req, res) => {
+router.post("/input-anouncement", authMiddleware, async (req, res) => {
   try {
     const result = await anouncementServices.input_anouncemet(req.body);
     res.status(201).json(result);
@@ -14,7 +15,7 @@ router.post("/input-anouncement", async (req, res) => {
   }
 });
 
-router.get("/anoumncement-list", async (req, res) => {
+router.get("/anoumncement-list", authMiddleware, async (req, res) => {
   // Endpoint ini dimaksudkan untuk mengambil daftar pengumuman.
   try {
     const result = await anouncementServices.getAnouncement; // pastikan pakai method getAllAdmins
@@ -26,7 +27,7 @@ router.get("/anoumncement-list", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   try {
     const result = await anouncementServices.updateAnouncemnet(
       req.params.id,
@@ -38,7 +39,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   // Pastikan parameter memiliki format ObjectId sebelum penghapusan dipanggil.
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {

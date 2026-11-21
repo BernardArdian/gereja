@@ -15,10 +15,10 @@ export default function VisiMisiGereja() {
   return (
     <section className="w-full">
       <main className="mx-auto w-full max-w-6xl space-y-5">
-        <article className="relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-slate-50 p-6 shadow-sm sm:p-10">
+        <article className="relative overflow-hidden rounded-2xl border border-amber-200 bg-linear-to-br from-amber-50 via-amber-100 to-amber-50 p-6 shadow-sm sm:p-10">
           <Sparkles
             size={100}
-            className="pointer-events-none absolute -right-3 -top-3 text-amber-100 sm:right-4 sm:top-4"
+            className="pointer-events-none absolute -right-3 -top-3 text-slate-200 sm:right-4 sm:top-4"
             aria-hidden="true"
           />
           <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
@@ -28,7 +28,7 @@ export default function VisiMisiGereja() {
             <h2 className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">
               Visi utama
             </h2>
-            <p className="mt-4 text-lg font-semibold leading-8 text-slate-800 sm:text-2xl sm:leading-10">
+            <p className="mt-4 text-lg font-semibold leading-8 text-black sm:text-2xl sm:leading-10">
               “{data.visi}”
             </p>
           </div>
@@ -47,6 +47,7 @@ export default function VisiMisiGereja() {
             </div>
           </header>
           <ol className="divide-y divide-slate-100">
+            {/* Nomori misi sesuai urutan yang diberikan pada data halaman. */}
             {data.misi.map((misi, index) => (
               <li
                 key={`${index}-${misi}`}

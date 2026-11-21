@@ -12,6 +12,7 @@ export default function CustomDropdown({
   const wrapperRef = useRef(null);
 
   useEffect(() => {
+    // Tutup menu jika klik terjadi di luar komponen dropdown.
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setIsOpen(false);
@@ -24,7 +25,7 @@ export default function CustomDropdown({
   const selected = options.find((opt) => opt.value === value);
 
   return (
-    <div ref={wrapperRef} className="relative min-w-[160px]">
+    <div ref={wrapperRef} className="relative min-w-40">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -50,6 +51,7 @@ export default function CustomDropdown({
             <li
               key={opt.value}
               onClick={() => {
+                // Simpan pilihan melalui callback parent, lalu tutup menu.
                 onChange(opt.value);
                 setIsOpen(false);
               }}

@@ -9,6 +9,7 @@ export default function ProfilGereja() {
   const [activeTab, setActiveTab] = useState("sejarah gereja");
 
   const renderContent = () => {
+    // Pilih komponen profil yang sesuai dengan tab navigasi aktif.
     switch (activeTab) {
       case "sejarah gereja":
         return <SejarahGereja />;
@@ -21,6 +22,7 @@ export default function ProfilGereja() {
     }
   };
 
+  // Label ini dipakai bersama untuk membuat tombol tab profil.
   const profileSubMenu = ["sejarah gereja", "visi & misi", "dewan pengurus"];
 
   return (
@@ -67,7 +69,7 @@ export default function ProfilGereja() {
                             onClick={() => setActiveTab(tab)}
                             className={`relative cursor-pointer whitespace-nowrap rounded-t-lg px-4 py-3 text-sm font-medium capitalize transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600 ${
                               isActive
-                                ? "text-amber-900"
+                                ? "text-amber-900 font-semibold"
                                 : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                             }`}
                             children={[

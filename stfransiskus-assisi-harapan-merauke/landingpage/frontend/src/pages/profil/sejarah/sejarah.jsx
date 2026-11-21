@@ -72,7 +72,8 @@ Dekade demi dekade, gereja ini bukan hanya menjadi tempat ibadah, tetapi juga pu
               </p>
             </div>
           </header>
-          <ol className="relative space-y-5 before:absolute before:bottom-2 before:left-[9px] before:top-2 before:w-px before:bg-amber-300">
+          {/* Susun setiap tonggak sejarah sebagai titik pada garis waktu. */}
+          <ol className="relative space-y-5 before:absolute before:bottom-2 before:left-2.25 before:top-2 before:w-px before:bg-amber-300">
             {data.milestones.map((item, index) => (
               <li key={`${item.tahun}-${index}`} className="relative pl-8">
                 <span className="absolute left-0 top-1.5 h-5 w-5 rounded-full border-4 border-amber-200 bg-amber-700" />

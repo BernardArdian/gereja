@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const administratifService = require("../service/administrasi/administratifservice");
+const authMiddleware = require("../midleware/authMiddleware");
 
 // Endpoint untuk membuat dan menampilkan persyaratan administratif sakramen.
 router
-  .post("/syarat-administratif-sakramen", async (req, res) => {
+  .post("/syarat-administratif-sakramen", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.inputSyaratAdministratif(
         req.body,
@@ -15,19 +16,23 @@ router
       res.status(status).json({ error: error.message });
     }
   })
-  .get("/display-syarat-administratif-sakramen", async (req, res) => {
-    try {
-      const syaratBaptis =
-        await administratifService.getSyaratAdministratifById();
-      res.status(200).json(syaratBaptis);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+  .get(
+    "/display-syarat-administratif-sakramen",
+    authMiddleware,
+    async (req, res) => {
+      try {
+        const syaratBaptis =
+          await administratifService.getSyaratAdministratifById();
+        res.status(200).json(syaratBaptis);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    },
+  );
 
 // Teruskan perubahan dan penghapusan syarat kepada service administratif.
 router
-  .put("/:id", async (req, res) => {
+  .put("/:id", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.updateSyaratBaptis(
         req.params.id,
@@ -38,7 +43,7 @@ router
       res.status(400).json({ error: error.message });
     }
   })
-  .delete("/:id", async (req, res) => {
+  .delete("/:id", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.deleteSyaratBaptis(
         req.params.id,
@@ -52,7 +57,7 @@ router
 
 // Endpoint untuk menambah dan menampilkan struktur anggota DPP.
 router
-  .post("/input-memberdpp", async (req, res) => {
+  .post("/input-memberdpp", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.inputMemberDPP(req.body);
       res.status(201).json(result);
@@ -61,7 +66,7 @@ router
       res.status(status).json({ error: error.message });
     }
   })
-  .get("/list-memberdpp", async (req, res) => {
+  .get("/list-memberdpp", authMiddleware, async (req, res) => {
     try {
       const syaratBaptis =
         await administratifService.getStrukturMemberDPPById();
@@ -73,7 +78,7 @@ router
 
 // Rute perubahan/penghapusan berada di prefiks router yang sama.
 router
-  .put("/:id", async (req, res) => {
+  .put("/:id", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.updateSyaratBaptis(
         req.params.id,
@@ -84,7 +89,7 @@ router
       res.status(400).json({ error: error.message });
     }
   })
-  .delete("/:id", async (req, res) => {
+  .delete("/:id", authMiddleware, async (req, res) => {
     try {
       const result = await administratifService.deleteSyaratBaptis(
         req.params.id,

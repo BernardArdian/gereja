@@ -41,7 +41,7 @@ export default function DeleteModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-120 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isConfirming) onClose?.();
       }}
@@ -61,11 +61,14 @@ export default function DeleteModal({
             <h2 id={titleId} className="text-base font-semibold text-slate-900">
               {title}
             </h2>
-            <p id={descriptionId} className="mt-2 text-sm leading-6 text-slate-600">
+            <p
+              id={descriptionId}
+              className="mt-2 text-sm leading-6 text-slate-600"
+            >
               {description}
             </p>
             {itemName && (
-              <p className="mt-2 break-words rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
+              <p className="mt-2 wrap-break-words rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800">
                 {itemName}
               </p>
             )}

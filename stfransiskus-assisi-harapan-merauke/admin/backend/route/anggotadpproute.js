@@ -38,7 +38,7 @@ router
       res.status(400).json({ error: error.message });
     }
   })
-  .get("/anggota-dpp/list-dpp", async (req, res) => {
+  .get("/anggota-dpp/list-dpp", authMiddleware, async (req, res) => {
     try {
       const dpp = await dppService.getAllDppMember();
       return dpp;
@@ -46,7 +46,7 @@ router
       res.status(400).json({ error: error.message });
     }
   })
-  .get("anggota-dpp/anggota-dpp/:id", async (req, res) => {
+  .get("anggota-dpp/anggota-dpp/:id", authMiddleware, async (req, res) => {
     try {
       const dpp = await dppService.getAllDppMemberById();
       return dpp;

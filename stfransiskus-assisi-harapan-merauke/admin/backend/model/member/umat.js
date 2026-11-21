@@ -78,9 +78,9 @@ const umatSchema = new mongoose.Schema(
     noKk: {
       type: String,
       trim: true,
-      unique: true,
       sparse: true,
     },
+    noKkHash: { type: String, unique: true, sparse: true, select: false },
     stasiKeluarga: { type: String, trim: true, required: true },
     single: { type: personSchema, default: undefined },
     keluarga: { type: keluargaSchema, default: undefined },

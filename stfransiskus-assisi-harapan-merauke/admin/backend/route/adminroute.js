@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const authMiddleware = require("../midleware/authMiddleware");
+const { loginLimiter } = require("../security/rateLimits");
 
 // Counter MongoDB menyediakan nomor urut untuk ID admin yang mudah dibaca.
 const Counter = mongoose.model(
@@ -27,7 +28,7 @@ const getNextSequence = async (name) => {
 
 // Login bersifat publik; daftar admin memerlukan token autentikasi.
 router
-  .post("/login", async (req, res) => {
+  .post("/login", loginLimiter, async (req, res) => {
     try {
       const { adminname, password, role } = req.body;
       if (!adminname || !password || !role) {
@@ -68,7 +69,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
 router
   .post("/register", authMiddleware, async (req, res) => {
     try {
-      console.log("Register Body:", req.body);
       const { id, adminname, password, role } = req.body;
 
       if (!req.body || Object.keys(req.body).length === 0) {

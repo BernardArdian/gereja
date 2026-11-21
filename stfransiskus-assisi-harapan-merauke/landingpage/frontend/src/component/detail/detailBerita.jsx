@@ -37,6 +37,7 @@ const newsList = [
 ];
 
 function getDetail(item, type) {
+  // Samakan bentuk item dari berbagai kategori sebelum dirender oleh dialog.
   if (type === "orang-kudus") {
     return {
       title: item.name,
@@ -120,21 +121,26 @@ export default function DetailBerita({
   tags = ["Berita"],
   onBack = () => window.history.back(),
 }) {
+  // Gunakan item terpilih atau susun record dari props detail individual.
   const initialItem = item || { title, date, author, image, content, tags };
   const [activeItem, setActiveItem] = useState(initialItem);
   const detail = getDetail(activeItem, type);
+  // Berita lain hanya disediakan ketika layar detail sedang menampilkan berita.
   const otherNews =
     type === "berita"
       ? newsList.filter((news) => news.title !== detail.title).slice(0, 3)
       : [];
 
   const handleShowOtherNews = (news) => {
+    // Ganti konten detail tanpa menutup halaman, lalu gulir kembali ke atas.
     setActiveItem(news);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document
+      .querySelector(".detail-content")
+      ?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <section className="detail-content fixed inset-0 z-[100] h-dvh w-full overflow-y-auto overscroll-contain bg-slate-50">
+    <section className="detail-content fixed inset-0 z-100 h-dvh w-full overflow-y-auto overscroll-contain bg-slate-50">
       <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <button
@@ -226,7 +232,7 @@ export default function DetailBerita({
                 <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                   {entry.label}
                 </dt>
-                <dd className="mt-1 break-words text-sm font-medium text-slate-800">
+                <dd className="mt-1 wrap-break-words text-sm font-medium text-slate-800">
                   {entry.value}
                 </dd>
               </div>

@@ -70,7 +70,7 @@ function InfoItem({ icon: Icon, label, value, accent = "indigo" }) {
       </span>
       <div className="min-w-0">
         <p className="text-xs font-medium text-slate-500">{label}</p>
-        <p className="mt-1 break-words text-sm font-semibold leading-5 text-slate-900 sm:text-base">
+        <p className="mt-1 wrap-break-words text-sm font-semibold leading-5 text-slate-900 sm:text-base">
           {value}
         </p>
       </div>
@@ -92,7 +92,7 @@ function DetailSection({ title, items }) {
         {visibleItems.map(([key, label, value]) => (
           <div key={key} className="min-w-0">
             <dt className="text-xs text-slate-500">{label}</dt>
-            <dd className="mt-0.5 break-words text-sm font-medium text-slate-800">
+            <dd className="mt-0.5 wrap-break-words text-sm font-medium text-slate-800">
               {value}
             </dd>
           </div>
@@ -118,7 +118,7 @@ function Couple({ label, name, image }) {
       )}
       <div className="min-w-0">
         <p className="text-xs font-medium text-rose-100">{label}</p>
-        <p className="mt-0.5 break-words text-sm font-bold leading-5 text-white sm:text-base">
+        <p className="mt-0.5 wrap-break-words text-sm font-bold leading-5 text-white sm:text-base">
           {name || "Nama belum tersedia"}
         </p>
       </div>
@@ -159,7 +159,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-120 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose?.();
       }}
@@ -171,7 +171,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
         className="relative my-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl sm:rounded-3xl"
       >
         {isWedding && (
-          <header className="relative overflow-hidden bg-gradient-to-br from-rose-950 via-red-800 to-rose-600 px-4 py-5 sm:px-8 sm:py-6">
+          <header className="relative overflow-hidden bg-linear-to-br from-rose-950 via-red-800 to-rose-600 px-4 py-5 sm:px-8 sm:py-6">
             <div className="absolute inset-y-0 left-1/2 hidden w-px bg-white/20 sm:block" />
             <div className="mx-auto grid max-w-lg grid-cols-2 gap-4 sm:gap-12">
               <Couple
@@ -198,7 +198,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
             </span>
             <h2
               id={titleId}
-              className="mt-1.5 break-words text-xl font-bold leading-7 text-slate-900 sm:text-2xl"
+              className="mt-1.5 wrap-break-words text-xl font-bold leading-7 text-slate-900 sm:text-2xl"
             >
               {title}
             </h2>
@@ -246,7 +246,7 @@ export default function DetailPengumumanModal({ isOpen, onClose, data }) {
                 <span className="h-1 w-5 rounded-full bg-indigo-600" />
                 Keterangan
               </h3>
-              <p className="whitespace-pre-line break-words text-sm leading-6 text-slate-700 sm:text-base sm:leading-7">
+              <p className="whitespace-pre-line wrap-break-words text-sm leading-6 text-slate-700 sm:text-base sm:leading-7">
                 {data.description}
               </p>
             </section>

@@ -46,6 +46,7 @@ export default function Home() {
     "https://images.pexels.com/photos/10306340/pexels-photo-10306340.jpeg?auto=compress&w=1600",
     "https://images.pexels.com/photos/6752279/pexels-photo-6752279.jpeg?auto=compress&w=1600",
   ];
+  // Konten sejarah, pengumuman, dan berita di beranda masih berupa data contoh.
   const data = {
     ringkasan:
       "Berawal dari sebuah gubuk kecil di tahun 1950, komunitas ini tumbuh menjadi pusat iman yang kokoh bagi ribuan umat hingga saat ini.",
@@ -173,39 +174,44 @@ export default function Home() {
 
   //HANDLER (Ditaruh di atas useEffect supaya tidak error "Cannot access before declaration")
   const handleNext = () => {
+    // Putar kembali ke slide pertama setelah mencapai akhir daftar gambar.
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   const handlePrev = () => {
+    // Dari slide pertama, navigasi mundur menuju slide terakhir.
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const openModal = (img) => {
+    // Simpan gambar yang dipilih dan tampilkan pratinjau layar penuh.
     setSelectedImg(img);
     setIsOpen(true);
   };
 
   //EFFECT AUTO SLIDE
   useEffect(() => {
+    // Ganti slide otomatis setiap lima detik dan bersihkan timer saat dilepas.
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     }, 5000);
     return () => clearInterval(timer);
   }, [images.length]);
 
-  if (selectedNews) {
-    return (
-      <DetailBerita
-        title={selectedNews.title}
-        content={selectedNews.content || selectedNews.excerpt}
-        image={selectedNews.image}
-        date={selectedNews.date}
-        author={selectedNews.author}
-        tags={selectedNews.tags || ["Berita"]}
-        onBack={() => setSelectedNews(null)}
-      />
-    );
-  }
+  // if (selectedNews) {
+  //   // Tampilkan detail berita terpilih sebagai tampilan utama sementara.
+  //   return (
+  //     <DetailBerita
+  //       title={selectedNews.title}
+  //       content={selectedNews.content || selectedNews.excerpt}
+  //       image={selectedNews.image}
+  //       date={selectedNews.date}
+  //       author={selectedNews.author}
+  //       tags={selectedNews.tags || ["Berita"]}
+  //       onBack={() => setSelectedNews(null)}
+  //     />
+  //   );
+  // }
 
   return (
     <section className="flex min-h-screen w-full flex-col items-center justify-start overflow-y-auto no-scrollbar">
@@ -443,6 +449,19 @@ export default function Home() {
         onClose={() => setIsDetailOpen(false)}
         data={selectedDetail}
       />
+
+      {selectedNews && (
+        // Tampilkan detail berita terpilih sebagai tampilan utama sementara.
+        <DetailBerita
+          title={selectedNews.title}
+          content={selectedNews.content || selectedNews.excerpt}
+          image={selectedNews.image}
+          date={selectedNews.date}
+          author={selectedNews.author}
+          tags={selectedNews.tags || ["Berita"]}
+          onBack={() => setSelectedNews(null)}
+        />
+      )}
     </section>
   );
 }

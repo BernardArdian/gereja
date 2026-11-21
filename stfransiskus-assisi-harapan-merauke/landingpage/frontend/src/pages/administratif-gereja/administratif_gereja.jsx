@@ -139,6 +139,7 @@ export default function AdministratifGereja() {
   ]);
 
   const filteredData = useMemo(() => {
+    // Pertahankan record contoh yang memiliki nama atau kategori dokumen.
     return adminList.filter(
       (item) => item.name.toLowerCase() || item.category.toLowerCase(),
     );
@@ -146,9 +147,16 @@ export default function AdministratifGereja() {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const paginatedData = filteredData.slice(
+    // Ambil irisan daftar yang sesuai dengan nomor halaman aktif.
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
+  const handlePageChange = (page) => {
+    // Pindah halaman lalu gulir kembali ke paling atas.
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <section className="min-h-screen w-full bg-slate-50">
@@ -251,7 +259,7 @@ export default function AdministratifGereja() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
               itemCount={paginatedData.length}
               totalCount={filteredData.length}
               itemLabel="dokumen"

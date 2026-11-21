@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const validatedatamember = require("../../helper/validatedatamember");
 const Umat = require("../../model/member/umat");
+const {
+  prepareMemberData,
+  restoreMemberData,
+} = require("../../security/dataEncryption");
 
 function normalizeMemberData(data) {
   // Samakan variasi format input lama dengan bentuk yang dipakai model umat.
@@ -32,6 +36,7 @@ function normalizeMemberData(data) {
   delete normalized._id;
   delete normalized.id;
   delete normalized.__v;
+  delete normalized.noKkHash;
   return normalized;
 }
 
@@ -58,7 +63,9 @@ class MemberService {
     validatedatamember(memberData);
 
     try {
-      return await new Umat(memberData).save();
+      const protectedData = prepareMemberData(memberData);
+      const member = await new Umat(protectedData).save();
+      return restoreMemberData(member);
     } catch (error) {
       throwDatabaseError(error, "Gagal menyimpan data umat");
     }
@@ -67,7 +74,8 @@ class MemberService {
   static async getAllMember() {
     try {
       // Urutkan data terbaru dahulu dan gunakan lean untuk hasil baca biasa.
-      return await Umat.find({}).sort({ createdAt: -1 }).lean();
+      const members = await Umat.find({}).sort({ createdAt: -1 }).lean();
+      return members.map(restoreMemberData);
     } catch (error) {
       throwDatabaseError(error, "Gagal mengambil data umat");
     }
@@ -88,7 +96,7 @@ class MemberService {
           statusCode: 404,
         });
       }
-      return member;
+      return restoreMemberData(member);
     } catch (error) {
       if (error.statusCode) throw error;
       throwDatabaseError(error, "Gagal mengambil data umat");
@@ -106,18 +114,24 @@ class MemberService {
     validatedatamember(memberData);
 
     try {
+      const protectedData = prepareMemberData(memberData);
+      const update = { $set: protectedData };
+      if (!memberData.noKk?.trim()) {
+        delete update.$set.noKk;
+        update.$unset = { noKk: 1, noKkHash: 1 };
+      }
       // Jalankan validator schema pada field yang diperbarui.
-      const updatedMember = await Umat.findByIdAndUpdate(
-        id,
-        { $set: memberData },
-        { new: true, runValidators: true, context: "query" },
-      );
+      const updatedMember = await Umat.findByIdAndUpdate(id, update, {
+        new: true,
+        runValidators: true,
+        context: "query",
+      });
       if (!updatedMember) {
         throw Object.assign(new Error("Data umat tidak ditemukan."), {
           statusCode: 404,
         });
       }
-      return updatedMember;
+      return restoreMemberData(updatedMember);
     } catch (error) {
       if (error.statusCode) throw error;
       throwDatabaseError(error, "Gagal memperbarui data umat");
@@ -138,7 +152,7 @@ class MemberService {
           statusCode: 404,
         });
       }
-      return member;
+      return restoreMemberData(member);
     } catch (error) {
       if (error.statusCode) throw error;
       throwDatabaseError(error, "Gagal menghapus data umat");

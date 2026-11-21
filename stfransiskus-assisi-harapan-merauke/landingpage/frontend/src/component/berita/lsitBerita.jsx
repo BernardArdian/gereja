@@ -15,6 +15,7 @@ export default function ListBerita({ data, handler }) {
 
   return (
     <section className="flex flex-col gap-3">
+      {/* Klik kartu maupun tombol baca membuka detail berita terpilih. */}
       {data.map((item) => (
         <section
           key={item.id}
@@ -38,7 +39,7 @@ export default function ListBerita({ data, handler }) {
                   <User size={14} aria-hidden="true" /> {item.author}
                 </span>
               </section>
-              <h2 className="mb-2 break-words text-base font-semibold leading-snug text-slate-900 transition-colors group-hover:text-amber-800 sm:text-lg">
+              <h2 className="mb-2 wrap-break-words text-base font-semibold leading-snug text-slate-900 transition-colors group-hover:text-amber-800 sm:text-lg">
                 {item.title}
               </h2>
               {item.excerpt && (

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Newspaper,
   Plus,
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import Detail from "../../component/detail";
+import Detailberita from "../../component/detail/detailBerita";
 import InputBerita from "../../component/berita/input_berita";
 import PaginationFooter from "../../component/PaginationFooter";
 import DeleteModal from "../../component/alert/deleteModal";
@@ -24,6 +25,10 @@ export default function Berita() {
 
   // --- STATE UNTUK DETAIL VIEW ---
   const [selectedNews, setSelectedNews] = useState(null);
+  useEffect(() => {
+    console.log("Berita mount");
+    return () => console.log("Berita unmount");
+  }, []);
 
   const [newsList, setNewsList] = useState([
     {
@@ -207,18 +212,6 @@ export default function Berita() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // --- JIKA BERITA DIKLIK, TAMPILKAN DETAIL ---
-  if (selectedNews) {
-    return (
-      <Detail
-        formData={selectedNews}
-        handlers={{
-          onBack: () => setSelectedNews(null),
-        }}
-      />
-    );
-  }
-
   // --- Konten utama ---
   return (
     <section className="min-h-full w-full bg-slate-50">
@@ -381,6 +374,15 @@ export default function Berita() {
         itemName={newsToDelete?.title}
         confirmText="Ya, hapus berita"
       />
+
+      {selectedNews && (
+        <Detail
+          formData={selectedNews}
+          handlers={{
+            onBack: () => setSelectedNews(null),
+          }}
+        />
+      )}
     </section>
   );
 }

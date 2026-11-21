@@ -1,5 +1,6 @@
 const Homili = require("../../model/katekese/renungan/homili");
 const validateHomiliFields = require("../../helper/validateHomiliFields");
+const { createLiteralSearchRegex } = require("../../security/safeRegex");
 
 class homiliService {
   // Validasi, buang nilai kosong, dan simpan homili dengan ID fallback.
@@ -42,7 +43,7 @@ class homiliService {
         query.id = data.id;
       }
       if (data.tema) {
-        query.tema = new RegExp(data.tema, "i");
+        query.tema = createLiteralSearchRegex(data.tema);
       }
       const homilis = await Homili.find(query);
       return homilis;

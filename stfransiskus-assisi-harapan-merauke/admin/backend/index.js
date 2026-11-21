@@ -1,7 +1,9 @@
 const express = require("express");
 const connectDB = require("./config/config");
 const cors = require("cors");
-const securityMiddleware = require("./midleware/securityMiddleware");
+const securityHeaders = require("./security/httpHeaders");
+const { apiLimiter } = require("./security/rateLimits");
+const { inputSecurityMiddleware } = require("./security/inputSecurity");
 
 const eventRoute = require("./route/eventroute");
 const adminRoute = require("./route/adminroute");
@@ -13,6 +15,11 @@ const administratifRoute = require("./route/administrativeroute");
 // Buat aplikasi Express dan tetapkan port serta origin frontend yang diizinkan.
 const app = express();
 const port = 5000;
+const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS || 0);
+if (!Number.isInteger(trustProxyHops) || trustProxyHops < 0) {
+  throw new Error("TRUST_PROXY_HOPS harus bilangan bulat nol atau lebih.");
+}
+if (trustProxyHops > 0) app.set("trust proxy", trustProxyHops);
 const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://localhost:5173",
@@ -20,6 +27,7 @@ const allowedOrigins = new Set([
 ]);
 
 // Middleware menyiapkan CORS, parsing body, dan pemeriksaan keamanan request.
+app.use(securityHeaders);
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -33,9 +41,11 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+// Batasi semua endpoint API sebelum body diproses atau route dijalankan.
+app.use("/api", apiLimiter);
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
-app.use(securityMiddleware);
+app.use(inputSecurityMiddleware);
 
 // Mulai koneksi database sebelum endpoint digunakan oleh klien.
 connectDB();

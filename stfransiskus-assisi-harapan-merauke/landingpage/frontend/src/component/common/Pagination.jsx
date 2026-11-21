@@ -21,6 +21,7 @@ export default function Pagination({
         aria-label="Navigasi halaman"
         className="flex items-center gap-1 overflow-x-auto"
       >
+        {/* Batasi perpindahan sebelumnya agar halaman minimum tetap satu. */}
         <button
           type="button"
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
@@ -30,6 +31,7 @@ export default function Pagination({
         >
           <ChevronLeft size={14} aria-hidden="true" />
         </button>
+        {/* Render satu kontrol untuk setiap nomor halaman yang tersedia. */}
         {Array.from({ length: totalPages }, (_, index) => index + 1).map(
           (pageNumber) => (
             <button

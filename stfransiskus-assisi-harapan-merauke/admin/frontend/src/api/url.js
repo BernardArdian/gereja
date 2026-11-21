@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  releaseFrontendRequest,
   resetFrontendLoginLimit,
   secureFrontendRequest,
 } from "../security/requestSecurity";
@@ -20,10 +21,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-api.interceptors.response.use((response) => {
-  // Login berhasil menghapus pembatas percobaan di sisi frontend.
-  resetFrontendLoginLimit(response.config);
-  return response;
-});
+api.interceptors.response.use(
+  (response) => {
+    releaseFrontendRequest(response.config);
+    // Login berhasil menghapus pembatas percobaan di sisi frontend.
+    resetFrontendLoginLimit(response.config);
+    return response;
+  },
+  (error) => {
+    releaseFrontendRequest(error.config);
+    if ([401, 403].includes(error.response?.status)) {
+      window.dispatchEvent(new Event("admin:session-expired"));
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;

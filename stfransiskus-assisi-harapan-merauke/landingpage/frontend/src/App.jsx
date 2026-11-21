@@ -27,12 +27,14 @@ function App() {
     localStorage.setItem("siteTheme", theme);
   }, [theme]);
 
+  // Balik mode tema; effect di atas menyimpan perubahan ke localStorage.
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
   };
 
   return (
     <Layout theme={theme}>
+      {/* Petakan URL publik ke halaman konten masing-masing. */}
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/pedoman-pastoral" element={<Pedoman />} />

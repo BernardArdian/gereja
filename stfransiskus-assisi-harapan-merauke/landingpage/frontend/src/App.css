@@ -6,6 +6,7 @@
   -ms-overflow-style: none !important; /* IE/Edge */
 }
 
+/* Sembunyikan scrollbar visual pada browser WebKit; area tetap dapat digulir. */
 body::-webkit-scrollbar,
 div::-webkit-scrollbar,
 section::-webkit-scrollbar {

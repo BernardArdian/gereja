@@ -6,7 +6,7 @@ export default function DppTable({ nama, jabatan, periode }) {
         {nama}
       </td>
       <td className="px-4 py-4 sm:px-6">
-        <span className="inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">
+        <span className="inline-flex rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-sky-800">
           {jabatan}
         </span>
       </td>

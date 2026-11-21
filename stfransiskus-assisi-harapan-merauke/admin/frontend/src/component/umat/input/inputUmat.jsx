@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { umatServiceApi } from "../../../api/umatApi/umatServiceApi";
 import { Check, LoaderCircle, Save, UserRound } from "lucide-react";
 
@@ -346,11 +346,6 @@ export default function InputUmat({ initialData, isEdit, editId, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  useEffect(() => {
-    setFormData(createInitialFormData(initialData));
-    setError("");
-  }, [initialData]);
 
   //simpan / update
   const handleSimpan = async () => {

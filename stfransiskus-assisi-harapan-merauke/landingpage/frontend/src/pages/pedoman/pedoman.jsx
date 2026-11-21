@@ -43,6 +43,7 @@ export default function Pedoman() {
   const [openAccordion, setOpenAccordion] = useState(null);
 
   const filteredPedoman = useMemo(() => {
+    // Terapkan pencarian judul/isi bersama filter kategori yang aktif.
     const query = searchQuery.trim().toLowerCase();
     return pedomanList.filter((item) => {
       const matchesCategory =
@@ -120,6 +121,7 @@ export default function Pedoman() {
             </span>
           </div>
           {filteredPedoman.length ? (
+            // Tampilkan isi pedoman hanya untuk item accordion yang sedang dibuka.
             filteredPedoman.map((item) => {
               const isOpen = openAccordion === item.id;
               const panelId = `pedoman-content-${item.id}`;

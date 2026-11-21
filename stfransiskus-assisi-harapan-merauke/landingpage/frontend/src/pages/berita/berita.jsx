@@ -14,6 +14,7 @@ export default function Berita() {
   // --- STATE UNTUK DETAIL---
   const [selectedNews, setSelectedNews] = useState(null);
 
+  // Contoh data lokal; daftar ini belum dimuat dari backend.
   const [newsList] = useState([
     {
       id: 1,
@@ -90,12 +91,14 @@ export default function Berita() {
 
   // --- LOGIC SEARCH & PAGINATION ---
   const filteredData = useMemo(() => {
+    // Pencarian berita mencocokkan kata kunci terhadap judul.
     return newsList.filter((item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, newsList]);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Ambil hanya potongan data yang berada pada halaman aktif.
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredData.slice(
     startIndex,
@@ -103,24 +106,16 @@ export default function Berita() {
   );
 
   const handleSearch = (e) => {
+    // Mulai kembali dari halaman pertama saat hasil pencarian berubah.
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
 
-  // --- JIKA BERITA DIKLIK, TAMPILKAN DETAIL ---
-  if (selectedNews) {
-    return (
-      <DetailBerita
-        title={selectedNews.title}
-        content={selectedNews.content || selectedNews.excerpt}
-        image={selectedNews.image}
-        date={selectedNews.date}
-        author={selectedNews.author}
-        tags={selectedNews.tags || ["Berita"]}
-        onBack={() => setSelectedNews(null)} // Tutup detail
-      />
-    );
-  }
+  const handlePageChange = (page) => {
+    // Pindah halaman lalu gulir kembali ke paling atas.
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // --- TAMPILAN LIST UTAMA ---
   return (
@@ -173,10 +168,22 @@ export default function Berita() {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
             itemCount={paginatedData.length}
             totalCount={filteredData.length}
             itemLabel="berita"
+          />
+        )}
+
+        {selectedNews && (
+          <DetailBerita
+            title={selectedNews.title}
+            content={selectedNews.content || selectedNews.excerpt}
+            image={selectedNews.image}
+            date={selectedNews.date}
+            author={selectedNews.author}
+            tags={selectedNews.tags || ["Berita"]}
+            onBack={() => setSelectedNews(null)} // Tutup detail
           />
         )}
       </main>

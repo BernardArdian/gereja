@@ -168,10 +168,12 @@ export default function Pengumuman() {
   );
 
   useEffect(() => {
+    // Ingat pilihan stasi agar filter tetap sama setelah halaman dibuka lagi.
     localStorage.setItem("stasiFilter", stasiFilter);
   }, [stasiFilter]);
 
   // --- FILTER & SEARCH ---
+  // Terapkan filter stasi dan pencarian pada deskripsi, pasangan, serta jenis acara.
   const filteredData = announcements.filter((item) => {
     const matchesStasi = stasiFilter === "Semua" || item.stasi === stasiFilter;
     const contentToSearch = `
@@ -187,10 +189,17 @@ export default function Pengumuman() {
   // --- PAGINATION ---
   const itemsPerPage = 6;
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Sajikan enam hasil per halaman setelah filter diterapkan.
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
+  const handlePageChange = (page) => {
+    // Pindah halaman lalu gulir kembali ke paling atas.
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <section className="min-h-screen w-full bg-slate-50">
@@ -269,7 +278,7 @@ export default function Pengumuman() {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
             itemCount={paginatedData.length}
             totalCount={filteredData.length}
             itemLabel="pengumuman"

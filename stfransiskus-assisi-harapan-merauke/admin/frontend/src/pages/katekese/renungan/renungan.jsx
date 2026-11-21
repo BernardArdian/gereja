@@ -206,7 +206,7 @@ export default function Renungan() {
                 <span className="flex items-center gap-2 text-indigo-500 font-semibold text-[10px] uppercase mb-2">
                   <BookOpen size={12} /> {item.verse}
                 </span>
-                <h3 className="mb-3 break-words text-lg font-bold text-slate-900 transition-colors group-hover:text-amber-800 sm:text-2xl">
+                <h3 className="mb-3 wrap-break-words text-lg font-bold text-slate-900 transition-colors group-hover:text-amber-800 sm:text-2xl">
                   {item.title}
                 </h3>
                 <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-slate-600 sm:mb-6">

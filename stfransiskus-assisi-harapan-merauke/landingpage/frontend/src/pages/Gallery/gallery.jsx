@@ -67,12 +67,14 @@ export default function GalleryGereja() {
   const itemsPerPage = 6;
 
   useEffect(() => {
+    // Simpan pilihan stasi supaya filter galeri bertahan antar kunjungan.
     localStorage.setItem("galleryStasiFilter", stasiFilter);
   }, [stasiFilter]);
 
   useEffect(() => {
     if (!selectedImage) return undefined;
 
+    // Escape menutup lightbox; listener hanya aktif selama gambar terbuka.
     const handleKeyDown = (event) => {
       if (event.key === "Escape") setSelectedImage(null);
     };
@@ -81,6 +83,7 @@ export default function GalleryGereja() {
   }, [selectedImage]);
 
   const query = searchQuery.trim().toLowerCase();
+  // Gabungkan filter stasi dengan pencarian judul, stasi, dan tanggal.
   const filteredData = galleryItems.filter((item) => {
     const matchesStasi = stasiFilter === "Semua" || item.stasi === stasiFilter;
     const matchesSearch =
@@ -89,6 +92,7 @@ export default function GalleryGereja() {
     return matchesStasi && matchesSearch;
   });
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // Jaga halaman tetap dalam rentang valid saat jumlah hasil berubah.
   const page = Math.min(currentPage, Math.max(totalPages, 1));
   const paginatedData = filteredData.slice(
     (page - 1) * itemsPerPage,
@@ -169,7 +173,7 @@ export default function GalleryGereja() {
                   type="button"
                   onClick={() => setSelectedImage(item)}
                   aria-label={`Perbesar foto: ${item.title}`}
-                  className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-slate-100 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600"
+                  className="relative block aspect-4/3 w-full cursor-zoom-in overflow-hidden bg-slate-100 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-600"
                 >
                   <img
                     src={item.url}
@@ -227,8 +231,9 @@ export default function GalleryGereja() {
       </main>
 
       {selectedImage && (
+        // Klik backdrop menutup lightbox; klik isi dialog tidak menutupnya.
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-sm"
           role="presentation"
           onClick={() => setSelectedImage(null)}
         >

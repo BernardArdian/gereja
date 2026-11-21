@@ -79,7 +79,7 @@ export default function ContentEditorModal({
     <>
       {createPortal(
         <section
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5"
+          className="fixed inset-0 z-100 flex items-center justify-center p-3 sm:p-5"
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) handlers.close?.();

@@ -15,6 +15,7 @@ export default function CustomDropdown({
   const selected = options.find((option) => option.value === value);
 
   useEffect(() => {
+    // Listener global menutup daftar saat pointer berada di luar pembungkus.
     const handleClickOutside = (event) => {
       if (!wrapperRef.current?.contains(event.target)) {
         setIsOpen(false);
@@ -26,7 +27,7 @@ export default function CustomDropdown({
   }, []);
 
   return (
-    <div ref={wrapperRef} className={`relative min-w-[160px] ${className}`}>
+    <div ref={wrapperRef} className={`relative min-w-40 ${className}`}>
       <button
         type="button"
         aria-label={ariaLabel}
@@ -56,6 +57,7 @@ export default function CustomDropdown({
                 role="option"
                 aria-selected={option.value === value}
                 onClick={() => {
+                  // Kirim pilihan ke parent, lalu tutup daftar opsi.
                   onChange(option.value);
                   setIsOpen(false);
                 }}

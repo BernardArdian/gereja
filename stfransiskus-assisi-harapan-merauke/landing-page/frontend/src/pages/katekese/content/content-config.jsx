@@ -286,7 +286,7 @@ export const contentConfig = {
     itemsPerPage: 5,
     hero: {
       images: heroImages.renungan,
-      eyebrow: "Santapan",
+      eyebrow: "Santapan rohani",
       title: "Renungan",
     },
     search: {

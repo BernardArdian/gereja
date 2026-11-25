@@ -40,7 +40,7 @@ function App() {
         <Route path="/pedoman-pastoral" element={<Pedoman />} />
         <Route path="/pengumuman" element={<Pengumuman />} />
         <Route path="/administratif" element={<AdministratifGereja />} />
-        <Route path="/katekese" element={<Katekese />} />
+        <Route path="/katekese/:tab?" element={<Katekese />} />
         <Route path="/profil-gereja" element={<ProfilGereja />} />
         <Route path="/pedoman" element={<Pedoman />} />
         <Route path="/berita" element={<Berita />} />

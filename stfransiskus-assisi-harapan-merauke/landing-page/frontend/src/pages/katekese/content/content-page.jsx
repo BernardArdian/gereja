@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import Pagination from "../../../component/common/Pagination";
 import DetailBerita from "../../../component/detail/detailBerita";
@@ -34,9 +35,31 @@ export default function ContentPages({ config }) {
   } = config;
   const style = layouts[layout];
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItem, setSelectedItem] = useState(null);
+
+  // Item terpilih berasal dari URL (?id=), jadi bisa di-refresh dan dibagikan.
+  const selectedId = searchParams.get("id");
+  const selectedItem = selectedId
+    ? data.find((item) => String(item.id) === selectedId)
+    : null;
+
+  const openItem = (item) => {
+    // Tambah entri riwayat agar tombol Back menutup detail.
+    setSearchParams({ id: String(item.id) }, { state: { fromList: true } });
+  };
+
+  const closeItem = () => {
+    // Dibuka dari daftar: mundur satu langkah. Dibuka lewat link langsung: ganti URL.
+    if (location.state?.fromList) {
+      navigate(-1);
+      return;
+    }
+    setSearchParams({}, { replace: true });
+  };
 
   // Cocokkan kata pencarian dengan semua field yang didaftarkan di config.
   const filteredData = useMemo(() => {
@@ -113,7 +136,7 @@ export default function ContentPages({ config }) {
                   <p key="empty" className={style.empty} children={emptyText} />
                 ),
                 ...paginatedData.map((item) => (
-                  <Card key={item.id} item={item} onOpen={setSelectedItem} />
+                  <Card key={item.id} item={item} onOpen={openItem} />
                 )),
               ]}
             />
@@ -140,7 +163,7 @@ export default function ContentPages({ config }) {
             key="detail"
             item={selectedItem}
             type={detailType}
-            onBack={() => setSelectedItem(null)}
+            onBack={closeItem}
           />
         ),
       ]}
